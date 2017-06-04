@@ -1,7 +1,6 @@
-package main.java.edu.oc.courier;
+package edu.oc.courier;
 
 import java.util.HashMap;
-import java.util.stream.Stream;
 
 public class Map<K> {
     private HashMap<K, Node<K>> nodes = new HashMap<>();

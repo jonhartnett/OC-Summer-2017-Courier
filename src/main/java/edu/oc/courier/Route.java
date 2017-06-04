@@ -1,4 +1,4 @@
-package main.java.edu.oc.courier;
+package edu.oc.courier;
 
 import java.util.stream.Stream;
 
