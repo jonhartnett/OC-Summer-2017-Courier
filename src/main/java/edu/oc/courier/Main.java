@@ -15,14 +15,9 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) {
-        Parent root;
-        try {
-            root = FXMLLoader.load(getClass().getResource("/container.fxml"));
-            primaryStage.setScene(new Scene(root));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void start(Stage primaryStage) throws IOException {
+        final Parent root = FXMLLoader.load(getClass().getResource("/container.fxml"));
+        primaryStage.setScene(new Scene(root));
         primaryStage.setTitle("Courier service");
         primaryStage.show();
     }
