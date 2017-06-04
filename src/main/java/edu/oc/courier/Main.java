@@ -18,7 +18,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         Parent root;
         try {
-            root = FXMLLoader.load(getClass().getResource("ui/container.fxml"));
+            root = FXMLLoader.load(getClass().getResource("/container.fxml"));
             primaryStage.setScene(new Scene(root, 500, 400));
         } catch (IOException e) {
             e.printStackTrace();
