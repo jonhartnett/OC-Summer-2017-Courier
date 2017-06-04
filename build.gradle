@@ -1,13 +1,33 @@
 plugins {
     id "java"
+    id "application"
+    id "com.github.johnrengelman.shadow" version "2.0.0"
 }
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
+mainClassName = "edu.oc.courier.Main"
+
+jar {
+    manifest {
+        attributes "Main-Class": mainClassName
+    }
+}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    compile "org.jgrapht:jgrapht-core:1.0.1"
+    compile "com.google.guava:guava:22.0"
 }
+
+shadowJar {
+    baseName = "Courier"
+    classifier = null
+    version = null
+}
+
+build.dependsOn shadowJar
