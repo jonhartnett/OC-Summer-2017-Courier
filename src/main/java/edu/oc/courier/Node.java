@@ -100,7 +100,7 @@ public class Node<K> {
     }
     private void propagate(Node<K> dest, double cost){
         for(Entry<Node<K>, Double> link : links.entrySet()){
-            Node node = link.getKey();
+            Node<K> node = link.getKey();
             double linkCost = link.getValue();
             node.update(dest, this, cost + linkCost);
         }

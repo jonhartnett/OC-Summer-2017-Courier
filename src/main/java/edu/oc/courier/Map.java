@@ -12,8 +12,8 @@ public class Map<K> {
     }
 
     public void setLink(K key, K key2, double cost){
-        Node n1 = nodes.get(key);
-        Node n2 = nodes.get(key2);
+        Node<K> n1 = nodes.get(key);
+        Node<K> n2 = nodes.get(key2);
         n1.link(n2, cost);
         n2.link(n1, cost);
     }
