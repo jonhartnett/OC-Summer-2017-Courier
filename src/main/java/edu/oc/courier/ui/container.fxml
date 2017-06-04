@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.BorderPane?>
+
+
+<BorderPane fx:controller="edu.oc.courier.ui.ContainerController" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1">
+   <top>
+      <MenuBar BorderPane.alignment="CENTER">
+         <menus>
+            <Menu mnemonicParsing="false" text="Home">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Login" />
+                  <MenuItem mnemonicParsing="false" text="Account" />
+                  <MenuItem mnemonicParsing="false" text="Exit" />
+              </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Tickets">
+              <items>
+                <MenuItem mnemonicParsing="false" text="New" />
+                  <MenuItem mnemonicParsing="false" text="Update" />
+              </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Reports">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Client" />
+                  <MenuItem mnemonicParsing="false" text="Courier" />
+                  <MenuItem mnemonicParsing="false" text="Company" />
+              </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Admin">
+              <items>
+                  <MenuItem mnemonicParsing="false" text="Map" />
+                  <MenuItem mnemonicParsing="false" text="System" />
+                <MenuItem mnemonicParsing="false" text="Users" />
+              </items>
+            </Menu>
+         </menus>
+      </MenuBar>
+   </top>
+</BorderPane>
