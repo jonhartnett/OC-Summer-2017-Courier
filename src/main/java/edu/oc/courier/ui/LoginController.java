@@ -23,6 +23,6 @@ public class LoginController implements Initializable {
     }
 
     public void login(ActionEvent actionEvent) {
-        //Authenticate based on username/password here
+
     }
 }

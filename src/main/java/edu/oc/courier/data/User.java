@@ -2,8 +2,9 @@ package edu.oc.courier.data;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Throwables;
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Random;
@@ -27,8 +28,7 @@ public final class User {
         final byte[] bytes;
         try {
             bytes = digest.digest((salt + password).getBytes("UTF-8"));
-        } catch (Exception e) {
-            Throwables.throwIfUnchecked(e);
+        } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
 
@@ -41,8 +41,7 @@ public final class User {
 
         try {
             this.password = digest.digest((salt + password).getBytes("UTF-8"));
-        } catch (Exception e) {
-            Throwables.throwIfUnchecked(e);
+        } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
     }
@@ -131,8 +130,7 @@ public final class User {
     static {
         try {
             digest = MessageDigest.getInstance("SHA-512");
-        } catch (Exception e) {
-            Throwables.throwIfUnchecked(e);
+        } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
     }

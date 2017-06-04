@@ -1,6 +1,5 @@
 package edu.oc.courier.ui;
 
-import com.google.common.base.Throwables;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -20,8 +19,7 @@ public class ContainerController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         try {
             loadScreen("login.fxml");
-        } catch (Exception e) {
-            Throwables.throwIfUnchecked(e);
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
