@@ -3,15 +3,13 @@ package edu.oc.courier;
 import edu.oc.courier.data.Client;
 import edu.oc.courier.data.Driver;
 import edu.oc.courier.data.Invoice;
-import java.util.List;
+import java.io.IOException;
 import java.util.Optional;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
