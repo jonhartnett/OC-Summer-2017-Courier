@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<GridPane alignment="CENTER" hgap="10.0" onMouseClicked="#select" onTouchReleased="#select" vgap="10.0"
+          xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="edu.oc.courier.ui.TicketSelectionController">
+    <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+    </rowConstraints>
+    <children>
+        <Label alignment="CENTER_RIGHT" text="Ticket" textAlignment="RIGHT"/>
+        <Label alignment="CENTER_RIGHT" text="Client" textAlignment="RIGHT" GridPane.rowIndex="1"/>
+        <Label alignment="CENTER_RIGHT" text="Leave time" textAlignment="RIGHT" GridPane.rowIndex="2"/>
+        <Label alignment="CENTER_RIGHT" text="Status" textAlignment="RIGHT" GridPane.rowIndex="3"/>
+        <TextField fx:id="ticketNumber" disable="true" editable="false" GridPane.columnIndex="1"/>
+        <TextField fx:id="clientName" disable="true" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        <TextField fx:id="leaveTime" disable="true" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+        <TextField fx:id="status" disable="true" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+    </children>
+</GridPane>

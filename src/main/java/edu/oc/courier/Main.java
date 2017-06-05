@@ -17,7 +17,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         final Parent root = FXMLLoader.load(getClass().getResource("/container.fxml"));
-        primaryStage.setScene(new Scene(root));
+        primaryStage.setScene(new Scene(root, 500, 500));
         primaryStage.setTitle("Courier service");
         primaryStage.show();
     }
