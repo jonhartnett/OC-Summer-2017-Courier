@@ -14,24 +14,14 @@
         <class>edu.oc.courier.data.User</class>
 
         <properties>
-            <!-- The JDBC URL to the database instance -->
-            <property name="javax.persistence.jdbc.url"
-                      value="jdbc:mysql://localhost:3306/oc-summer-2017-courier" />
-
-            <!-- The database username -->
-            <property name="javax.persistence.jdbc.user" value="application" />
-            <property name="toplink.jdbc.url"
-                      value="jdbc:mysql://localhost:3306/oc-summer-2017-courier?useSSL=false&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC"/>
-            <property name="toplink.jdbc.driver" value="com.mysql.jdbc.Driver"/>
-            <property name="hibernate.connection.url"
-                      value="jdbc:mysql://localhost:3306/oc-summer-2017-courier?useSSL=false&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC"/>
-            <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
-            <property name="openjpa.ConnectionURL"
-                      value="jdbc:mysql://localhost:3306/oc-summer-2017-courier?useSSL=false&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC"/>
-            <property name="openjpa.ConnectionDriverName" value="com.mysql.jdbc.Driver"/>
-            <property name="eclipselink.jdbc.url"
-                      value="jdbc:mysql://localhost:3306/oc-summer-2017-courier?useSSL=false&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC"/>
-            <property name="eclipselink.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+            <property name="hibernate.connection.provider_class" value="com.zaxxer.hikari.hibernate.HikariConnectionProvider"/>
+            <property name="hibernate.hikari.jdbcUrl" value="jdbc:mysql://localhost:3306/oc-summer-2017-courier?useSSL=false&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC"/>
+            <property name="hibernate.hikari.driverClassName" value="com.mysql.jdbc.Driver"/>
+            <property name="hibernate.hikari.dataSource.user" value="application"/>
+            <property name="hibernate.hikari.dataSource.cachePrepStmts" value="true"/>
+            <property name="hibernate.hikari.dataSource.prepStmtCacheSize" value="250"/>
+            <property name="hiberante.hikari.dataSource.prepStmtCacheSqlLimit" value="2048"/>
+            <property name="hibernate.hikari.dataSource.useServerPrepStmts" value="true"/>
         </properties>
     </persistence-unit>
 </persistence>

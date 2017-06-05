@@ -1,17 +1,22 @@
 package edu.oc.courier;
 
+import edu.oc.courier.data.Client;
+import edu.oc.courier.data.Driver;
+import edu.oc.courier.data.Invoice;
+import java.util.List;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import java.io.IOException;
 
 public class Main extends Application {
-    public static final EntityManagerFactory ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory("courier-types");
 
     public static void main(String[] args) {
         launch(args);
@@ -24,22 +29,25 @@ public class Main extends Application {
         primaryStage.setTitle("Courier service");
         primaryStage.show();
 
-//        EntityManager man = ENTITY_MANAGER_FACTORY.createEntityManager();
-//        man.getTransaction().begin();
-//
-//        Invoice inv = man.find(Invoice.class, 1);
-//        System.out.println(inv);
-//        Client client = new Client();
-//        client.setName("MegaCorp");
-//        client.setAddress("Broadway");
-//
-//        Invoice invoice = new Invoice();
-//        invoice.setClient(client);
-//
-//        man.persist(invoice);
-//        Driver driver = new Driver();
-//        driver.setName("Tim");
-//        man.persist(driver);
-//        man.getTransaction().commit();
+        DB.m().getTransaction().begin();
+
+        final List<Invoice> inv = DB.m().createQuery("SELECT i FROM Invoice i WHERE i.id = :id", Invoice.class)
+            .setParameter("id", 1)
+            .getResultList();
+        System.out.println(inv);
+
+        final Client client = new Client();
+        client.setName("MegaCorp");
+        client.setAddress("Broadway");
+
+        final Invoice invoice = new Invoice();
+        invoice.setClient(client);
+        DB.m().persist(invoice);
+
+        final Driver driver = new Driver();
+        driver.setName("Tim");
+        DB.m().persist(driver);
+
+        DB.m().getTransaction().commit();
     }
 }

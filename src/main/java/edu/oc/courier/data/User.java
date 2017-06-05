@@ -5,6 +5,7 @@ import com.google.common.base.Preconditions;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -22,9 +23,10 @@ public final class User {
     private static final MessageDigest digest;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
+    private String username;
     private byte[] password;
     private String salt;
     private UserType type;

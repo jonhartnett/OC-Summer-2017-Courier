@@ -12,7 +12,7 @@ import java.util.Objects;
 public final class Ticket {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String description;
     private Instant date;
