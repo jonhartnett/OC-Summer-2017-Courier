@@ -74,7 +74,7 @@ public final class Ticket {
 
     public void setOrderTaker(User orderTaker) {
         if (orderTaker.getType() != UserType.ORDER_TAKER) {
-            throw new IllegalArgumentException("User must be orderTaker for Ticket#setOrderTaker");
+            throw new IllegalArgumentException("User must be of type ORDER_TAKER");
         }
         this.orderTaker = orderTaker;
     }
