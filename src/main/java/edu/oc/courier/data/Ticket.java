@@ -180,7 +180,7 @@ public final class Ticket {
             packageNumber == ticket.packageNumber &&
             estDeliveryTime == ticket.estDeliveryTime &&
             estDistance == ticket.estDistance &&
-            price == ticket.price &&
+            Objects.equals(price, ticket.price) &&
             Objects.equals(description, ticket.description) &&
             Objects.equals(date, ticket.date) &&
             Objects.equals(orderTaker, ticket.orderTaker) &&
