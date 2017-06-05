@@ -5,21 +5,62 @@ import com.google.common.base.MoreObjects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.io.Serializable;
+import com.google.common.base.Preconditions;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Random;
 
 @SuppressWarnings("unused")
 @Entity
-public final class User implements Serializable{
+public final class User {
 
     @Id
     @GeneratedValue
+    private static final String alpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_";
+    private static final Random rand = new Random();
+    private static final MessageDigest digest;
+
     private int id;
     private String name;
     private byte[] password;
     private String salt;
     private UserType type;
+
+    public boolean isPasswordValid(String password) {
+        Preconditions.checkNotNull(password, "password must not be null");
+
+        final byte[] bytes;
+        try {
+            bytes = digest.digest((salt + password).getBytes("UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+
+        return Arrays.equals(this.password, bytes);
+    }
+
+    public void setPassword(String password) {
+        Preconditions.checkNotNull(password, "password must not be null");
+        generateSalt();
+
+        try {
+            this.password = digest.digest((salt + password).getBytes("UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void generateSalt() {
+        if (salt != null) {
+            return;
+        }
+
+        salt = rand.ints(16, 0, alpha.length()).map(alpha::charAt)
+            .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString();
+    }
 
     public String getName() {
         return name;
@@ -91,5 +132,13 @@ public final class User implements Serializable{
             .add("salt", salt)
             .add("type", type)
             .toString();
+    }
+
+    static {
+        try {
+            digest = MessageDigest.getInstance("SHA-512");
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

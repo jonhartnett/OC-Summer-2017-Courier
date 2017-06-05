@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.HBox?>
+<HBox alignment="CENTER" spacing="10.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="edu.oc.courier.ui.UserController">
+    <children>
+        <TextField fx:id="username" disable="true" editable="false" promptText="Username">
+            <opaqueInsets>
+                <Insets/>
+            </opaqueInsets>
+        </TextField>
+        <CheckBox alignment="CENTER" mnemonicParsing="false" onAction="#setCourier" text="Courier"
+                  textAlignment="CENTER"/>
+        <CheckBox mnemonicParsing="false" onAction="#setOrderTaker" text="Order taker"/>
+        <CheckBox mnemonicParsing="false" onAction="#setOwner" text="Owner"/>
+        <Button mnemonicParsing="false" onAction="#removeUser" text="Remove"/>
+    </children>
+</HBox>

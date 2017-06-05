@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<GridPane alignment="CENTER" hgap="10.0" vgap="10.0" xmlns="http://javafx.com/javafx/8.0.112"
+          xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.oc.courier.ui.TicketController">
+    <padding>
+        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0"/>
+    </padding>
+    <children>
+        <Label alignment="CENTER_RIGHT" text="Client" textAlignment="RIGHT"/>
+        <ComboBox fx:id="pickupClient" prefWidth="150.0" GridPane.columnIndex="1"/>
+        <Label text="Delivery time" GridPane.rowIndex="1"/>
+        <DatePicker fx:id="requestedDeliveryTime" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        <Label text="Deliver to" GridPane.columnIndex="2"/>
+        <ComboBox fx:id="deliveryClient" prefWidth="150.0" GridPane.columnIndex="3"/>
+        <Button alignment="CENTER" mnemonicParsing="false" onAction="#generateDirections" text="Generate directions"
+                textAlignment="CENTER" GridPane.columnIndex="4"/>
+        <Label alignment="CENTER_RIGHT" text="Quote" textAlignment="RIGHT" GridPane.columnIndex="2"
+               GridPane.rowIndex="1">
+            <font>
+                <Font size="24.0"/>
+            </font>
+        </Label>
+        <TextField fx:id="quote" disable="true" editable="false" promptText="Value" GridPane.columnIndex="3"
+                   GridPane.columnSpan="2" GridPane.rowIndex="1">
+            <font>
+                <Font size="24.0"/>
+            </font>
+        </TextField>
+        <Label text="Ticket number" GridPane.columnIndex="2" GridPane.rowIndex="2">
+            <font>
+                <Font size="24.0"/>
+            </font>
+        </Label>
+        <TextField fx:id="ticketNumber" disable="true" editable="false" promptText="Number" GridPane.columnIndex="3"
+                   GridPane.columnSpan="2" GridPane.rowIndex="2">
+            <font>
+                <Font size="24.0"/>
+            </font>
+        </TextField>
+        <Label text="Courier" GridPane.rowIndex="3"/>
+        <ComboBox fx:id="courier" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+        <Label text="Leave time" GridPane.rowIndex="4">
+            <font>
+                <Font size="24.0"/>
+            </font>
+        </Label>
+        <TextField fx:id="leaveTime" disable="true" editable="false" promptText="Time" GridPane.columnIndex="1"
+                   GridPane.rowIndex="4">
+            <font>
+                <Font size="24.0"/>
+            </font>
+        </TextField>
+        <Label text="Est. delivery" GridPane.columnIndex="3" GridPane.rowIndex="4">
+            <font>
+                <Font size="24.0"/>
+            </font>
+        </Label>
+        <TextField fx:id="estDeliveryTime" disable="true" promptText="Time" GridPane.columnIndex="4"
+                   GridPane.rowIndex="4">
+            <font>
+                <Font size="24.0"/>
+            </font>
+        </TextField>
+        <Label text="Requested pick-up" GridPane.rowIndex="5"/>
+        <DatePicker fx:id="requestedPickupTime" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+        <Label text="Actual pick-up" GridPane.rowIndex="6"/>
+        <DatePicker fx:id="actualPickupTime" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+        <Label text="Actual delivery" GridPane.columnIndex="3" GridPane.rowIndex="5"/>
+        <DatePicker fx:id="actualDeliveryTime" GridPane.columnIndex="4" GridPane.rowIndex="5"/>
+    </children>
+</GridPane>
