@@ -1,27 +1,48 @@
 package edu.oc.courier.data;
 
 import com.google.common.base.MoreObjects;
+
+import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Objects;
 
 @SuppressWarnings("unused")
+@Entity
 public final class Ticket {
 
+    @Id
+    @GeneratedValue
     private int id;
     private String description;
     private Instant date;
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "order_taker_id")
     private User orderTaker;
+    @Column(name = "package_number")
     private int packageNumber;
-    private int estDeliveryTime;
-    private int estDistance;
-    private int quotePrice;
+    @Column(name = "est_delivery_time")
+    private Instant estDeliveryTime;
+    @Column(name = "est_distance")
+    private double estDistance;
+    private BigDecimal price;
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "driver_id")
     private Driver driver;
+    @Column(name = "assigned_leave_time")
     private Instant assignedLeaveTime;
+    @Column(name = "pickup_time")
     private Instant pickupTime;
+    @Column(name = "delivery_time")
     private Instant deliveryTime;
-    private int bonus;
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "pickup_client_id")
     private Client pickupClient;
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "delivery_client_id")
     private Client deliveryClient;
+    @Column(name="charge_to_destination")
+    private boolean chargeToDestination;
 
     public int getId() {
         return id;
@@ -66,28 +87,28 @@ public final class Ticket {
         this.packageNumber = packageNumber;
     }
 
-    public int getEstDeliveryTime() {
+    public Instant getEstDeliveryTime() {
         return estDeliveryTime;
     }
 
-    public void setEstDeliveryTime(int estDeliveryTime) {
+    public void setEstDeliveryTime(Instant estDeliveryTime) {
         this.estDeliveryTime = estDeliveryTime;
     }
 
-    public int getEstDistance() {
+    public double getEstDistance() {
         return estDistance;
     }
 
-    public void setEstDistance(int estDistance) {
+    public void setEstDistance(double estDistance) {
         this.estDistance = estDistance;
     }
 
-    public int getQuotePrice() {
-        return quotePrice;
+    public BigDecimal getPrice() {
+        return price;
     }
 
-    public void setQuotePrice(int quotePrice) {
-        this.quotePrice = quotePrice;
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 
     public Driver getDriver() {
@@ -122,14 +143,6 @@ public final class Ticket {
         this.deliveryTime = deliveryTime;
     }
 
-    public int getBonus() {
-        return bonus;
-    }
-
-    public void setBonus(int bonus) {
-        this.bonus = bonus;
-    }
-
     public Client getPickupClient() {
         return pickupClient;
     }
@@ -146,6 +159,14 @@ public final class Ticket {
         this.deliveryClient = deliveryClient;
     }
 
+    public boolean getChargeToDestination() {
+        return chargeToDestination;
+    }
+
+    public void setChargeToDestination(boolean chargeToDestination) {
+        this.chargeToDestination = chargeToDestination;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -159,8 +180,7 @@ public final class Ticket {
             packageNumber == ticket.packageNumber &&
             estDeliveryTime == ticket.estDeliveryTime &&
             estDistance == ticket.estDistance &&
-            quotePrice == ticket.quotePrice &&
-            bonus == ticket.bonus &&
+            price == ticket.price &&
             Objects.equals(description, ticket.description) &&
             Objects.equals(date, ticket.date) &&
             Objects.equals(orderTaker, ticket.orderTaker) &&
@@ -169,7 +189,8 @@ public final class Ticket {
             Objects.equals(pickupTime, ticket.pickupTime) &&
             Objects.equals(deliveryTime, ticket.deliveryTime) &&
             Objects.equals(pickupClient, ticket.pickupClient) &&
-            Objects.equals(deliveryClient, ticket.deliveryClient);
+            Objects.equals(deliveryClient, ticket.deliveryClient) &&
+            chargeToDestination == ticket.chargeToDestination;
     }
 
     @Override
@@ -182,14 +203,14 @@ public final class Ticket {
             packageNumber,
             estDeliveryTime,
             estDistance,
-            quotePrice,
+            price,
             driver,
             assignedLeaveTime,
             pickupTime,
             deliveryTime,
-            bonus,
             pickupClient,
-            deliveryClient
+            deliveryClient,
+            chargeToDestination
         );
     }
 
@@ -203,14 +224,14 @@ public final class Ticket {
             .add("packageNumber", packageNumber)
             .add("estDeliveryTime", estDeliveryTime)
             .add("estDistance", estDistance)
-            .add("quotePrice", quotePrice)
+            .add("price", price)
             .add("driver", driver)
             .add("assignedLeaveTime", assignedLeaveTime)
             .add("pickupTime", pickupTime)
             .add("deliveryTime", deliveryTime)
-            .add("bonus", bonus)
             .add("pickupClient", pickupClient)
             .add("deliveryClient", deliveryClient)
+            .add("chargeToDestination", chargeToDestination)
             .toString();
     }
 }

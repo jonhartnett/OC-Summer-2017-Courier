@@ -1,13 +1,20 @@
 package edu.oc.courier.data;
 
 import com.google.common.base.MoreObjects;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.util.Objects;
 
 @SuppressWarnings("unused")
+@Entity
 public final class Driver {
 
-    private String name;
+    @Id
+    @GeneratedValue
     private int id;
+    private String name;
 
     public String getName() {
         return name;

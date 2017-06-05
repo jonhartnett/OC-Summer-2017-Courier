@@ -1,14 +1,22 @@
 package edu.oc.courier.data;
 
 import com.google.common.base.MoreObjects;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
 
 @SuppressWarnings("unused")
-public final class User {
+@Entity
+public final class User implements Serializable{
 
-    private String name;
+    @Id
+    @GeneratedValue
     private int id;
+    private String name;
     private byte[] password;
     private String salt;
     private UserType type;

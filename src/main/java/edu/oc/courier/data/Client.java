@@ -1,14 +1,23 @@
 package edu.oc.courier.data;
 
 import com.google.common.base.MoreObjects;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.util.Objects;
 
 @SuppressWarnings("unused")
+@Entity
 public final class Client {
 
+    @Id
+    @GeneratedValue
     private int id;
     private String name;
     private String address;
+    @Column(name="delivery_instructions")
     private String deliveryInstructions;
 
     public int getId() {
