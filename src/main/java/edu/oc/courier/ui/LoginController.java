@@ -2,15 +2,14 @@ package edu.oc.courier.ui;
 
 import edu.oc.courier.DB;
 import edu.oc.courier.data.User;
-import java.util.List;
+import java.net.URL;
+import java.util.Optional;
+import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-
-import java.net.URL;
-import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
 
@@ -25,20 +24,15 @@ public class LoginController implements Initializable {
     @FXML
     private void login(ActionEvent actionEvent) {
         final String usernameText = this.username.getText();
-        final List<User> userList = DB.m().createQuery("SELECT u FROM User u WHERE u.username = :username", User.class)
-            .setParameter("username", usernameText)
-            .getResultList();
+        final Optional<User> userOpt = DB.single(DB.m().createQuery("SELECT u FROM User u WHERE u.username = :username", User.class)
+            .setParameter("username", usernameText));
 
-        if (userList.isEmpty()) {
+        if (!userOpt.isPresent()) {
             // No user
             throw new UnsupportedOperationException("TODO");
-        } else if (userList.size() != 1) {
-            // DB failure
-            throw new RuntimeException("username not unique: " + usernameText);
         }
 
-        final User user = userList.get(0);
-
+        final User user = userOpt.get();
         if (user.isPasswordValid(password.getText())) {
             // correct login
             throw new UnsupportedOperationException("TODO");

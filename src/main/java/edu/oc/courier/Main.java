@@ -10,9 +10,14 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Main extends Application {
+
+    private static final Logger log = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) {
         launch(args);
@@ -28,10 +33,9 @@ public class Main extends Application {
 
         DB.m().getTransaction().begin();
 
-        final List<Invoice> inv = DB.m().createQuery("SELECT i FROM Invoice i WHERE i.id = :id", Invoice.class)
-            .setParameter("id", 1)
-            .getResultList();
-        System.out.println(inv);
+        final Optional<Invoice> inv = DB.first(DB.m().createQuery("SELECT i FROM Invoice i WHERE i.id = :id", Invoice.class)
+            .setParameter("id", 1));
+        inv.ifPresent(i -> log.info(i.toString()));
 
         final Client client = new Client();
         client.setName("MegaCorp");

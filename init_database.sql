@@ -1,136 +1,120 @@
-drop table if exists Client;
-create table Client
+DROP TABLE IF EXISTS Invoice_Tickets;
+DROP TABLE IF EXISTS Ticket;
+DROP TABLE IF EXISTS Invoice;
+DROP TABLE IF EXISTS Driver;
+DROP TABLE IF EXISTS Client;
+DROP TABLE IF EXISTS User;
+
+CREATE TABLE User
 (
-	id int auto_increment
-		primary key,
-	name varchar(256) not null,
-	address varchar(256) not null,
-	delivery_instructions varchar(2048) null,
-	constraint Client_id_uindex
-	unique (id)
-)
-;
+  id       INT AUTO_INCREMENT
+    PRIMARY KEY,
+  username VARCHAR(128) NOT NULL,
+  name     VARCHAR(256) NOT NULL,
+  password BINARY(64)   NOT NULL,
+  salt     CHAR(16)     NOT NULL,
+  type     VARCHAR(32)  NOT NULL,
+  CONSTRAINT User_id_uindex
+  UNIQUE (id),
+  CONSTRAINT User_username_uindex
+  UNIQUE (username)
+);
 
-drop table if exists Driver;
-create table Driver
+CREATE TABLE Client
 (
-	id int auto_increment
-		primary key,
-	name varchar(256) not null,
-	constraint Driver_id_uindex
-	unique (id)
-)
-;
+  id                    INT AUTO_INCREMENT PRIMARY KEY,
+  name                  VARCHAR(256)  NOT NULL,
+  address               VARCHAR(256)  NOT NULL,
+  delivery_instructions VARCHAR(2048) NULL,
 
-drop table if exists Invoice;
-create table Invoice
+  CONSTRAINT Client_id_uindex UNIQUE (id)
+);
+
+CREATE TABLE Driver
 (
-	id int auto_increment
-		primary key,
-	description varchar(256) null,
-	client_id int not null,
-	constraint Invoice_id_uindex
-	unique (id),
-	constraint Invoice_Client_id_fk
-	foreign key (client_id) references `oc-summer-2017-courier`.Client (id)
-		on update cascade
-)
-;
+  id   INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(256) NOT NULL,
 
-create index Invoice_Client_id_fk
-	on Invoice (client_id)
-;
+  CONSTRAINT Driver_id_uindex UNIQUE (id)
+);
 
-drop table if exists Invoice_Tickets;
-create table Invoice_Tickets
+CREATE TABLE Invoice
 (
-	Invoice_id int not null,
-	Ticket_id int not null,
-	primary key (Ticket_id, Invoice_id),
-	constraint Invoice_Ticket_Invoice_id_fk
-	foreign key (Invoice_id) references `oc-summer-2017-courier`.Invoice (id)
-		on update cascade
-)
-;
+  id          INT AUTO_INCREMENT PRIMARY KEY,
+  description VARCHAR(256) NULL,
+  client_id   INT          NOT NULL,
+  CONSTRAINT Invoice_id_uindex
+  UNIQUE (id),
+  CONSTRAINT Invoice_Client_id_fk
+  FOREIGN KEY (client_id) REFERENCES `oc-summer-2017-courier`.Client (id)
+    ON UPDATE CASCADE
+);
 
-create index Invoice_Ticket_Invoice_id_fk
-	on Invoice_Tickets (Invoice_id)
-;
-
-drop table if exists Ticket;
-create table Ticket
+CREATE TABLE Ticket
 (
-	id int auto_increment
-		primary key,
-	description varchar(256) null,
-	date datetime null,
-	order_taker_id int null,
-	package_number int null,
-	est_delivery_time datetime null,
-	est_distance double null,
-	driver_id int null,
-	assigned_leave_time datetime null,
-	pickup_time datetime null,
-	delivery_time datetime null,
-	pickup_client_id int null,
-	delivery_client_id int null,
-	charge_to_destination tinyint(1) null,
-	price decimal null,
-	constraint Ticket_id_uindex
-	unique (id),
-	constraint Ticket_Driver_id_fk
-	foreign key (driver_id) references `oc-summer-2017-courier`.Driver (id)
-		on update cascade,
-	constraint Ticket_Pickup_client_id_fk
-	foreign key (pickup_client_id) references `oc-summer-2017-courier`.Client (id)
-		on update cascade,
-	constraint Ticket_Delivery_client_id_fk
-	foreign key (delivery_client_id) references `oc-summer-2017-courier`.Client (id)
-		on update cascade
-)
-;
+  id                    INT AUTO_INCREMENT
+    PRIMARY KEY,
+  description           VARCHAR(256) NULL,
+  date                  DATETIME     NULL,
+  order_taker_id        INT          NULL,
+  package_number        INT          NULL,
+  est_delivery_time     DATETIME     NULL,
+  est_distance          DOUBLE       NULL,
+  driver_id             INT          NULL,
+  assigned_leave_time   DATETIME     NULL,
+  pickup_time           DATETIME     NULL,
+  delivery_time         DATETIME     NULL,
+  pickup_client_id      INT          NULL,
+  delivery_client_id    INT          NULL,
+  charge_to_destination TINYINT(1)   NULL,
+  price                 DECIMAL      NULL,
+  CONSTRAINT Ticket_id_uindex
+  UNIQUE (id),
+  CONSTRAINT Ticket_Driver_id_fk
+  FOREIGN KEY (driver_id) REFERENCES `oc-summer-2017-courier`.Driver (id)
+    ON UPDATE CASCADE,
+  CONSTRAINT Ticket_Pickup_client_id_fk
+  FOREIGN KEY (pickup_client_id) REFERENCES `oc-summer-2017-courier`.Client (id)
+    ON UPDATE CASCADE,
+  CONSTRAINT Ticket_Delivery_client_id_fk
+  FOREIGN KEY (delivery_client_id) REFERENCES `oc-summer-2017-courier`.Client (id)
+    ON UPDATE CASCADE
+);
 
-create index Ticket_Delivery_client_id_fk
-	on Ticket (delivery_client_id)
-;
-
-create index Ticket_Driver_id_fk
-	on Ticket (driver_id)
-;
-
-create index Ticket_Order_taker_id_fk
-	on Ticket (order_taker_id)
-;
-
-create index Ticket_Pickup_client_id_fk
-	on Ticket (pickup_client_id)
-;
-
-alter table Invoice_Tickets
-	add constraint Invoice_Ticket_Ticket_id_fk
-foreign key (Ticket_id) references `oc-summer-2017-courier`.Ticket (id)
-	on update cascade
-;
-
-drop table if exists User;
-create table User
+CREATE TABLE Invoice_Tickets
 (
-	id int auto_increment
-		primary key,
-	username varchar(128) not null,
-	name varchar(256) not null,
-	password binary(64) not null,
-	salt char(16) not null,
-	type varchar(32) not null,
-	constraint User_id_uindex
-	unique (id),
-	constraint User_username_uindex
-	unique (username)
-)
-;
+  Invoice_id INT NOT NULL,
+  Ticket_id  INT NOT NULL,
+  PRIMARY KEY (Ticket_id, Invoice_id),
+  CONSTRAINT Invoice_Ticket_Invoice_id_fk
+  FOREIGN KEY (Invoice_id) REFERENCES `oc-summer-2017-courier`.Invoice (id)
+    ON UPDATE CASCADE
+);
 
-alter table Ticket
-	add constraint Ticket_Order_taker_id_fk
-foreign key (order_taker_id) references `oc-summer-2017-courier`.User (id)
-	on update cascade
-;
+CREATE INDEX Invoice_Client_id_fk
+  ON Invoice (client_id);
+
+CREATE INDEX Invoice_Ticket_Invoice_id_fk
+  ON Invoice_Tickets (Invoice_id);
+
+CREATE INDEX Ticket_Delivery_client_id_fk
+  ON Ticket (delivery_client_id);
+
+CREATE INDEX Ticket_Driver_id_fk
+  ON Ticket (driver_id);
+
+CREATE INDEX Ticket_Order_taker_id_fk
+  ON Ticket (order_taker_id);
+
+CREATE INDEX Ticket_Pickup_client_id_fk
+  ON Ticket (pickup_client_id);
+
+ALTER TABLE Invoice_Tickets
+  ADD CONSTRAINT Invoice_Ticket_Ticket_id_fk
+FOREIGN KEY (Ticket_id) REFERENCES `oc-summer-2017-courier`.Ticket (id)
+  ON UPDATE CASCADE;
+
+ALTER TABLE Ticket
+  ADD CONSTRAINT Ticket_Order_taker_id_fk
+FOREIGN KEY (order_taker_id) REFERENCES `oc-summer-2017-courier`.User (id)
+  ON UPDATE CASCADE;
