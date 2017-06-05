@@ -17,6 +17,10 @@ jar {
 
 repositories {
     mavenCentral()
+    maven {
+        name = "hippo"
+        url = "http://maven.onehippo.com/maven2/"
+    }
 }
 
 dependencies {
@@ -29,6 +33,7 @@ dependencies {
     compile "org.hibernate:hibernate-hikaricp:5.2.10.Final"
     compile "org.apache.logging.log4j:log4j-core:2.8.2"
     compile "org.apache.logging.log4j:log4j-slf4j-impl:2.8.2"
+    compile "javax.annotation:jsr305:1.0"
 }
 
 configurations.all {
