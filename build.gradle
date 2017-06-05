@@ -26,7 +26,9 @@ dependencies {
     compile "org.hibernate:hibernate-entitymanager:5.2.10.Final"
     compile "mysql:mysql-connector-java:5.1.42"
     compile "com.zaxxer:HikariCP:2.6.2"
-    compile "ch.qos.logback:logback-classic:0.9.24"
+    compile "org.hibernate:hibernate-hikaricp:5.2.10.Final"
+    compile "org.apache.logging.log4j:log4j-core:2.8.2"
+    compile "org.apache.logging.log4j:log4j-slf4j-impl:2.8.2"
 }
 
 configurations.all {

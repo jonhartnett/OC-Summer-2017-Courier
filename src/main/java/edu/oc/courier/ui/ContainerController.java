@@ -27,7 +27,7 @@ public class ContainerController implements Initializable {
     }
 
     private void loadScreen(String fxmlName) throws IOException {
-        Parent screen = FXMLLoader.load(getClass().getResource(String.format("/%s.fxml", fxmlName)));
+        Parent screen = FXMLLoader.load(getClass().getResource(String.format("/ui/%s.fxml", fxmlName)));
         container.setCenter(screen);
     }
 

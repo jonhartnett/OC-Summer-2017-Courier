@@ -10,13 +10,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
 import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Main extends Application {
+
+    private static final Logger log = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) {
         launch(args);
@@ -24,7 +24,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        final Parent root = FXMLLoader.load(getClass().getResource("/container.fxml"));
+        final Parent root = FXMLLoader.load(getClass().getResource("/ui/container.fxml"));
         primaryStage.setScene(new Scene(root, 500, 500));
         primaryStage.setTitle("Courier service");
         primaryStage.show();
@@ -34,7 +34,7 @@ public class Main extends Application {
         final List<Invoice> inv = DB.m().createQuery("SELECT i FROM Invoice i WHERE i.id = :id", Invoice.class)
             .setParameter("id", 1)
             .getResultList();
-        System.out.println(inv);
+        log.info(inv.toString());
 
         final Client client = new Client();
         client.setName("MegaCorp");
