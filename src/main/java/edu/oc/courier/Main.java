@@ -3,18 +3,14 @@ package edu.oc.courier;
 import edu.oc.courier.data.Client;
 import edu.oc.courier.data.Driver;
 import edu.oc.courier.data.Invoice;
-import java.util.List;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
 import java.io.IOException;
+import java.util.List;
 
 public class Main extends Application {
 
@@ -25,8 +21,9 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         final Parent root = FXMLLoader.load(getClass().getResource("/container.fxml"));
-        primaryStage.setScene(new Scene(root, 500, 500));
+        primaryStage.setScene(new Scene(root));
         primaryStage.setTitle("Courier service");
+        primaryStage.setMaximized(true);
         primaryStage.show();
 
         DB.m().getTransaction().begin();
