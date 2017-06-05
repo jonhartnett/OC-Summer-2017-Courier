@@ -1,8 +1,8 @@
 package edu.oc.courier;
 
-import java.util.*;
+import java.util.HashMap;
 import java.util.Map.Entry;
-import java.util.stream.*;
+import java.util.stream.Stream;
 
 public class Node<K> {
     private static class RoutingEntry<K>{

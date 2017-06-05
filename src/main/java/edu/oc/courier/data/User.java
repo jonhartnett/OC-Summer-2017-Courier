@@ -1,11 +1,11 @@
 package edu.oc.courier.data;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Preconditions;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import com.google.common.base.Preconditions;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -17,12 +17,12 @@ import java.util.Random;
 @Entity
 public final class User {
 
-    @Id
-    @GeneratedValue
     private static final String alpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_";
     private static final Random rand = new Random();
     private static final MessageDigest digest;
 
+    @Id
+    @GeneratedValue
     private int id;
     private String name;
     private byte[] password;
