@@ -10,10 +10,8 @@ import java.util.ResourceBundle;
 
 public class AccountController implements Initializable {
 
-    @FXML
-    private TextField username;
-    @FXML
-    private TextField password;
+    @FXML private TextField username;
+    @FXML private TextField password;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

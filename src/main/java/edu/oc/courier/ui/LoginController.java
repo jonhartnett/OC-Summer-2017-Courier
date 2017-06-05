@@ -11,10 +11,8 @@ import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
 
-    @FXML
-    private TextField username;
-    @FXML
-    private PasswordField password;
+    @FXML private TextField username;
+    @FXML private PasswordField password;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

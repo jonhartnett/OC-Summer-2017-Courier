@@ -12,28 +12,17 @@ import java.util.ResourceBundle;
 
 public class TicketController implements Initializable {
 
-    @FXML
-    private ComboBox pickupClient;
-    @FXML
-    private DatePicker requestedDeliveryTime;
-    @FXML
-    private ComboBox deliveryClient;
-    @FXML
-    private TextField quote;
-    @FXML
-    private TextField ticketNumber;
-    @FXML
-    private ComboBox courier;
-    @FXML
-    private TextField leaveTime;
-    @FXML
-    private TextField estDeliveryTime;
-    @FXML
-    private DatePicker requestedPickupTime;
-    @FXML
-    private DatePicker actualPickupTime;
-    @FXML
-    private DatePicker actualDeliveryTime;
+    @FXML private ComboBox pickupClient;
+    @FXML private DatePicker requestedDeliveryTime;
+    @FXML private ComboBox deliveryClient;
+    @FXML private TextField quote;
+    @FXML private TextField ticketNumber;
+    @FXML private ComboBox courier;
+    @FXML private TextField leaveTime;
+    @FXML private TextField estDeliveryTime;
+    @FXML private DatePicker requestedPickupTime;
+    @FXML private DatePicker actualPickupTime;
+    @FXML private DatePicker actualDeliveryTime;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

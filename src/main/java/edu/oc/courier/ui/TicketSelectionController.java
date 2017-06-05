@@ -11,14 +11,10 @@ import java.util.ResourceBundle;
 
 public class TicketSelectionController implements Initializable {
 
-    @FXML
-    private TextField ticketNumber;
-    @FXML
-    private TextField clientName;
-    @FXML
-    private TextField leaveTime;
-    @FXML
-    private TextField status;
+    @FXML private TextField ticketNumber;
+    @FXML private TextField clientName;
+    @FXML private TextField leaveTime;
+    @FXML private TextField status;
 
     private TicketSelectorController ticketSelector;
     private int ticketNum;

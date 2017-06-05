@@ -15,8 +15,7 @@ import java.util.ResourceBundle;
 
 public class ContainerController implements Initializable {
 
-    @FXML
-    private BorderPane container;
+    @FXML private BorderPane container;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

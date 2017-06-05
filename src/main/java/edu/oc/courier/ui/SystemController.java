@@ -10,14 +10,10 @@ import java.util.ResourceBundle;
 
 public class SystemController implements Initializable {
 
-    @FXML
-    private TextField avgSpeed;
-    @FXML
-    private TextField basePrice;
-    @FXML
-    private TextField pricePerMile;
-    @FXML
-    private TextField blocksPerMile;
+    @FXML private TextField avgSpeed;
+    @FXML private TextField basePrice;
+    @FXML private TextField pricePerMile;
+    @FXML private TextField blocksPerMile;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

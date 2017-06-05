@@ -10,8 +10,7 @@ import java.util.ResourceBundle;
 
 public class UserController implements Initializable {
 
-    @FXML
-    private TextField username;
+    @FXML private TextField username;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

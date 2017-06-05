@@ -10,8 +10,7 @@ import java.util.ResourceBundle;
 
 public class UsersController implements Initializable {
 
-    @FXML
-    private VBox userList;
+    @FXML private VBox userList;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
