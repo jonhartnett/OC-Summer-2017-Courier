@@ -7,7 +7,7 @@ import java.util.Objects;
 public final class DirectionStep {
 
     private String title;
-    private String decsription;
+    private String description;
     private Intersection intersection;
 
     public String getTitle() {
@@ -18,12 +18,12 @@ public final class DirectionStep {
         this.title = title;
     }
 
-    public String getDecsription() {
-        return decsription;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDecsription(String decsription) {
-        this.decsription = decsription;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Intersection getIntersection() {
@@ -44,20 +44,20 @@ public final class DirectionStep {
         }
         final DirectionStep that = (DirectionStep) o;
         return Objects.equals(title, that.title) &&
-            Objects.equals(decsription, that.decsription) &&
+            Objects.equals(description, that.description) &&
             Objects.equals(intersection, that.intersection);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, decsription, intersection);
+        return Objects.hash(title, description, intersection);
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
             .add("title", title)
-            .add("decsription", decsription)
+            .add("decsription", description)
             .add("intersection", intersection)
             .toString();
     }

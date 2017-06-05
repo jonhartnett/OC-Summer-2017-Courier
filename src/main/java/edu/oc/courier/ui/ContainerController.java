@@ -33,9 +33,10 @@ public class ContainerController implements Initializable {
 
     @FXML
     private void switchScreen(ActionEvent actionEvent) throws IOException {
-        MenuItem item = (MenuItem) actionEvent.getSource();
-        if (item.getId().equalsIgnoreCase("exit"))
+        final MenuItem item = (MenuItem) actionEvent.getSource();
+        if (item.getId().equalsIgnoreCase("exit")) {
             Platform.exit();
+        }
 
         loadScreen(item.getId());
     }
