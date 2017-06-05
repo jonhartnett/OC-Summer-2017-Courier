@@ -1,3 +1,4 @@
+drop table if exists Client;
 create table Client
 (
 	id int auto_increment
@@ -10,6 +11,7 @@ create table Client
 )
 ;
 
+drop table if exists Driver;
 create table Driver
 (
 	id int auto_increment
@@ -20,6 +22,7 @@ create table Driver
 )
 ;
 
+drop table if exists Invoice;
 create table Invoice
 (
 	id int auto_increment
@@ -38,6 +41,7 @@ create index Invoice_Client_id_fk
 	on Invoice (client_id)
 ;
 
+drop table if exists Invoice_Tickets;
 create table Invoice_Tickets
 (
 	Invoice_id int not null,
@@ -53,6 +57,7 @@ create index Invoice_Ticket_Invoice_id_fk
 	on Invoice_Tickets (Invoice_id)
 ;
 
+drop table if exists Ticket;
 create table Ticket
 (
 	id int auto_increment
@@ -107,6 +112,7 @@ foreign key (Ticket_id) references `oc-summer-2017-courier`.Ticket (id)
 	on update cascade
 ;
 
+drop table if exists User;
 create table User
 (
 	id int auto_increment
