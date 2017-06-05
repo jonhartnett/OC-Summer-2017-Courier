@@ -8,12 +8,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Optional;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Main extends Application {
 
@@ -25,7 +24,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        final Parent root = FXMLLoader.load(getClass().getResource("/container.fxml"));
+        final Parent root = FXMLLoader.load(getClass().getResource("/ui/container.fxml"));
         primaryStage.setScene(new Scene(root));
         primaryStage.setTitle("Courier service");
         primaryStage.setMaximized(true);
