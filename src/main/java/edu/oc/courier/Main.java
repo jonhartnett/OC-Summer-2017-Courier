@@ -40,7 +40,7 @@ public class Main extends Application {
     private void testDB() {
         DB.m().getTransaction().begin();
 
-        final Optional<Invoice> inv = DB.first(DB.m().createQuery("SELECT i FROM Invoice i WHERE i.id = :id", Invoice.class)
+        final Optional<Invoice> inv = DB.single(DB.m().createQuery("SELECT i FROM Invoice i WHERE i.id = :id", Invoice.class)
                 .setParameter("id", 1));
         inv.ifPresent(i -> log.info(i.toString()));
 
