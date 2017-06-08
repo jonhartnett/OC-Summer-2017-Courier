@@ -13,11 +13,16 @@ public class Node<K> {
             this.next = next;
             this.cost = cost;
         }
+
+        @Override
+        public String toString() {
+            return next + "," + cost;
+        }
     }
 
     public K name;
-    private HashMap<Node<K>, Double> links = new HashMap<>();
-    private HashMap<Node<K>, RoutingEntry<K>> routingTable = new HashMap<>();
+    public HashMap<Node<K>, Double> links = new HashMap<>();
+    public HashMap<Node<K>, RoutingEntry<K>> routingTable = new HashMap<>();
     private boolean dirty = false;
 
     public Node(K name){
@@ -57,6 +62,7 @@ public class Node<K> {
     }
 
     private void update(Node<K> dest, Node<K> next, double cost){
+        System.out.println(this + " " + dest + " " + next + " " + cost + " " + routingTable.get(dest));
         if(this.dirty){
             this.dirty = false;
             this.dirtyUpdate(dest);
@@ -67,7 +73,7 @@ public class Node<K> {
             if(cost < entry.cost){
                 entry.next = next;
                 entry.cost = cost;
-                dirty = true;
+                this.propagate(dest, entry.cost);
             }else
             if(entry.next == next && cost > entry.cost){
                 this.purge(dest, next);
@@ -122,5 +128,10 @@ public class Node<K> {
             return null;
         else
             return entry;
+    }
+
+    @Override
+    public String toString() {
+        return this.name.toString();
     }
 }

@@ -17,6 +17,7 @@ import java.util.Optional;
 public class Main extends Application {
 
     private static final Logger log = LoggerFactory.getLogger(Main.class);
+    private final boolean testing = true;
 
     public static void main(String[] args) {
         launch(args);
@@ -24,16 +25,23 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        final Parent root = FXMLLoader.load(getClass().getResource("/ui/container.fxml"));
-        primaryStage.setScene(new Scene(root));
-        primaryStage.setTitle("Courier service");
-        primaryStage.setMaximized(true);
-        primaryStage.show();
+        if (testing) {
+            testDB();
+            testMap();
+        } else {
+            final Parent root = FXMLLoader.load(getClass().getResource("/ui/container.fxml"));
+            primaryStage.setScene(new Scene(root));
+            primaryStage.setTitle("Courier service");
+            primaryStage.setMaximized(true);
+            primaryStage.show();
+        }
+    }
 
+    private void testDB() {
         DB.m().getTransaction().begin();
 
         final Optional<Invoice> inv = DB.first(DB.m().createQuery("SELECT i FROM Invoice i WHERE i.id = :id", Invoice.class)
-            .setParameter("id", 1));
+                .setParameter("id", 1));
         inv.ifPresent(i -> log.info(i.toString()));
 
         final Client client = new Client();
@@ -49,5 +57,29 @@ public class Main extends Application {
         DB.m().persist(driver);
 
         DB.m().getTransaction().commit();
+    }
+
+    private void testMap() {
+        Map<Integer> map = new Map<>();
+        map.add(1);
+        map.add(2);
+        map.add(3);
+        map.add(4);
+        map.add(5);
+        map.setLink(1, 3, 1);
+        map.setLink(1, 4, 2);
+        map.setOneWayLink(1, 2, 1);
+        map.setOneWayLink(2, 4, 0);
+        map.setOneWayLink(4, 5, 1);
+        System.out.println(map.nodes.get(1).links);
+        System.out.println(map.nodes.get(1).routingTable);
+        Route<Integer> route1 = map.getRoute(1, 4);
+        Route<Integer> route2 = map.getRoute(2, 3);
+        Route<Integer> route3 = map.getRoute(4, 1);
+        Route<Integer> route4 = map.getRoute(5, 1);
+        System.out.println(route1);
+        System.out.println(route2);
+        System.out.println(route3);
+        System.out.println(route4);
     }
 }
