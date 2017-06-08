@@ -8,7 +8,7 @@ public class Map<K> {
     public void add(K key){
         if(nodes.containsKey(key))
             throw new RuntimeException("Name " + key + " already in use.");
-        nodes.put(key, new Node<K>(key));
+        nodes.put(key, new Node<>(key));
     }
 
     public void setLink(K key, K key2, double cost){

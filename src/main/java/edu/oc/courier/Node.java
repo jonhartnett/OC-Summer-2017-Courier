@@ -22,14 +22,14 @@ public class Node<K> {
 
     public Node(K name){
         this.name = name;
-        routingTable.put(this, new RoutingEntry<K>(this, 0));
+        routingTable.put(this, new RoutingEntry<>(this, 0));
     }
 
     public Route<K> getRoute(Node<K> dest){
         try{
             Stream.Builder<K> builder = Stream.builder();
             double cost = this.constructRoute(dest, builder);
-            return new Route<K>(builder.build(), cost);
+            return new Route<>(builder.build(), cost);
         }catch(RuntimeException ex){
             return null;
         }
@@ -75,7 +75,7 @@ public class Node<K> {
             }
         }else
         if(!Double.isInfinite(cost)){
-            entry = new RoutingEntry<K>(next, cost);
+            entry = new RoutingEntry<>(next, cost);
             routingTable.put(dest, entry);
             this.propagate(dest, entry.cost);
         }
@@ -106,7 +106,7 @@ public class Node<K> {
         }
     }
     private RoutingEntry<K> getBestEntry(Node<K> dest){
-        RoutingEntry<K> entry = new RoutingEntry<K>(null, Double.POSITIVE_INFINITY);
+        RoutingEntry<K> entry = new RoutingEntry<>(null, Double.POSITIVE_INFINITY);
         for(Entry<Node<K>, Double> link : links.entrySet()){
             Node<K> node = link.getKey();
             double linkCost = link.getValue();
