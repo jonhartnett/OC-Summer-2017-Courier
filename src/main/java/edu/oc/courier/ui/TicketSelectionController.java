@@ -1,13 +1,12 @@
 package edu.oc.courier.ui;
 
+import java.net.URL;
+import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TouchEvent;
-
-import java.net.URL;
-import java.util.ResourceBundle;
 
 public class TicketSelectionController implements Initializable {
 
