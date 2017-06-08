@@ -79,5 +79,30 @@ public class Main extends Application {
         System.out.println(route2);
         System.out.println(route3);
         System.out.println(route4);
+        System.out.println("----------");
+
+        map.removeLink(1, 4);
+        map.setOneWayLink(3, 4, 5);
+        route1 = map.getRoute(1, 4);
+        route2 = map.getRoute(2, 3);
+        route3 = map.getRoute(4, 1);
+        route4 = map.getRoute(5, 1);
+        System.out.println(route1);
+        System.out.println(route2);
+        System.out.println(route3);
+        System.out.println(route4);
+        System.out.println("----------");
+
+        map.removeOneWayLink(3, 4);
+        map.setOneWayLink(4, 3, 5);
+        route1 = map.getRoute(1, 4);
+        route2 = map.getRoute(2, 3);
+        route3 = map.getRoute(4, 1);
+        route4 = map.getRoute(5, 1);
+        System.out.println(route1);
+        System.out.println(route2);
+        System.out.println(route3);
+        System.out.println(route4);
+        System.out.println("----------");
     }
 }

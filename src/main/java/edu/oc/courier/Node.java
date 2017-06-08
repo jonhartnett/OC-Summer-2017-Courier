@@ -97,7 +97,7 @@ public class Node<K> {
     }
     private void purge(Node<K> dest, Node<K> next){
         RoutingEntry<K> entry = routingTable.get(dest);
-        if(entry.next == next){
+        if (entry != null && entry.next == next) {
             this.dirty = true;
             routingTable.remove(dest);
             for(Entry<Node<K>, Double> link : inverseLinks.entrySet())
