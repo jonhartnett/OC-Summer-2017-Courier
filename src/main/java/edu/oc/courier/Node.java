@@ -1,7 +1,9 @@
 package edu.oc.courier;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.stream.Stream;
 
 public class Node<K> {
@@ -33,30 +35,38 @@ public class Node<K> {
     public Route<K> getRoute(Node<K> dest){
         try{
             Stream.Builder<K> builder = Stream.builder();
-            double cost = this.constructRoute(dest, builder);
+            double cost = this.constructRoute(this, dest, builder);
             return new Route<>(builder.build(), cost);
         }catch(RuntimeException ex){
             return null;
         }
     }
 
-    private double constructRoute(Node<K> dest, Stream.Builder<K> builder){
+    private double constructRoute(Node<K> prev, Node<K> dest, Stream.Builder<K> builder){
         builder.add(this.name);
         if(dest == this)
-            return 0;
+            return inverseLinks.getOrDefault(prev, 0.0);
         RoutingEntry<K> entry = routingTable.get(dest);
         if(entry == null)
             throw new RuntimeException("No valid route!");
         Node<K> next = entry.next;
-        next.constructRoute(dest, builder);
-        return entry.cost;
+        return inverseLinks.getOrDefault(prev, 0.0) + next.constructRoute(this, dest, builder);
     }
 
     public void link(Node<K> next, double cost){
-        next.inverseLinks.put(this, cost);
+        if(!Double.isInfinite(cost)){
+            next.inverseLinks.put(this, cost);
+        }else{
+            Double prev = next.inverseLinks.remove(this);
+            if(prev == null)
+                return;
+        }
 
-        for(Entry<Node<K>, RoutingEntry<K>> entry : next.routingTable.entrySet())
-            this.update(entry.getKey(), next, entry.getValue().cost + cost);
+        Set<Node<K>> nodes = new HashSet<>(next.routingTable.keySet());
+        for(Node<K> node : nodes){
+            RoutingEntry<K> entry = next.routingTable.get(node);
+            this.update(node, next, entry.cost + cost);
+        }
     }
     public void unlink(Node<K> next){
         this.link(next, Double.POSITIVE_INFINITY);

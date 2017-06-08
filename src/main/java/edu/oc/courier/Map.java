@@ -18,16 +18,12 @@ public class Map<K> {
         n2.link(n1, cost);
     }
 
-    public void removeLink(K key, K key2){
-        this.setLink(key, key2, Double.POSITIVE_INFINITY);
-    }
-
     public void setOneWayLink(K src, K dest, double cost){
         nodes.get(src).link(nodes.get(dest), cost);
     }
 
-    public void removeOneWayLink(K src, K dest){
-        this.setOneWayLink(src, dest, Double.POSITIVE_INFINITY);
+    public void removeLink(K key, K key2){
+        this.setLink(key, key2, Double.POSITIVE_INFINITY);
     }
 
     public Route<K> getRoute(K start, K end){

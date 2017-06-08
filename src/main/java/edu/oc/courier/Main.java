@@ -93,7 +93,7 @@ public class Main extends Application {
         System.out.println(route4);
         System.out.println("----------");
 
-        map.removeOneWayLink(3, 4);
+        map.removeLink(3, 4);
         map.setOneWayLink(4, 3, 5);
         route1 = map.getRoute(1, 4);
         route2 = map.getRoute(2, 3);
