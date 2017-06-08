@@ -71,8 +71,6 @@ public class Main extends Application {
         map.setOneWayLink(1, 2, 1);
         map.setOneWayLink(2, 4, 0);
         map.setOneWayLink(4, 5, 1);
-        System.out.println(map.nodes.get(1).links);
-        System.out.println(map.nodes.get(1).routingTable);
         Route<Integer> route1 = map.getRoute(1, 4);
         Route<Integer> route2 = map.getRoute(2, 3);
         Route<Integer> route3 = map.getRoute(4, 1);

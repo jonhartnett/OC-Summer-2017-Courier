@@ -21,7 +21,7 @@ public class Node<K> {
     }
 
     public K name;
-    public HashMap<Node<K>, Double> links = new HashMap<>();
+    public HashMap<Node<K>, Double> inverseLinks = new HashMap<>();
     public HashMap<Node<K>, RoutingEntry<K>> routingTable = new HashMap<>();
     private boolean dirty = false;
 
@@ -48,11 +48,12 @@ public class Node<K> {
         if(entry == null)
             throw new RuntimeException("No valid route!");
         Node<K> next = entry.next;
-        return links.get(next) + next.constructRoute(dest, builder);
+        next.constructRoute(dest, builder);
+        return entry.cost;
     }
 
     public void link(Node<K> next, double cost){
-        links.put(next, cost);
+        next.inverseLinks.put(this, cost);
 
         for(Entry<Node<K>, RoutingEntry<K>> entry : next.routingTable.entrySet())
             this.update(entry.getKey(), next, entry.getValue().cost + cost);
@@ -62,7 +63,6 @@ public class Node<K> {
     }
 
     private void update(Node<K> dest, Node<K> next, double cost){
-        System.out.println(this + " " + dest + " " + next + " " + cost + " " + routingTable.get(dest));
         if(this.dirty){
             this.dirty = false;
             this.dirtyUpdate(dest);
@@ -100,12 +100,12 @@ public class Node<K> {
         if(entry.next == next){
             this.dirty = true;
             routingTable.remove(dest);
-            for(Entry<Node<K>, Double> link : links.entrySet())
+            for(Entry<Node<K>, Double> link : inverseLinks.entrySet())
                 link.getKey().purge(dest, this);
         }
     }
     private void propagate(Node<K> dest, double cost){
-        for(Entry<Node<K>, Double> link : links.entrySet()){
+        for(Entry<Node<K>, Double> link : inverseLinks.entrySet()){
             Node<K> node = link.getKey();
             double linkCost = link.getValue();
             node.update(dest, this, cost + linkCost);
@@ -113,7 +113,7 @@ public class Node<K> {
     }
     private RoutingEntry<K> getBestEntry(Node<K> dest){
         RoutingEntry<K> entry = new RoutingEntry<>(null, Double.POSITIVE_INFINITY);
-        for(Entry<Node<K>, Double> link : links.entrySet()){
+        for(Entry<Node<K>, Double> link : inverseLinks.entrySet()){
             Node<K> node = link.getKey();
             double linkCost = link.getValue();
             RoutingEntry<K> linkEntry = node.routingTable.get(dest);
