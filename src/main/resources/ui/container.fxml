@@ -6,7 +6,7 @@
 <BorderPane fx:id="container" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="edu.oc.courier.ui.ContainerController">
     <top>
-        <MenuBar BorderPane.alignment="CENTER">
+        <MenuBar fx:id="menu" disable="true" BorderPane.alignment="CENTER">
             <menus>
                 <Menu mnemonicParsing="false" text="Home">
                     <items>
