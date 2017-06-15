@@ -17,7 +17,7 @@ import java.util.Optional;
 public class Main extends Application {
 
     private static final Logger log = LoggerFactory.getLogger(Main.class);
-    private final boolean testing = true;
+    private final boolean testing = false;
 
     public static void main(String[] args) {
         launch(args);
@@ -103,6 +103,5 @@ public class Main extends Application {
         System.out.println(route2);
         System.out.println(route3);
         System.out.println(route4);
-        System.out.println("----------");
     }
 }
