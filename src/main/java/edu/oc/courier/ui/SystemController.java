@@ -13,6 +13,9 @@ import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import static javafx.scene.paint.Color.GREEN;
+import static javafx.scene.paint.Color.RED;
+
 public class SystemController implements Initializable {
 
     @FXML private TextField avgSpeed;
@@ -25,11 +28,16 @@ public class SystemController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Optional<SystemInfo> systemInfo = DB.first(DB.m().createQuery("SELECT s FROM SystemInfo s", SystemInfo.class));
-        if(!systemInfo.isPresent())
+        Optional<SystemInfo> system = DB.first(DB.m().createQuery("SELECT s FROM SystemInfo s", SystemInfo.class));
+        if(!system.isPresent())
             throw new RuntimeException("No system info found");
         else
-            this.systemInfo = systemInfo.get();
+            this.systemInfo = system.get();
+
+        avgSpeed.setText(String.valueOf(systemInfo.getSpeed()));
+        basePrice.setText(systemInfo.getBase().toPlainString());
+        price.setText(systemInfo.getPrice().toPlainString());
+        bonus.setText(systemInfo.getBonus().toPlainString());
     }
 
     @FXML
@@ -40,8 +48,13 @@ public class SystemController implements Initializable {
             systemInfo.setPrice(new BigDecimal(price.getText()));
             systemInfo.setBonus(new BigDecimal(bonus.getText()));
             DB.save(systemInfo);
+            output.setTextFill(GREEN);
+            output.setText("Updated successfully");
+
+            ContainerController.fade(3, output);
         } catch (Exception e) {
-            output.setText(e.getLocalizedMessage());
+            output.setTextFill(RED);
+            output.setText(e.getClass() + " " + e.getLocalizedMessage());
         }
     }
 }

@@ -15,7 +15,7 @@
         <TextField fx:id="password" promptText="Password" GridPane.rowIndex="1"/>
         <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#updateUser" text="Update"
                 textAlignment="CENTER" GridPane.rowIndex="2"/>
-        <Label fx:id="output" textFill="LIME" GridPane.rowIndex="3"/>
+        <Label fx:id="output" textFill="GREEN" GridPane.rowIndex="3"/>
     </children>
     <columnConstraints>
         <ColumnConstraints/>

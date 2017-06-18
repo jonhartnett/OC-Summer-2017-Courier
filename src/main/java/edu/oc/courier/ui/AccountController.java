@@ -2,13 +2,11 @@ package edu.oc.courier.ui;
 
 import edu.oc.courier.DB;
 import edu.oc.courier.data.User;
-import javafx.animation.PauseTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -38,8 +36,6 @@ public class AccountController implements Initializable {
         DB.save(user);
         output.setText("Updated successfully");
 
-        PauseTransition transition = new PauseTransition(Duration.seconds(3));
-        transition.setOnFinished(event -> output.setText(""));
-        transition.play();
+        ContainerController.fade(3, output);
     }
 }

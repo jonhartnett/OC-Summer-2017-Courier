@@ -1,14 +1,17 @@
 package edu.oc.courier.ui;
 
+import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
@@ -44,5 +47,13 @@ public class ContainerController implements Initializable {
         }
 
         loadScreen(item.getId());
+    }
+
+    public static void fade(int amount, Node node) {
+        FadeTransition transition = new FadeTransition(Duration.seconds(amount));
+        transition.setNode(node);
+        transition.setFromValue(1);
+        transition.setToValue(0);
+        transition.play();
     }
 }
