@@ -1,8 +1,6 @@
 package edu.oc.courier;
 
-import edu.oc.courier.data.Client;
-import edu.oc.courier.data.Driver;
-import edu.oc.courier.data.Invoice;
+import edu.oc.courier.data.*;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Optional;
 
 public class Main extends Application {
@@ -29,12 +28,28 @@ public class Main extends Application {
             testDB();
             testMap();
         } else {
+            setSystem();
+            setAdmin();
             final Parent root = FXMLLoader.load(getClass().getResource("/ui/container.fxml"));
             primaryStage.setScene(new Scene(root));
             primaryStage.setTitle("Courier service");
             primaryStage.setMaximized(true);
             primaryStage.show();
         }
+    }
+
+    private void setSystem() {
+        SystemInfo s = DB.first(DB.m().createQuery("SELECT s FROM SystemInfo s", SystemInfo.class))
+                .orElse(new SystemInfo(5.0f, new BigDecimal(10), new BigDecimal(2), new BigDecimal(5)));
+
+        DB.save(s);
+    }
+
+    private void setAdmin() {
+        User admin = DB.getUser("admin")
+                .orElse(new User("Admin", "Admin", "root", UserType.ADMIN));
+
+        DB.save(admin);
     }
 
     private void testDB() {

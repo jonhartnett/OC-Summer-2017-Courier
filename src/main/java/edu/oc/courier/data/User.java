@@ -31,6 +31,15 @@ public final class User {
     private String salt;
     private UserType type;
 
+    public User(){}
+
+    public User(String name, String username, String password, UserType type) {
+        setName(name);
+        setUsername(username);
+        setPassword(password);
+        setType(type);
+    }
+
     public boolean isPasswordValid(String password) {
         Preconditions.checkNotNull(password, "password must not be null");
 
