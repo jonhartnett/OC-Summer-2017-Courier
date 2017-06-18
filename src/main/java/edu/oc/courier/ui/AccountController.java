@@ -35,9 +35,7 @@ public class AccountController implements Initializable {
         if (password.length() > 0)
             user.setPassword(password);
 
-        DB.m().getTransaction().begin();
-        DB.m().persist(user);
-        DB.m().getTransaction().commit();
+        DB.save(user);
         output.setText("Updated successfully");
 
         PauseTransition transition = new PauseTransition(Duration.seconds(3));

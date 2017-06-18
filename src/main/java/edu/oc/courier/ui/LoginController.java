@@ -17,12 +17,10 @@ import java.util.ResourceBundle;
 public class LoginController implements Initializable {
 
     public static User currentUser;
-    public Label error;
 
-    @FXML
-    private TextField username;
-    @FXML
-    private PasswordField password;
+    @FXML private TextField username;
+    @FXML private PasswordField password;
+    @FXML private Label output;
 
     private ContainerController container;
 
@@ -38,12 +36,11 @@ public class LoginController implements Initializable {
     @FXML
     private void login(ActionEvent actionEvent) throws IOException {
         final String usernameText = this.username.getText();
-        final Optional<User> userOpt = DB.single(DB.m().createQuery("SELECT u FROM User u WHERE u.username = :username", User.class)
-                .setParameter("username", usernameText));
+        final Optional<User> userOpt = DB.getUser(usernameText);
 
         if (!userOpt.isPresent()) {
             reset();
-            error.setText("User not found");
+            output.setText("User not found");
         } else {
             final User user = userOpt.get();
             if (user.isPasswordValid(password.getText())) {
@@ -52,7 +49,7 @@ public class LoginController implements Initializable {
                 container.loadScreen("ticket");
             } else {
                 reset();
-                error.setText("Invalid login. Please check the password.");
+                output.setText("Invalid login. Please check the password.");
             }
         }
     }
