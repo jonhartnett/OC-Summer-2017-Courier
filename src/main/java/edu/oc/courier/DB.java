@@ -1,11 +1,13 @@
 package edu.oc.courier;
 
-import java.util.List;
-import java.util.Optional;
+import edu.oc.courier.data.User;
+
 import javax.annotation.Nonnull;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
+import java.util.List;
+import java.util.Optional;
 
 public final class DB {
 
@@ -39,5 +41,24 @@ public final class DB {
         }
 
         return Optional.of(resultList.get(0));
+    }
+
+    public static void save(Object thing) {
+        entityManager.getTransaction().begin();
+        entityManager.persist(thing);
+        entityManager.getTransaction().commit();
+    }
+
+    public static void saveMulti(Object... things) {
+        entityManager.getTransaction().begin();
+        for(Object thing: things) {
+            entityManager.persist(thing);
+        }
+        entityManager.getTransaction().commit();
+    }
+
+    public static Optional<User> getUser(String username) {
+        return DB.single(DB.m().createQuery("SELECT u FROM User u WHERE u.username = :username", User.class)
+                .setParameter("username", username));
     }
 }
