@@ -12,6 +12,7 @@
         <class>edu.oc.courier.data.Invoice</class>
         <class>edu.oc.courier.data.Ticket</class>
         <class>edu.oc.courier.data.User</class>
+        <class>edu.oc.courier.data.SystemInfo</class>
 
         <properties>
             <property name="hibernate.connection.provider_class" value="org.hibernate.hikaricp.internal.HikariCPConnectionProvider"/>
