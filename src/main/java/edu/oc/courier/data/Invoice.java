@@ -1,18 +1,11 @@
 package edu.oc.courier.data;
 
 import com.google.common.base.MoreObjects;
+
+import javax.persistence.*;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 
 @SuppressWarnings("unused")
 @Entity
@@ -23,14 +16,8 @@ public final class Invoice {
     private int id;
     private String description;
     @OneToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(
-            name="Invoice_Tickets",
-            joinColumns = @JoinColumn(name="invoice_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name="ticket_id", referencedColumnName = "id")
-    )
     private List<Ticket> tickets;
     @OneToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "client_id")
     private Client client;
 
     public void generate(OutputStream outputStream) {

@@ -1,17 +1,12 @@
 package edu.oc.courier.data;
 
 import com.google.common.base.MoreObjects;
+import edu.oc.courier.ui.LoginController;
+
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Objects;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 
 @SuppressWarnings("unused")
 @Entity
@@ -23,32 +18,28 @@ public final class Ticket {
     private String description;
     private Instant date;
     @OneToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "order_taker_id")
     private User orderTaker;
-    @Column(name = "package_number")
     private int packageNumber;
-    @Column(name = "est_delivery_time")
     private Instant estDeliveryTime;
-    @Column(name = "est_distance")
     private double estDistance;
     private BigDecimal price;
     @OneToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "driver_id")
     private Driver driver;
-    @Column(name = "assigned_leave_time")
     private Instant assignedLeaveTime;
-    @Column(name = "pickup_time")
     private Instant pickupTime;
-    @Column(name = "delivery_time")
     private Instant deliveryTime;
     @OneToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "pickup_client_id")
     private Client pickupClient;
     @OneToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "delivery_client_id")
     private Client deliveryClient;
-    @Column(name="charge_to_destination")
     private boolean chargeToDestination;
+
+    public Ticket() {
+        this.id = 0;
+        this.description = "";
+        this.date = Instant.now();
+        this.orderTaker = LoginController.currentUser;
+    }
 
     public int getId() {
         return id;

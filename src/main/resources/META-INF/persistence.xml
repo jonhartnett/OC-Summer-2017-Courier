@@ -13,6 +13,8 @@
         <class>edu.oc.courier.data.Ticket</class>
         <class>edu.oc.courier.data.User</class>
         <class>edu.oc.courier.data.SystemInfo</class>
+        <class>edu.oc.courier.data.Node</class>
+        <class>edu.oc.courier.data.RoadMap</class>
 
         <properties>
             <property name="hibernate.connection.provider_class" value="org.hibernate.hikaricp.internal.HikariCPConnectionProvider"/>
@@ -23,6 +25,7 @@
             <property name="hibernate.hikari.dataSource.prepStmtCacheSize" value="250"/>
             <property name="hiberante.hikari.dataSource.prepStmtCacheSqlLimit" value="2048"/>
             <property name="hibernate.hikari.dataSource.useServerPrepStmts" value="true"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
         </properties>
     </persistence-unit>
 </persistence>

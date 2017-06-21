@@ -16,7 +16,7 @@ import java.util.Optional;
 public class Main extends Application {
 
     private static final Logger log = LoggerFactory.getLogger(Main.class);
-    private final boolean testing = false;
+    private final boolean testing = true;
 
     public static void main(String[] args) {
         launch(args);
@@ -26,7 +26,6 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws IOException {
         if (testing) {
             testDB();
-            testMap();
         } else {
             setSystem();
             setAdmin();
@@ -53,70 +52,91 @@ public class Main extends Application {
     }
 
     private void testDB() {
-        DB.m().getTransaction().begin();
+        try(DBTransaction trans = DB.getTransation()){
+            final Optional<Invoice> inv = trans.getAny(Invoice.class);
+            inv.ifPresent(i -> log.info(i.toString()));
 
-        final Optional<Invoice> inv = DB.single(DB.m().createQuery("SELECT i FROM Invoice i WHERE i.id = :id", Invoice.class)
-                .setParameter("id", 1));
-        inv.ifPresent(i -> log.info(i.toString()));
+            final Client client = new Client();
+            client.setName("MegaCorp");
+            client.setAddress("Broadway");
 
-        final Client client = new Client();
-        client.setName("MegaCorp");
-        client.setAddress("Broadway");
+            final Invoice invoice = new Invoice();
+            invoice.setClient(client);
+            trans.save(invoice);
 
-        final Invoice invoice = new Invoice();
-        invoice.setClient(client);
-        DB.m().persist(invoice);
+            final Driver driver = new Driver();
+            driver.setName("Tim");
+            trans.save(driver);
 
-        final Driver driver = new Driver();
-        driver.setName("Tim");
-        DB.m().persist(driver);
+            final RoadMap roadMap = trans.getMap();
+            roadMap.clear();
+            roadMap.add("1");
+            roadMap.add("2");
+            roadMap.add("3");
+            roadMap.add("4");
+            roadMap.add("5");
+            roadMap.setLink("1", "3", 1);
+            roadMap.setLink("1", "4", 2);
+            roadMap.setOneWayLink("1", "2", 1);
+            roadMap.setOneWayLink("2", "4", 0);
+            roadMap.setOneWayLink("4", "5", 1);
 
-        DB.m().getTransaction().commit();
-    }
+            trans.commit();
+        }
 
-    private void testMap() {
-        Map<Integer> map = new Map<>();
-        map.add(1);
-        map.add(2);
-        map.add(3);
-        map.add(4);
-        map.add(5);
-        map.setLink(1, 3, 1);
-        map.setLink(1, 4, 2);
-        map.setOneWayLink(1, 2, 1);
-        map.setOneWayLink(2, 4, 0);
-        map.setOneWayLink(4, 5, 1);
-        Route<Integer> route1 = map.getRoute(1, 4);
-        Route<Integer> route2 = map.getRoute(2, 3);
-        Route<Integer> route3 = map.getRoute(4, 1);
-        Route<Integer> route4 = map.getRoute(5, 1);
-        System.out.println(route1);
-        System.out.println(route2);
-        System.out.println(route3);
-        System.out.println(route4);
-        System.out.println("----------");
+        try(DBTransaction trans = DB.getTransation()){
+            final RoadMap roadMap = trans.getMap();
+            Route route1 = roadMap.getRoute("1", "4");
+            Route route2 = roadMap.getRoute("2", "3");
+            Route route3 = roadMap.getRoute("4", "1");
+            Route route4 = roadMap.getRoute("5", "1");
+            System.out.println(route1);
+            System.out.println(route2);
+            System.out.println(route3);
+            System.out.println(route4);
+            System.out.println("----------");
 
-        map.removeLink(1, 4);
-        map.setOneWayLink(3, 4, 5);
-        route1 = map.getRoute(1, 4);
-        route2 = map.getRoute(2, 3);
-        route3 = map.getRoute(4, 1);
-        route4 = map.getRoute(5, 1);
-        System.out.println(route1);
-        System.out.println(route2);
-        System.out.println(route3);
-        System.out.println(route4);
-        System.out.println("----------");
+            trans.commit();
+        }
 
-        map.removeLink(3, 4);
-        map.setOneWayLink(4, 3, 5);
-        route1 = map.getRoute(1, 4);
-        route2 = map.getRoute(2, 3);
-        route3 = map.getRoute(4, 1);
-        route4 = map.getRoute(5, 1);
-        System.out.println(route1);
-        System.out.println(route2);
-        System.out.println(route3);
-        System.out.println(route4);
+        try(DBTransaction trans = DB.getTransation()){
+            final RoadMap roadMap = trans.getMap();
+
+            roadMap.removeLink("1", "4");
+            roadMap.setOneWayLink("3", "4", 5);
+            trans.save(roadMap);
+
+            Route route1 = roadMap.getRoute("1", "4");
+            Route route2 = roadMap.getRoute("2", "3");
+            Route route3 = roadMap.getRoute("4", "1");
+            Route route4 = roadMap.getRoute("5", "1");
+            System.out.println(route1);
+            System.out.println(route2);
+            System.out.println(route3);
+            System.out.println(route4);
+            System.out.println("----------");
+
+            trans.commit();
+        }
+
+        try(DBTransaction trans = DB.getTransation()){
+            final RoadMap roadMap = trans.getMap();
+
+            roadMap.removeLink("3", "4");
+            roadMap.setOneWayLink("4", "3", 5);
+            trans.save(roadMap);
+
+            Route route1 = roadMap.getRoute("1", "4");
+            Route route2 = roadMap.getRoute("2", "3");
+            Route route3 = roadMap.getRoute("4", "1");
+            Route route4 = roadMap.getRoute("5", "1");
+            System.out.println(route1);
+            System.out.println(route2);
+            System.out.println(route3);
+            System.out.println(route4);
+            System.out.println("----------");
+
+            trans.commit();
+        }
     }
 }

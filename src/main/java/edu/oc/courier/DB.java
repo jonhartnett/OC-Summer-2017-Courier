@@ -18,6 +18,10 @@ public final class DB {
     public static EntityManager m() {
         return entityManager;
     }
+    
+    public static DBTransaction getTransation(){
+        return new DBTransaction(entityManager);
+    }
 
     @Nonnull
     public static <T> Optional<T> first(TypedQuery<T> query) {
@@ -54,6 +58,12 @@ public final class DB {
         for(Object thing: things) {
             entityManager.persist(thing);
         }
+        entityManager.getTransaction().commit();
+    }
+
+    public static void delete(Object thing){
+        entityManager.getTransaction().begin();
+        entityManager.remove(thing);
         entityManager.getTransaction().commit();
     }
 

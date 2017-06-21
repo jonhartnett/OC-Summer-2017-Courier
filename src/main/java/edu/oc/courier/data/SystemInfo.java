@@ -2,14 +2,14 @@ package edu.oc.courier.data;
 
 import com.google.common.base.MoreObjects;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
-@Table(
-        name = "system_info"
-)
 public class SystemInfo {
 
     @Id

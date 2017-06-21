@@ -1,13 +1,13 @@
-package edu.oc.courier;
+package edu.oc.courier.data;
 
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class Route<K> {
-    public Stream<K> path;
+public class Route {
+    public Stream<String> path;
     public double cost;
 
-    protected Route(Stream<K> path, double cost){
+    protected Route(Stream<String> path, double cost){
         this.path = path;
         this.cost = cost;
     }
