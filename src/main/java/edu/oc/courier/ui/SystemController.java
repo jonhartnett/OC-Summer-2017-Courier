@@ -1,6 +1,8 @@
 package edu.oc.courier.ui;
 
 import edu.oc.courier.DB;
+import edu.oc.courier.DBTransaction;
+import edu.oc.courier.data.RoadMap;
 import edu.oc.courier.data.SystemInfo;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -22,6 +24,7 @@ public class SystemController implements Initializable {
     @FXML private TextField basePrice;
     @FXML private TextField price;
     @FXML private TextField bonus;
+    @FXML private TextField courierAddress;
     @FXML private Label output;
 
     private SystemInfo systemInfo;
@@ -38,23 +41,33 @@ public class SystemController implements Initializable {
         basePrice.setText(systemInfo.getBase().toPlainString());
         price.setText(systemInfo.getPrice().toPlainString());
         bonus.setText(systemInfo.getBonus().toPlainString());
+        courierAddress.setText(systemInfo.getCourierAddress());
     }
 
     @FXML
     private void updateSystem(ActionEvent actionEvent) {
-        try {
+        try(DBTransaction transaction = DB.getTransation()) {
             systemInfo.setSpeed(Float.parseFloat(avgSpeed.getText()));
             systemInfo.setBase(new BigDecimal(basePrice.getText()));
             systemInfo.setPrice(new BigDecimal(price.getText()));
             systemInfo.setBonus(new BigDecimal(bonus.getText()));
-            DB.save(systemInfo);
+
+            String address = courierAddress.getText();
+            if(RoadMap.getMap().has(address))
+                systemInfo.setCourierAddress(address);
+            else
+                throw new RuntimeException("Address does not exist");
+
+            transaction.save(systemInfo);
+            transaction.commit();
+
             output.setTextFill(GREEN);
             output.setText("Updated successfully");
-
             ContainerController.fade(3, output);
         } catch (Exception e) {
             output.setTextFill(RED);
             output.setText(e.getClass() + " " + e.getLocalizedMessage());
+            e.printStackTrace();
         }
     }
 }

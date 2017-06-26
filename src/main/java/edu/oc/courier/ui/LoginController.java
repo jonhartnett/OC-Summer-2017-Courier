@@ -2,6 +2,7 @@ package edu.oc.courier.ui;
 
 import edu.oc.courier.DB;
 import edu.oc.courier.data.User;
+import edu.oc.courier.data.UserType;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -43,8 +44,31 @@ public class LoginController implements Initializable {
             output.setText("User not found");
         } else {
             final User user = userOpt.get();
+            UserType type = user.getType();
             if (user.isPasswordValid(password.getText())) {
-                container.menu.setDisable(false);
+                container.menu.getMenus().forEach(menu -> menu.getItems().forEach(menuItem -> {
+                    switch (menuItem.getId().split(",")[0]) {
+                        case "orderTaker":
+                            if (type == UserType.ORDER_TAKER || type == UserType.ADMIN) {
+                                menuItem.setDisable(false);
+                                menu.setDisable(false);
+                            } else {
+                                menuItem.setDisable(true);
+                            }
+                            break;
+                        case "admin":
+                            if (type == UserType.ADMIN) {
+                                menu.setDisable(false);
+                                menuItem.setDisable(false);
+                            } else {
+                                menuItem.setDisable(true);
+                            }
+                            break;
+                        default:
+                            menu.setDisable(false);
+                            menuItem.setDisable(false);
+                    }
+                }));
                 currentUser = user;
                 container.loadScreen("ticket");
             } else {

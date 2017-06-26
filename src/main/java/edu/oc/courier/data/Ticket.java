@@ -1,12 +1,12 @@
 package edu.oc.courier.data;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import edu.oc.courier.ui.LoginController;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.Objects;
 
 @SuppressWarnings("unused")
 @Entity
@@ -15,29 +15,33 @@ public final class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String description;
-    private Instant date;
-    @OneToOne(cascade = CascadeType.PERSIST)
+
+    private Instant orderTime;
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private User orderTaker;
-    private int packageNumber;
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    private Client pickupClient;
+    private Instant pickupTime;
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    private Client deliveryClient;
+
+    private boolean chargeToDestination;
+
     private Instant estDeliveryTime;
     private double estDistance;
-    private BigDecimal price;
-    @OneToOne(cascade = CascadeType.PERSIST)
-    private Driver driver;
-    private Instant assignedLeaveTime;
-    private Instant pickupTime;
-    private Instant deliveryTime;
-    @OneToOne(cascade = CascadeType.PERSIST)
-    private Client pickupClient;
-    @OneToOne(cascade = CascadeType.PERSIST)
-    private Client deliveryClient;
-    private boolean chargeToDestination;
+    private BigDecimal quote;
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    private Courier courier;
+    private Instant leaveTime;
+    private Instant actualPickupTime;
+    private Instant actualDeliveryTime;
 
     public Ticket() {
         this.id = 0;
-        this.description = "";
-        this.date = Instant.now();
+        this.orderTime = Instant.now();
         this.orderTaker = LoginController.currentUser;
     }
 
@@ -49,20 +53,12 @@ public final class Ticket {
         this.id = id;
     }
 
-    public String getDescription() {
-        return description;
+    public Instant getOrderTime() {
+        return orderTime;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Instant getDate() {
-        return date;
-    }
-
-    public void setDate(Instant date) {
-        this.date = date;
+    public void setOrderTime(Instant orderTime) {
+        this.orderTime = orderTime;
     }
 
     public User getOrderTaker() {
@@ -70,74 +66,7 @@ public final class Ticket {
     }
 
     public void setOrderTaker(User orderTaker) {
-        if (orderTaker.getType() != UserType.ORDER_TAKER) {
-            throw new IllegalArgumentException("User must be of type ORDER_TAKER");
-        }
         this.orderTaker = orderTaker;
-    }
-
-    public int getPackageNumber() {
-        return packageNumber;
-    }
-
-    public void setPackageNumber(int packageNumber) {
-        this.packageNumber = packageNumber;
-    }
-
-    public Instant getEstDeliveryTime() {
-        return estDeliveryTime;
-    }
-
-    public void setEstDeliveryTime(Instant estDeliveryTime) {
-        this.estDeliveryTime = estDeliveryTime;
-    }
-
-    public double getEstDistance() {
-        return estDistance;
-    }
-
-    public void setEstDistance(double estDistance) {
-        this.estDistance = estDistance;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public Driver getDriver() {
-        return driver;
-    }
-
-    public void setDriver(Driver driver) {
-        this.driver = driver;
-    }
-
-    public Instant getAssignedLeaveTime() {
-        return assignedLeaveTime;
-    }
-
-    public void setAssignedLeaveTime(Instant assignedLeaveTime) {
-        this.assignedLeaveTime = assignedLeaveTime;
-    }
-
-    public Instant getPickupTime() {
-        return pickupTime;
-    }
-
-    public void setPickupTime(Instant pickupTime) {
-        this.pickupTime = pickupTime;
-    }
-
-    public Instant getDeliveryTime() {
-        return deliveryTime;
-    }
-
-    public void setDeliveryTime(Instant deliveryTime) {
-        this.deliveryTime = deliveryTime;
     }
 
     public Client getPickupClient() {
@@ -148,6 +77,14 @@ public final class Ticket {
         this.pickupClient = pickupClient;
     }
 
+    public Instant getPickupTime() {
+        return pickupTime;
+    }
+
+    public void setPickupTime(Instant pickupTime) {
+        this.pickupTime = pickupTime;
+    }
+
     public Client getDeliveryClient() {
         return deliveryClient;
     }
@@ -156,12 +93,68 @@ public final class Ticket {
         this.deliveryClient = deliveryClient;
     }
 
-    public boolean getChargeToDestination() {
+    public boolean isChargeToDestination() {
         return chargeToDestination;
     }
 
     public void setChargeToDestination(boolean chargeToDestination) {
         this.chargeToDestination = chargeToDestination;
+    }
+
+    public Instant getEstDeliveryTime() {
+        return estDeliveryTime;
+    }
+
+    public void setEstDeliveryTime(Instant deliveryTime) {
+        this.estDeliveryTime = deliveryTime;
+    }
+
+    public double getEstDistance() {
+        return estDistance;
+    }
+
+    public void setEstDistance(double estDistance) {
+        this.estDistance = estDistance;
+    }
+
+    public BigDecimal getQuote() {
+        return quote;
+    }
+
+    public void setQuote(BigDecimal quote) {
+        this.quote = quote;
+    }
+
+    public Courier getCourier() {
+        return courier;
+    }
+
+    public void setCourier(Courier courier) {
+        this.courier = courier;
+    }
+
+    public Instant getLeaveTime() {
+        return leaveTime;
+    }
+
+    public void setLeaveTime(Instant leaveTime) {
+        this.leaveTime = leaveTime;
+    }
+
+    public Instant getActualPickupTime() {
+        return actualPickupTime;
+    }
+
+    public void setActualPickupTime(Instant actualPickupTime) {
+        this.actualPickupTime = actualPickupTime;
+    }
+
+    public Instant getActualDeliveryTime() {
+        return actualDeliveryTime;
+    }
+
+    public void setActualDeliveryTime(Instant actualDeliveryTime) {
+        this.actualDeliveryTime = actualDeliveryTime;
     }
 
     @Override
@@ -174,61 +167,58 @@ public final class Ticket {
         }
         final Ticket ticket = (Ticket) o;
         return id == ticket.id &&
-            packageNumber == ticket.packageNumber &&
-            estDeliveryTime == ticket.estDeliveryTime &&
-            estDistance == ticket.estDistance &&
-            Objects.equals(price, ticket.price) &&
-            Objects.equals(description, ticket.description) &&
-            Objects.equals(date, ticket.date) &&
-            Objects.equals(orderTaker, ticket.orderTaker) &&
-            Objects.equals(driver, ticket.driver) &&
-            Objects.equals(assignedLeaveTime, ticket.assignedLeaveTime) &&
-            Objects.equals(pickupTime, ticket.pickupTime) &&
-            Objects.equals(deliveryTime, ticket.deliveryTime) &&
-            Objects.equals(pickupClient, ticket.pickupClient) &&
-            Objects.equals(deliveryClient, ticket.deliveryClient) &&
-            chargeToDestination == ticket.chargeToDestination;
+                chargeToDestination == ticket.chargeToDestination &&
+                Double.compare(ticket.estDistance, estDistance) == 0 &&
+                Objects.equal(orderTime, ticket.orderTime) &&
+                Objects.equal(orderTaker, ticket.orderTaker) &&
+                Objects.equal(pickupClient, ticket.pickupClient) &&
+                Objects.equal(pickupTime, ticket.pickupTime) &&
+                Objects.equal(deliveryClient, ticket.deliveryClient) &&
+                Objects.equal(estDeliveryTime, ticket.estDeliveryTime) &&
+                Objects.equal(quote, ticket.quote) &&
+                Objects.equal(courier, ticket.courier) &&
+                Objects.equal(leaveTime, ticket.leaveTime) &&
+                Objects.equal(actualPickupTime, ticket.actualPickupTime) &&
+                Objects.equal(actualDeliveryTime, ticket.actualDeliveryTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(
-            id,
-            description,
-            date,
-            orderTaker,
-            packageNumber,
-            estDeliveryTime,
-            estDistance,
-            price,
-            driver,
-            assignedLeaveTime,
-            pickupTime,
-            deliveryTime,
-            pickupClient,
-            deliveryClient,
-            chargeToDestination
+        return Objects.hashCode(
+                id,
+                orderTime,
+                orderTaker,
+                pickupClient,
+                pickupTime,
+                deliveryClient,
+                chargeToDestination,
+                estDeliveryTime,
+                estDistance,
+                quote,
+                courier,
+                leaveTime,
+                actualPickupTime,
+                actualDeliveryTime
         );
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-            .add("id", id)
-            .add("description", description)
-            .add("date", date)
-            .add("orderTaker", orderTaker)
-            .add("packageNumber", packageNumber)
-            .add("estDeliveryTime", estDeliveryTime)
-            .add("estDistance", estDistance)
-            .add("price", price)
-            .add("driver", driver)
-            .add("assignedLeaveTime", assignedLeaveTime)
-            .add("pickupTime", pickupTime)
-            .add("deliveryTime", deliveryTime)
-            .add("pickupClient", pickupClient)
-            .add("deliveryClient", deliveryClient)
-            .add("chargeToDestination", chargeToDestination)
-            .toString();
+                .add("id", id)
+                .add("orderTime", orderTime)
+                .add("orderTaker", orderTaker)
+                .add("pickupClient", pickupClient)
+                .add("pickupTime", pickupTime)
+                .add("deliveryClient", deliveryClient)
+                .add("chargeToDestination", chargeToDestination)
+                .add("deliveryTime", estDeliveryTime)
+                .add("estDistance", estDistance)
+                .add("quote", quote)
+                .add("courier", courier)
+                .add("leaveTime", leaveTime)
+                .add("actualPickupTime", actualPickupTime)
+                .add("actualDeliveryTime", actualDeliveryTime)
+                .toString();
     }
 }

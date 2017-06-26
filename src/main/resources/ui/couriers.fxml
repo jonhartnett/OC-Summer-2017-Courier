@@ -4,11 +4,11 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 <BorderPane xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="edu.oc.courier.ui.UsersController">
+            fx:controller="edu.oc.courier.ui.CouriersController">
     <top>
-        <Button onAction="#addUser" text="Add user" BorderPane.alignment="CENTER"/>
+        <Button onAction="#addCourier" text="Add courier" BorderPane.alignment="CENTER"/>
     </top>
     <center>
-        <VBox fx:id="userList" BorderPane.alignment="CENTER"/>
+        <VBox fx:id="courierList" BorderPane.alignment="CENTER"/>
     </center>
 </BorderPane>

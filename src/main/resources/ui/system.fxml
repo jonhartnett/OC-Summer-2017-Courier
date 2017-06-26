@@ -14,17 +14,20 @@
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
     </rowConstraints>
     <children>
-        <Label text="Average speed" />
+        <Label text="Average speed (blocks/minute)" />
         <TextField fx:id="avgSpeed" GridPane.columnIndex="1" />
         <Label text="Base price" GridPane.rowIndex="1" />
         <TextField fx:id="basePrice" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-        <Label text="Price per unit" GridPane.rowIndex="2" />
+        <Label text="Price per block" GridPane.rowIndex="2" />
         <TextField fx:id="price" GridPane.columnIndex="1" GridPane.rowIndex="2" />
         <Label text="On-time bonus" GridPane.rowIndex="3" />
         <TextField fx:id="bonus" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-        <Button mnemonicParsing="false" onAction="#updateSystem" text="Save" textAlignment="CENTER" GridPane.columnSpan="2" GridPane.rowIndex="4" />
-      <Label fx:id="output" textFill="RED" GridPane.columnSpan="2" GridPane.rowIndex="5" />
+        <Button mnemonicParsing="false" onAction="#updateSystem" text="Save" textAlignment="CENTER" GridPane.columnSpan="2" GridPane.rowIndex="5" />
+      <Label fx:id="output" textFill="RED" GridPane.columnSpan="2" GridPane.rowIndex="6" />
+      <Label text="Home address" GridPane.rowIndex="4" />
+      <TextField fx:id="courierAddress" GridPane.columnIndex="1" GridPane.rowIndex="4" />
     </children>
 </GridPane>

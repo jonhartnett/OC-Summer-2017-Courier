@@ -1,6 +1,5 @@
 package edu.oc.courier;
 
-import edu.oc.courier.data.RoadMap;
 import edu.oc.courier.data.User;
 
 import javax.persistence.EntityManager;
@@ -66,8 +65,13 @@ public class DBTransaction implements AutoCloseable {
     }
 
     public <T> void save(T... entities){
-        for(T entity : entities)
-            manager.persist(entity);
+        for(T entity : entities) {
+            try {
+                manager.merge(entity);
+            } catch (Throwable lol) {
+                manager.persist(entity);
+            }
+        }
     }
 
     public <T> void delete(T... entities){
@@ -86,18 +90,5 @@ public class DBTransaction implements AutoCloseable {
 
     public Optional<User> getUser(String username){
         return getWhere(User.class, "username", username);
-    }
-
-    public RoadMap getMap(){
-        Optional<RoadMap> optional = getAny(RoadMap.class);
-        if(optional.isPresent()){
-            RoadMap map = optional.get();
-            map.onLoad();
-            return map;
-        }else{
-            RoadMap map = new RoadMap();
-            save(map);
-            return map;
-        }
     }
 }

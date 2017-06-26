@@ -1,6 +1,7 @@
 package edu.oc.courier.ui;
 
 import edu.oc.courier.DB;
+import edu.oc.courier.DBTransaction;
 import edu.oc.courier.data.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,6 +11,8 @@ import javafx.scene.control.TextField;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import static javafx.scene.paint.Color.GREEN;
 
 public class AccountController implements Initializable {
 
@@ -32,9 +35,13 @@ public class AccountController implements Initializable {
         String password = this.password.getText();
         if (password.length() > 0)
             user.setPassword(password);
-
-        DB.save(user);
-        output.setText("Updated successfully");
+        try(DBTransaction transaction = DB.getTransation()){
+            transaction.save(user);
+            transaction.commit();
+            output.setTextFill(GREEN);
+            output.setText("Updated successfully");
+            ContainerController.fade(3, output);
+        }
 
         ContainerController.fade(3, output);
     }

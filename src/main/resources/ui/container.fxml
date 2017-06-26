@@ -6,36 +6,36 @@
 <BorderPane fx:id="container" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="edu.oc.courier.ui.ContainerController">
     <top>
-        <MenuBar fx:id="menu" disable="true" BorderPane.alignment="CENTER">
+        <MenuBar fx:id="menu" BorderPane.alignment="CENTER">
             <menus>
-                <Menu mnemonicParsing="false" text="Home">
+                <Menu text="Home">
                     <items>
-                        <MenuItem fx:id="login" mnemonicParsing="false" onAction="#switchScreen" text="Login"/>
-                        <MenuItem fx:id="account" mnemonicParsing="false" onAction="#switchScreen" text="Account"/>
-                        <MenuItem fx:id="exit" mnemonicParsing="false" onAction="#switchScreen" text="Exit"/>
+                        <MenuItem id="login" onAction="#switchScreen" text="Login"/>
+                        <MenuItem id="account" disable="true" onAction="#switchScreen" text="Account"/>
+                        <MenuItem id="exit" onAction="#switchScreen" text="Exit"/>
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Tickets">
+                <Menu disable="true" text="Tickets">
                     <items>
-                        <MenuItem fx:id="ticket" mnemonicParsing="false" onAction="#switchScreen" text="New"/>
-                        <MenuItem fx:id="ticketSelector" mnemonicParsing="false" onAction="#switchScreen"
-                                  text="Update"/>
+                        <MenuItem id="orderTaker,ticket" onAction="#switchScreen" text="New"/>
+                        <MenuItem id="orderTaker,ticketSelector" onAction="#switchScreen" text="Update"/>
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Reports">
+                <Menu disable="true" text="Reports">
                     <items>
-                        <MenuItem fx:id="clientReport" mnemonicParsing="false" onAction="#switchScreen" text="Client"/>
-                        <MenuItem fx:id="courierReport" mnemonicParsing="false" onAction="#switchScreen"
-                                  text="Courier"/>
-                        <MenuItem fx:id="companyReport" mnemonicParsing="false" onAction="#switchScreen"
-                                  text="Company"/>
+                        <MenuItem id="admin,clientReport" onAction="#switchScreen" text="Client"/>
+                        <MenuItem id="admin,courierReport" onAction="#switchScreen" text="Courier"/>
+                        <MenuItem id="admin,companyReport" onAction="#switchScreen" text="Company"/>
+                        <MenuItem id="admin,invoices" onAction="#switchScreen" text="Invoices"/>
+                        <MenuItem id="admin,bonuses" onAction="#switchScreen" text="Bonuses"/>
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Admin">
+                <Menu disable="true" text="System">
                     <items>
-                        <MenuItem fx:id="map" mnemonicParsing="false" onAction="#switchScreen" text="Map"/>
-                        <MenuItem fx:id="system" mnemonicParsing="false" onAction="#switchScreen" text="System"/>
-                        <MenuItem fx:id="users" mnemonicParsing="false" onAction="#switchScreen" text="Users"/>
+                        <MenuItem id="map" onAction="#switchScreen" text="Map"/>
+                        <MenuItem id="admin,system" onAction="#switchScreen" text="System"/>
+                        <MenuItem id="admin,users" onAction="#switchScreen" text="Users"/>
+                        <MenuItem id="admin,couriers" onAction="#switchScreen" text="Couriers"/>
                     </items>
                 </Menu>
             </menus>

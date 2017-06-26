@@ -71,7 +71,7 @@ public class Node {
         if(o == null || getClass() != o.getClass())
             return false;
         final Node node = (Node)o;
-        return name.equals(node.name);
+        return name != null && name.equals(node.name);
     }
 
     @Override

@@ -1,20 +1,25 @@
 package edu.oc.courier.data;
 
 import com.google.common.base.MoreObjects;
+
+import javax.persistence.*;
 import java.util.Objects;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
 @SuppressWarnings("unused")
 @Entity
-public final class Driver {
+public final class Courier {
 
     @Id
+    @Column(name="id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
+
+    public Courier(){}
+
+    public Courier(String name) {
+        this.name = name;
+    }
 
     public String getName() {
         return name;
@@ -40,9 +45,9 @@ public final class Driver {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final Driver driver = (Driver) o;
-        return id == driver.id &&
-            Objects.equals(name, driver.name);
+        final Courier courier = (Courier) o;
+        return id == courier.id &&
+            Objects.equals(name, courier.name);
     }
 
     @Override

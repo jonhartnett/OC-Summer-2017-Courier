@@ -5,7 +5,10 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +19,35 @@ import java.util.Optional;
 public class Main extends Application {
 
     private static final Logger log = LoggerFactory.getLogger(Main.class);
-    private final boolean testing = true;
+    private final boolean testing = false;
+
+    public static Callback<ListView<Client>, ListCell<Client>> clientCallback = new Callback<ListView<Client>, ListCell<Client>>() {
+        @Override
+        public ListCell<Client> call(ListView<Client> param) {
+            return new ListCell<Client>() {
+                @Override
+                public void updateItem(Client client, boolean isEmpty) {
+                    super.updateItem(client, isEmpty);
+                    if (client != null)
+                        setText(client.getName());
+                }
+            };
+        }
+    };
+
+    public static Callback<ListView<Courier>, ListCell<Courier>> courierCallback = new Callback<ListView<Courier>, ListCell<Courier>>() {
+        @Override
+        public ListCell<Courier> call(ListView<Courier> param) {
+            return new ListCell<Courier>() {
+                @Override
+                public void updateItem(Courier courier, boolean isEmpty) {
+                    super.updateItem(courier, isEmpty);
+                    if (courier != null)
+                        setText(courier.getName());
+                }
+            };
+        }
+    };
 
     public static void main(String[] args) {
         launch(args);
@@ -29,6 +60,7 @@ public class Main extends Application {
         } else {
             setSystem();
             setAdmin();
+            setRoadmap();
             final Parent root = FXMLLoader.load(getClass().getResource("/ui/container.fxml"));
             primaryStage.setScene(new Scene(root));
             primaryStage.setTitle("Courier service");
@@ -39,7 +71,7 @@ public class Main extends Application {
 
     private void setSystem() {
         SystemInfo s = DB.first(DB.m().createQuery("SELECT s FROM SystemInfo s", SystemInfo.class))
-                .orElse(new SystemInfo(5.0f, new BigDecimal(10), new BigDecimal(2), new BigDecimal(5)));
+                .orElse(new SystemInfo(5.0f, new BigDecimal(10), new BigDecimal(2), new BigDecimal(5), "4th and D"));
 
         DB.save(s);
     }
@@ -49,6 +81,31 @@ public class Main extends Application {
                 .orElse(new User("Admin", "Admin", "root", UserType.ADMIN));
 
         DB.save(admin);
+    }
+
+    private void setRoadmap(){
+        try(DBTransaction trans = DB.getTransation()){
+            final RoadMap roadMap = RoadMap.getMap();
+            roadMap.clear();
+
+            String[] aves = new String[]{ "1st", "2nd", "3rd", "4th", "5th", "6th", "7th" };
+            String[] sts = new String[]{ "A", "B", "C", "D", "E", "F", "G" };
+            for(String ave : aves){
+                for(String st : sts){
+                    roadMap.add(ave + " and " + st);
+                }
+            }
+            for(int y = 0; y < aves.length; y++){
+                for(int x = 0; x < sts.length; x++){
+                    if(x > 0)
+                        roadMap.setLink(aves[y] + " and " + sts[x], aves[y] + " and " + sts[x - 1], 1);
+                    if(y > 0)
+                        roadMap.setLink(aves[y] + " and " + sts[x], aves[y - 1] + " and " + sts[x], 1);
+                }
+            }
+            trans.save(roadMap);
+            trans.commit();
+        }
     }
 
     private void testDB() {
@@ -64,11 +121,12 @@ public class Main extends Application {
             invoice.setClient(client);
             trans.save(invoice);
 
-            final Driver driver = new Driver();
-            driver.setName("Tim");
-            trans.save(driver);
+            final Courier courier = new Courier();
+            courier.setName("Tim");
+            trans.save(courier);
 
-            final RoadMap roadMap = trans.getMap();
+            final RoadMap roadMap = RoadMap.getMap();
+            System.out.println(roadMap.id);
             roadMap.clear();
             roadMap.add("1");
             roadMap.add("2");
@@ -85,7 +143,8 @@ public class Main extends Application {
         }
 
         try(DBTransaction trans = DB.getTransation()){
-            final RoadMap roadMap = trans.getMap();
+            final RoadMap roadMap = RoadMap.getMap();
+            System.out.println(roadMap.id);
             Route route1 = roadMap.getRoute("1", "4");
             Route route2 = roadMap.getRoute("2", "3");
             Route route3 = roadMap.getRoute("4", "1");
@@ -100,7 +159,8 @@ public class Main extends Application {
         }
 
         try(DBTransaction trans = DB.getTransation()){
-            final RoadMap roadMap = trans.getMap();
+            final RoadMap roadMap = RoadMap.getMap();
+            System.out.println(roadMap.id);
 
             roadMap.removeLink("1", "4");
             roadMap.setOneWayLink("3", "4", 5);
@@ -120,7 +180,8 @@ public class Main extends Application {
         }
 
         try(DBTransaction trans = DB.getTransation()){
-            final RoadMap roadMap = trans.getMap();
+            final RoadMap roadMap = RoadMap.getMap();
+            System.out.println(roadMap.id);
 
             roadMap.removeLink("3", "4");
             roadMap.setOneWayLink("4", "3", 5);

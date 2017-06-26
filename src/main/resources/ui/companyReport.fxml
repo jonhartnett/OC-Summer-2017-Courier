@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<GridPane xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.oc.courier.ui.CompanyReportController">
+  <columnConstraints>
+    <ColumnConstraints />
+      <ColumnConstraints />
+      <ColumnConstraints />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+  </rowConstraints>
+   <children>
+      <Label fx:id="totalPackages" alignment="TOP_LEFT" wrapText="true">
+         <font>
+            <Font size="48.0" />
+         </font>
+      </Label>
+      <PieChart fx:id="pickup" title="Amount picked up on time" GridPane.columnIndex="1" />
+      <PieChart fx:id="deliver" title="Amount delivered on time" GridPane.columnIndex="2" />
+      <PieChart fx:id="total" title="Total on time" GridPane.rowIndex="1" />
+      <BarChart fx:id="packagesPerCourier" title="Packages per courier" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1">
+        <xAxis>
+          <CategoryAxis side="BOTTOM" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis side="LEFT" />
+        </yAxis>
+      </BarChart>
+      <LineChart fx:id="amountOnTime" title="Amount on time" GridPane.columnSpan="3" GridPane.rowIndex="3">
+        <xAxis>
+          <CategoryAxis side="BOTTOM" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis side="LEFT" />
+        </yAxis>
+      </LineChart>
+   </children>
+</GridPane>

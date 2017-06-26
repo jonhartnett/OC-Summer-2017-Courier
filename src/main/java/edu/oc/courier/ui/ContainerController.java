@@ -32,11 +32,25 @@ public class ContainerController implements Initializable {
     }
 
     void loadScreen(String fxmlName) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(String.format("/ui/%s.fxml", fxmlName)));
-        Parent screen = loader.load();
-        if (fxmlName.equalsIgnoreCase("login"))
-            ((LoginController) loader.getController()).setContainer(this);
-        container.setCenter(screen);
+        //OH GOD MY EYES THIS IS SO BAD
+        if(fxmlName.equalsIgnoreCase("ticket")) {
+            container.setCenter(new TicketController());
+        } else {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(String.format("/ui/%s.fxml", fxmlName)));
+            Parent screen = loader.load();
+
+            //TODO: Create interface
+            if (fxmlName.equalsIgnoreCase("login"))
+                ((LoginController) loader.getController()).setContainer(this);
+            if (fxmlName.equalsIgnoreCase("ticketSelector"))
+                ((TicketSelectorController) loader.getController()).setController(this);
+
+            container.setCenter(screen);
+        }
+    }
+
+    public void setCenter(Node node) {
+        container.setCenter(node);
     }
 
     @FXML
@@ -44,9 +58,10 @@ public class ContainerController implements Initializable {
         final MenuItem item = (MenuItem) actionEvent.getSource();
         if (item.getId().equalsIgnoreCase("exit")) {
             Platform.exit();
+        } else {
+            String[] ids = item.getId().split(",");
+            loadScreen(ids[ids.length - 1]);
         }
-
-        loadScreen(item.getId());
     }
 
     public static void fade(int amount, Node node) {

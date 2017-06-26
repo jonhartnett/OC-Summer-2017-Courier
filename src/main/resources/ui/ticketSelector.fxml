@@ -1,39 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.ChoiceBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<BorderPane xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="edu.oc.courier.ui.TicketSelectorController">
+<BorderPane xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.oc.courier.ui.TicketSelectorController">
     <top>
         <FlowPane BorderPane.alignment="CENTER">
             <children>
                 <Label text="Sort by">
                     <FlowPane.margin>
-                        <Insets right="15.0"/>
+                        <Insets right="15.0" />
                     </FlowPane.margin>
                 </Label>
                 <ChoiceBox fx:id="sortOrder" prefWidth="150.0">
                     <FlowPane.margin>
-                        <Insets right="30.0"/>
+                        <Insets right="30.0" />
                     </FlowPane.margin>
                 </ChoiceBox>
                 <RadioButton fx:id="ascending" mnemonicParsing="false" text="Ascending">
                     <FlowPane.margin>
-                        <Insets right="15.0"/>
+                        <Insets right="15.0" />
                     </FlowPane.margin>
+               <toggleGroup>
+                  <ToggleGroup fx:id="order" />
+               </toggleGroup>
                 </RadioButton>
-                <RadioButton fx:id="descending" mnemonicParsing="false" text="Descending"/>
+                <RadioButton fx:id="descending" mnemonicParsing="false" text="Descending" toggleGroup="$order" />
             </children>
             <BorderPane.margin>
-                <Insets/>
+                <Insets />
             </BorderPane.margin>
         </FlowPane>
     </top>
-    <center>
-        <FlowPane BorderPane.alignment="CENTER"/>
-    </center>
+   <center>
+      <ScrollPane fitToHeight="true" fitToWidth="true" BorderPane.alignment="CENTER">
+         <content>
+            <FlowPane fx:id="tickets" />
+         </content>
+      </ScrollPane>
+   </center>
 </BorderPane>

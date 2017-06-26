@@ -8,7 +8,7 @@
 
         <!-- Entity classes -->
         <class>edu.oc.courier.data.Client</class>
-        <class>edu.oc.courier.data.Driver</class>
+        <class>edu.oc.courier.data.Courier</class>
         <class>edu.oc.courier.data.Invoice</class>
         <class>edu.oc.courier.data.Ticket</class>
         <class>edu.oc.courier.data.User</class>

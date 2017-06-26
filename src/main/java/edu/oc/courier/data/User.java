@@ -31,7 +31,9 @@ public final class User {
     private String salt;
     private UserType type;
 
-    public User(){}
+    public User(){
+        setPassword("temp");
+    }
 
     public User(String name, String username, String password, UserType type) {
         setName(name);

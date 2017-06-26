@@ -1,24 +1,41 @@
 package edu.oc.courier.data;
 
+import edu.oc.courier.DB;
+import edu.oc.courier.DBTransaction;
+
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Entity
 public class RoadMap {
+    private static RoadMap instance;
+    public static void initInstance(){
+        try(DBTransaction trans = DB.getTransation()){
+            Optional<RoadMap> optional = trans.getAny(RoadMap.class);
+            if(optional.isPresent()){
+                instance = optional.get();
+                instance.onLoad();
+            }else{
+                instance = new RoadMap();
+                trans.save(instance);
+            }
+        }
+    }
+
+    public static RoadMap getMap(){
+        return instance;
+    }
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    public int id = 1;
     @OneToMany(cascade = CascadeType.ALL)
     private List<Node> nodeList = new ArrayList<>();
     @Transient
     private Map<String, Node> nodes = new HashMap<>();
 
-    public RoadMap(){}
+    private RoadMap(){}
 
-    public RoadMap(Iterable<Node> nodes){
+    private RoadMap(Iterable<Node> nodes){
         for(Node node : nodes)
             this.nodes.put(node.getName(), node);
     }
@@ -37,6 +54,10 @@ public class RoadMap {
         Node node = new Node(key);
         nodeList.add(node);
         nodes.put(key, node);
+    }
+
+    public boolean has(String key) {
+        return nodes.containsKey(key);
     }
 
     public void clear(){

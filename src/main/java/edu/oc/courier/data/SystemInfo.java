@@ -20,12 +20,14 @@ public class SystemInfo {
     private BigDecimal base;
     private BigDecimal price;
     private BigDecimal bonus;
+    private String courierAddress;
 
-    public SystemInfo(float speed, BigDecimal base, BigDecimal price, BigDecimal bonus) {
+    public SystemInfo(float speed, BigDecimal base, BigDecimal price, BigDecimal bonus, String courierAddress) {
         this.speed = speed;
         this.base = base;
         this.price = price;
         this.bonus = bonus;
+        this.courierAddress = courierAddress;
     }
 
     public SystemInfo() {
@@ -71,6 +73,12 @@ public class SystemInfo {
         this.bonus = bonus;
     }
 
+    public String getCourierAddress(){ return courierAddress; }
+
+    public void setCourierAddress(String address){
+        this.courierAddress = address;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -85,7 +93,7 @@ public class SystemInfo {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, speed, base, price, bonus);
+        return Objects.hash(id, speed, base, price, bonus, courierAddress);
     }
 
     @Override
@@ -96,6 +104,7 @@ public class SystemInfo {
                 .add("base price", base)
                 .add("unit price", price)
                 .add("bonus", bonus)
+                .add("courierAddress", courierAddress)
                 .toString();
     }
 }
