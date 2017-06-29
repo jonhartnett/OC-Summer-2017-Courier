@@ -2,6 +2,7 @@
 
 <?import javafx.scene.chart.*?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <GridPane xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.oc.courier.ui.CompanyReportController">
@@ -15,17 +16,19 @@
       <RowConstraints />
       <RowConstraints />
       <RowConstraints />
+      <RowConstraints />
   </rowConstraints>
    <children>
-      <Label fx:id="totalPackages" alignment="TOP_LEFT" wrapText="true">
+      <ProgressBar fx:id="progress" progress="0.0" GridPane.columnSpan="2" />
+      <Label fx:id="totalPackages" alignment="TOP_LEFT" wrapText="true" GridPane.rowIndex="1">
          <font>
             <Font size="48.0" />
          </font>
       </Label>
-      <PieChart fx:id="pickup" title="Amount picked up on time" GridPane.columnIndex="1" />
-      <PieChart fx:id="deliver" title="Amount delivered on time" GridPane.columnIndex="2" />
-      <PieChart fx:id="total" title="Total on time" GridPane.rowIndex="1" />
-      <BarChart fx:id="packagesPerCourier" title="Packages per courier" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1">
+      <PieChart fx:id="pickup" legendVisible="false" title="Amount picked up on time" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <PieChart fx:id="deliver" legendVisible="false" title="Amount delivered on time" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+      <PieChart fx:id="total" legendVisible="false" title="Total on time" GridPane.rowIndex="2" />
+      <BarChart fx:id="packagesPerCourier" title="Packages per courier" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2">
         <xAxis>
           <CategoryAxis side="BOTTOM" />
         </xAxis>
@@ -33,7 +36,7 @@
           <NumberAxis side="LEFT" />
         </yAxis>
       </BarChart>
-      <LineChart fx:id="amountOnTime" title="Amount on time" GridPane.columnSpan="3" GridPane.rowIndex="3">
+      <LineChart fx:id="amountOnTime" title="Percentage on time" GridPane.columnSpan="3" GridPane.rowIndex="4">
         <xAxis>
           <CategoryAxis side="BOTTOM" />
         </xAxis>

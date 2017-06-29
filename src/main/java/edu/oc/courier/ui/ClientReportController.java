@@ -38,29 +38,30 @@ public class ClientReportController implements Initializable {
             Collection<Ticket> clientTickets = transaction.getAll(transaction.where(Ticket.class, "pickupClient", clients.getValue()));
             clientTickets.addAll(transaction.getAll(transaction.where(Ticket.class, "deliveryClient", clients.getValue())));
             Set<Ticket> tickets = new HashSet<>(clientTickets);
+            final int numTickets = tickets.size();
 
             int pickupOnTime = 0;
             int deliverOnTime = 0;
             Map<String, Integer> packages = new HashMap<>();
             for (Ticket t : tickets) {
-                if (t.getPickupTime() != null && t.getLeaveTime() != null)
-                    if (t.getPickupTime().isAfter(t.getLeaveTime()))
+                if (t.getActualPickupTime() != null && t.getPickupTime() != null)
+                    if (t.getActualPickupTime().isBefore(t.getPickupTime()) || t.getActualPickupTime().equals(t.getPickupTime()))
                         pickupOnTime++;
 
                 if (t.getActualDeliveryTime() != null && t.getEstDeliveryTime() != null)
-                    if (t.getActualDeliveryTime().isAfter(t.getEstDeliveryTime()))
+                    if (t.getActualDeliveryTime().isBefore(t.getEstDeliveryTime()) || t.getActualDeliveryTime().equals(t.getEstDeliveryTime()))
                         deliverOnTime++;
 
                 packages.put(t.getCourier().getName(), packages.getOrDefault(t.getCourier().getName(), 0) + 1);
             }
 
             pickup.setData(FXCollections.observableArrayList(
-                    new PieChart.Data("On time", pickupOnTime),
-                    new PieChart.Data("Late", tickets.size())
+                    new PieChart.Data(pickupOnTime + " on time", pickupOnTime),
+                    new PieChart.Data(numTickets - pickupOnTime + " late", numTickets - pickupOnTime)
             ));
             deliver.setData(FXCollections.observableArrayList(
-                    new PieChart.Data("On time", deliverOnTime),
-                    new PieChart.Data("Late", tickets.size())
+                    new PieChart.Data(deliverOnTime + " on time", deliverOnTime),
+                    new PieChart.Data(numTickets - deliverOnTime + " late", numTickets - deliverOnTime)
             ));
 
             XYChart.Series<String, Integer> series = new XYChart.Series<>();

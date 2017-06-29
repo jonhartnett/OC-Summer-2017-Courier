@@ -15,8 +15,8 @@
   </rowConstraints>
    <children>
       <ComboBox fx:id="clients" onAction="#update" promptText="Client" />
-      <PieChart fx:id="pickup" title="Amount picked up on time" GridPane.rowIndex="1" />
-      <PieChart fx:id="deliver" title="Amount delivered on time" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <PieChart fx:id="pickup" legendVisible="false" title="Amount picked up on time" GridPane.rowIndex="1" />
+      <PieChart fx:id="deliver" legendVisible="false" title="Amount delivered on time" GridPane.columnIndex="1" GridPane.rowIndex="1" />
       <BarChart fx:id="packagesPerCourier" title="Packages handled by courier" GridPane.columnSpan="2" GridPane.rowIndex="2">
         <xAxis>
           <CategoryAxis side="BOTTOM" />

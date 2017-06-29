@@ -17,8 +17,8 @@
   </rowConstraints>
    <children>
       <ComboBox fx:id="couriers" onAction="#update" promptText="Courier" />
-      <PieChart fx:id="pickup" title="Amounte picked up on time" GridPane.rowIndex="1" />
-      <PieChart fx:id="deliver" title="Amount delivered on time" GridPane.rowIndex="2" />
+      <PieChart fx:id="pickup" legendVisible="false" title="Amount picked up on time" GridPane.rowIndex="1" />
+      <PieChart fx:id="deliver" legendVisible="false" title="Amount delivered on time" GridPane.rowIndex="2" />
       <Label fx:id="speed" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
          <font>
             <Font size="64.0" />

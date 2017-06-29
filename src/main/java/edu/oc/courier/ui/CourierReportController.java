@@ -37,35 +37,37 @@ public class CourierReportController implements Initializable {
     public void update(ActionEvent actionEvent) {
         try (DBTransaction transaction = DB.getTransation()) {
             Collection<Ticket> tickets = transaction.getAll(transaction.where(Ticket.class, "courier", couriers.getValue()));
+            final int numTickets = tickets.size();
 
             int pickupOnTime = 0;
             int deliverOnTime = 0;
-            double averageSpeed = 0;
+            long totalDistance = 0;
+            double totalTime = 0;
             for (Ticket t : tickets) {
-                if (t.getPickupTime() != null && t.getLeaveTime() != null)
-                    if (t.getPickupTime().isAfter(t.getLeaveTime()))
+                if (t.getActualPickupTime() != null && t.getPickupTime() != null)
+                    if (t.getActualPickupTime().isBefore(t.getPickupTime()) || t.getActualPickupTime().equals(t.getPickupTime()))
                         pickupOnTime++;
 
                 if (t.getActualDeliveryTime() != null && t.getEstDeliveryTime() != null)
-                    if (t.getActualDeliveryTime().isAfter(t.getEstDeliveryTime()))
+                    if (t.getActualDeliveryTime().isBefore(t.getEstDeliveryTime()) || t.getActualDeliveryTime().equals(t.getEstDeliveryTime()))
                         deliverOnTime++;
 
-                if (t.getPickupTime() != null && t.getActualDeliveryTime() != null  )
-                    averageSpeed += t.getEstDistance() / (double) Duration.between(t.getLeaveTime(), t.getActualDeliveryTime()).toHours();
+                if (t.getPickupTime() != null && t.getActualDeliveryTime() != null) {
+                    totalDistance += t.getEstDistance();
+                    totalTime += Duration.between(t.getLeaveTime(), t.getActualDeliveryTime()).toMillis();
+                }
             }
-            averageSpeed /= tickets.size();
 
             pickup.setData(FXCollections.observableArrayList(
-                    new PieChart.Data("On time", pickupOnTime),
-                    new PieChart.Data("Late", tickets.size())
+                    new PieChart.Data(pickupOnTime + " on time", pickupOnTime),
+                    new PieChart.Data(numTickets - pickupOnTime + " late", numTickets - pickupOnTime)
             ));
-
             deliver.setData(FXCollections.observableArrayList(
-                    new PieChart.Data("On time", deliverOnTime),
-                    new PieChart.Data("Late", tickets.size())
+                    new PieChart.Data(deliverOnTime + " on time", deliverOnTime),
+                    new PieChart.Data(numTickets - deliverOnTime + " late", numTickets - deliverOnTime)
             ));
 
-            speed.setText(String.format("Averaged %.2f blocks per hour", averageSpeed));
+            speed.setText(String.format("Averaged %.2f blocks per hour", totalDistance / (totalTime / (1000 * 60 * 60))));
         }
     }
 }
