@@ -5,8 +5,8 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.layout.*?>
-<GridPane hgap="10.0" vgap="10.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="edu.oc.courier.ui.ClientReportController">
+<GridPane alignment="TOP_CENTER" hgap="10.0" vgap="10.0" xmlns="http://javafx.com/javafx/8.0.112"
+          xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.oc.courier.ui.ClientReportController">
     <columnConstraints>
         <ColumnConstraints/>
         <ColumnConstraints/>
@@ -20,9 +20,6 @@
         <FlowPane GridPane.columnSpan="2">
             <children>
                 <ComboBox fx:id="clients" onAction="#update" promptText="Client">
-                    <opaqueInsets>
-                        <Insets/>
-                    </opaqueInsets>
                     <FlowPane.margin>
                         <Insets right="30.0"/>
                     </FlowPane.margin>
