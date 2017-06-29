@@ -13,7 +13,7 @@
       <toggleGroup>
          <ToggleGroup fx:id="type" />
       </toggleGroup></RadioButton>
-    <RadioButton fx:id="adminButton" mnemonicParsing="false" onAction="#setOwner" text="Owner" toggleGroup="$type" />
+    <RadioButton fx:id="adminButton" mnemonicParsing="false" onAction="#setAdmin" text="Owner" toggleGroup="$type" />
     <Button mnemonicParsing="false" onAction="#saveUser" text="Update" />
     <Button mnemonicParsing="false" onAction="#removeUser" text="Remove" />
 </fx:root>

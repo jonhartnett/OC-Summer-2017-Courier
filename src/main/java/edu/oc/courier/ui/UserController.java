@@ -10,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 
 import java.io.IOException;
@@ -18,12 +19,10 @@ import java.util.ResourceBundle;
 
 public class UserController extends HBox implements Initializable {
 
-    @FXML
-    private TextField username;
-    @FXML
-    private RadioButton orderTakerButton;
-    @FXML
-    private RadioButton adminButton;
+    @FXML private TextField username;
+    @FXML private ToggleGroup userType;
+    @FXML private RadioButton orderTakerButton;
+    @FXML private RadioButton adminButton;
 
     private User user;
     private UsersController parent;
@@ -46,7 +45,7 @@ public class UserController extends HBox implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         username.setText(user.getUsername());
-        if(user.getType() != null) {
+        if (user.getType() != null) {
             switch (user.getType()) {
                 case ORDER_TAKER:
                     orderTakerButton.setSelected(true);
@@ -64,7 +63,7 @@ public class UserController extends HBox implements Initializable {
     }
 
     @FXML
-    private void setOwner(ActionEvent actionEvent) {
+    private void setAdmin(ActionEvent actionEvent) {
         user.setType(UserType.ADMIN);
     }
 

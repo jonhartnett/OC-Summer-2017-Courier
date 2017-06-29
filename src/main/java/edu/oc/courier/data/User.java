@@ -32,6 +32,7 @@ public final class User {
     private UserType type;
 
     public User(){
+        setType(UserType.ORDER_TAKER);
         setPassword("temp");
     }
 
