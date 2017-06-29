@@ -6,7 +6,6 @@ import edu.oc.courier.Main;
 import edu.oc.courier.data.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -32,10 +31,8 @@ import static javafx.scene.paint.Color.*;
 
 public class TicketController extends GridPane implements Initializable {
 
-    @FXML
-    private ComboBox<Client> pickupClient;
-    @FXML
-    private ComboBox<Client> deliveryClient;
+    @FXML private ComboBox<Client> pickupClient;
+    @FXML private ComboBox<Client> deliveryClient;
 
     @FXML private ComboBox<Integer> pickupHour;
     @FXML private ComboBox<Integer> pickupMinute;
@@ -155,7 +152,7 @@ public class TicketController extends GridPane implements Initializable {
     }
 
     @FXML
-    private void generateDirections(ActionEvent actionEvent) {
+    private void generateDirections() {
         try (DBTransaction transaction = DB.getTransation()) {
             RoadMap roadMap = RoadMap.getMap();
             transaction.getAny(SystemInfo.class).ifPresent(systemInfo -> {
@@ -168,7 +165,7 @@ public class TicketController extends GridPane implements Initializable {
     }
 
     @FXML
-    private void update(ActionEvent actionEvent) {
+    private void update() {
         try {
             ticket.setPickupClient(pickupClient.getValue());
             try {
@@ -193,16 +190,12 @@ public class TicketController extends GridPane implements Initializable {
             try (DBTransaction transaction = DB.getTransation()) {
                 RoadMap roadMap = RoadMap.getMap();
                 transaction.getAny(SystemInfo.class).ifPresent(systemInfo -> {
-//                    try {
                     Route routeToPickup = roadMap.getRoute(systemInfo.getCourierAddress(), pickupClient.getValue().getAddress());
                     Route routeToDeliver = roadMap.getRoute(pickupClient.getValue().getAddress(), deliveryClient.getValue().getAddress());
                     double estDistance = routeToPickup.cost + routeToDeliver.cost;
                     ticket.setEstDistance(estDistance);
                     BigDecimal tripCost = systemInfo.getPrice().multiply(new BigDecimal(estDistance));
                     ticket.setQuote(tripCost.add(systemInfo.getBase()));
-//                    } catch (NullPointerException e) {
-//                        throw new RuntimeException("Cannot set a ticket with no clients");
-//                    }
                 });
 
                 transaction.save(ticket);

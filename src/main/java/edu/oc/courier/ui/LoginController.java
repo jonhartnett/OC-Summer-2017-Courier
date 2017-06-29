@@ -3,7 +3,6 @@ package edu.oc.courier.ui;
 import edu.oc.courier.DB;
 import edu.oc.courier.data.User;
 import edu.oc.courier.data.UserType;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -35,7 +34,7 @@ public class LoginController implements Initializable {
     }
 
     @FXML
-    private void login(ActionEvent actionEvent) throws IOException {
+    private void login() throws IOException {
         final String usernameText = this.username.getText();
         final Optional<User> userOpt = DB.getUser(usernameText);
 

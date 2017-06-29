@@ -3,17 +3,19 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.HBox?>
-<fx:root alignment="CENTER" spacing="10.0" type="HBox" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root alignment="CENTER" spacing="10.0" type="HBox" xmlns="http://javafx.com/javafx/8.0.112"
+         xmlns:fx="http://javafx.com/fxml/1">
     <TextField fx:id="username" promptText="Username">
         <opaqueInsets>
-            <Insets />
+            <Insets/>
         </opaqueInsets>
     </TextField>
     <RadioButton fx:id="orderTakerButton" mnemonicParsing="false" onAction="#setOrderTaker" text="Order taker">
-      <toggleGroup>
-         <ToggleGroup fx:id="type" />
-      </toggleGroup></RadioButton>
-    <RadioButton fx:id="adminButton" mnemonicParsing="false" onAction="#setAdmin" text="Owner" toggleGroup="$type" />
-    <Button mnemonicParsing="false" onAction="#saveUser" text="Update" />
-    <Button mnemonicParsing="false" onAction="#removeUser" text="Remove" />
+        <toggleGroup>
+            <ToggleGroup fx:id="type"/>
+        </toggleGroup>
+    </RadioButton>
+    <RadioButton fx:id="adminButton" mnemonicParsing="false" onAction="#setAdmin" text="Owner" toggleGroup="$type"/>
+    <Button mnemonicParsing="false" onAction="#saveUser" text="Update"/>
+    <Button mnemonicParsing="false" onAction="#removeUser" text="Remove"/>
 </fx:root>

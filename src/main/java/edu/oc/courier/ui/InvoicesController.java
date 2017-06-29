@@ -4,7 +4,6 @@ import edu.oc.courier.DB;
 import edu.oc.courier.DBTransaction;
 import edu.oc.courier.Main;
 import edu.oc.courier.data.Client;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
@@ -38,12 +37,12 @@ public class InvoicesController implements Initializable {
     }
 
     @FXML
-    private void updateAmount(ActionEvent actionEvent) {
+    private void updateAmount() {
         try (DBTransaction transaction = DB.getTransation()) {
             Instant start = (startDate.getValue() != null) ? startDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now().minus(7, ChronoUnit.DAYS);
             Instant end = (endDate.getValue() != null) ? endDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now();
             amount.setText(String.format("%s owes %s for %s to %s",
-                clients.getSelectionModel().getSelectedItem().getName(),
+                clients.getValue().getName(),
                 NumberFormat.getCurrencyInstance().format(
                     transaction.get(
                         transaction.query(

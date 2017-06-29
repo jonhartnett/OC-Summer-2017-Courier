@@ -4,7 +4,6 @@ import edu.oc.courier.DB;
 import edu.oc.courier.DBTransaction;
 import edu.oc.courier.data.RoadMap;
 import edu.oc.courier.data.SystemInfo;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -45,7 +44,7 @@ public class SystemController implements Initializable {
     }
 
     @FXML
-    private void updateSystem(ActionEvent actionEvent) {
+    private void updateSystem() {
         try(DBTransaction transaction = DB.getTransation()) {
             systemInfo.setSpeed(Float.parseFloat(avgSpeed.getText()));
             systemInfo.setBase(new BigDecimal(basePrice.getText()));

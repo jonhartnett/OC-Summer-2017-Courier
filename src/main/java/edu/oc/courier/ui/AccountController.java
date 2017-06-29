@@ -3,7 +3,6 @@ package edu.oc.courier.ui;
 import edu.oc.courier.DB;
 import edu.oc.courier.DBTransaction;
 import edu.oc.courier.data.User;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -30,7 +29,7 @@ public class AccountController implements Initializable {
     }
 
     @FXML
-    private void updateUser(ActionEvent actionEvent) {
+    private void updateUser() {
         user.setName(username.getText());
         String password = this.password.getText();
         if (password.length() > 0)

@@ -3,7 +3,6 @@ package edu.oc.courier.ui;
 import edu.oc.courier.DB;
 import edu.oc.courier.DBTransaction;
 import edu.oc.courier.data.User;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.VBox;
@@ -26,7 +25,7 @@ public class UsersController implements Initializable {
     }
 
     @FXML
-    private void addUser(ActionEvent actionEvent) {
+    private void addUser() {
         userList.getChildren().add(new UserController(new User(), this));
     }
 

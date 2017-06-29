@@ -4,7 +4,6 @@ import edu.oc.courier.DB;
 import edu.oc.courier.DBTransaction;
 import edu.oc.courier.data.User;
 import edu.oc.courier.data.UserType;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -58,17 +57,17 @@ public class UserController extends HBox implements Initializable {
     }
 
     @FXML
-    private void setOrderTaker(ActionEvent actionEvent) {
+    private void setOrderTaker() {
         user.setType(UserType.ORDER_TAKER);
     }
 
     @FXML
-    private void setAdmin(ActionEvent actionEvent) {
+    private void setAdmin() {
         user.setType(UserType.ADMIN);
     }
 
     @FXML
-    private void removeUser(ActionEvent actionEvent) {
+    private void removeUser() {
         try (DBTransaction transaction = DB.getTransation()) {
             transaction.delete(user);
             transaction.commit();

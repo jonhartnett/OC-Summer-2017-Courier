@@ -7,38 +7,28 @@
             fx:controller="edu.oc.courier.ui.ContainerController">
     <top>
         <MenuBar fx:id="menu" BorderPane.alignment="CENTER">
-            <menus>
-                <Menu text="Home">
-                    <items>
-                        <MenuItem id="login" onAction="#switchScreen" text="Login"/>
-                        <MenuItem id="account" disable="true" onAction="#switchScreen" text="Account"/>
-                        <MenuItem id="exit" onAction="#switchScreen" text="Exit"/>
-                    </items>
-                </Menu>
-                <Menu disable="true" text="Tickets">
-                    <items>
-                        <MenuItem id="orderTaker,ticket" onAction="#switchScreen" text="New"/>
-                        <MenuItem id="orderTaker,ticketSelector" onAction="#switchScreen" text="Update"/>
-                    </items>
-                </Menu>
-                <Menu disable="true" text="Reports">
-                    <items>
-                        <MenuItem id="admin,clientReport" onAction="#switchScreen" text="Client"/>
-                        <MenuItem id="admin,courierReport" onAction="#switchScreen" text="Courier"/>
-                        <MenuItem id="admin,companyReport" onAction="#switchScreen" text="Company"/>
-                        <MenuItem id="admin,invoices" onAction="#switchScreen" text="Invoices"/>
-                        <MenuItem id="admin,bonuses" onAction="#switchScreen" text="Bonuses"/>
-                    </items>
-                </Menu>
-                <Menu disable="true" text="System">
-                    <items>
-                        <MenuItem id="map" onAction="#switchScreen" text="Map"/>
-                        <MenuItem id="admin,system" onAction="#switchScreen" text="System"/>
-                        <MenuItem id="admin,users" onAction="#switchScreen" text="Users"/>
-                        <MenuItem id="admin,couriers" onAction="#switchScreen" text="Couriers"/>
-                    </items>
-                </Menu>
-            </menus>
+            <Menu text="Home">
+                <MenuItem id="login" onAction="#switchScreen" text="Login"/>
+                <MenuItem id="account" disable="true" onAction="#switchScreen" text="Account"/>
+                <MenuItem id="exit" onAction="#switchScreen" text="Exit"/>
+            </Menu>
+            <Menu disable="true" text="Tickets">
+                <MenuItem id="orderTaker,ticket" onAction="#switchScreen" text="New"/>
+                <MenuItem id="orderTaker,ticketSelector" onAction="#switchScreen" text="Update"/>
+            </Menu>
+            <Menu disable="true" text="Reports">
+                <MenuItem id="admin,clientReport" onAction="#switchScreen" text="Client"/>
+                <MenuItem id="admin,courierReport" onAction="#switchScreen" text="Courier"/>
+                <MenuItem id="admin,companyReport" onAction="#switchScreen" text="Company"/>
+                <MenuItem id="admin,invoices" onAction="#switchScreen" text="Invoices"/>
+                <MenuItem id="admin,bonuses" onAction="#switchScreen" text="Bonuses"/>
+            </Menu>
+            <Menu disable="true" text="System">
+                <MenuItem id="map" onAction="#switchScreen" text="Map"/>
+                <MenuItem id="admin,system" onAction="#switchScreen" text="System"/>
+                <MenuItem id="admin,users" onAction="#switchScreen" text="Users"/>
+                <MenuItem id="admin,couriers" onAction="#switchScreen" text="Couriers"/>
+            </Menu>
         </MenuBar>
     </top>
     <opaqueInsets>

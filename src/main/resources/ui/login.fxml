@@ -6,24 +6,26 @@
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.*?>
-<GridPane alignment="CENTER" hgap="10.0" vgap="10.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.oc.courier.ui.LoginController">
+<GridPane alignment="CENTER" hgap="10.0" vgap="10.0" xmlns="http://javafx.com/javafx/8.0.112"
+          xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.oc.courier.ui.LoginController">
     <children>
-        <TextField fx:id="username" promptText="Username" />
-        <PasswordField fx:id="password" promptText="Password" GridPane.rowIndex="1" />
-        <Button fx:id="loginButton" alignment="CENTER" mnemonicParsing="false" onAction="#login" text="Login" textAlignment="CENTER" GridPane.rowIndex="2" />
-        <Label fx:id="output" textFill="RED" GridPane.rowIndex="3" />
+        <TextField fx:id="username" promptText="Username"/>
+        <PasswordField fx:id="password" promptText="Password" GridPane.rowIndex="1"/>
+        <Button fx:id="loginButton" alignment="CENTER" mnemonicParsing="false" onAction="#login" text="Login"
+                textAlignment="CENTER" GridPane.rowIndex="2"/>
+        <Label fx:id="output" textFill="RED" GridPane.rowIndex="3"/>
     </children>
     <padding>
-        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0"/>
     </padding>
     <columnConstraints>
-        <ColumnConstraints />
-        <ColumnConstraints />
+        <ColumnConstraints/>
+        <ColumnConstraints/>
     </columnConstraints>
     <rowConstraints>
-        <RowConstraints />
-        <RowConstraints />
-        <RowConstraints />
-        <RowConstraints />
+        <RowConstraints/>
+        <RowConstraints/>
+        <RowConstraints/>
+        <RowConstraints/>
     </rowConstraints>
 </GridPane>

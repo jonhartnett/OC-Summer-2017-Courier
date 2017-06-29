@@ -78,7 +78,7 @@ public class TicketSelectorController implements Initializable {
     @FXML
     private void updateTickets() {
         String query = "SELECT t FROM Ticket t";
-        Tuple<String, String> field = sortOrder.getSelectionModel().getSelectedItem();
+        Tuple<String, String> field = sortOrder.getValue();
         if (field != null && !field.y.equals("")) {
             query += " ORDER BY t." + field.y + " " + order.getSelectedToggle().getUserData();
         }

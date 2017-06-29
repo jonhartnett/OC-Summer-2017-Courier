@@ -4,87 +4,96 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<fx:root alignment="CENTER" hgap="10.0" type="javafx.scene.layout.GridPane" vgap="10.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root alignment="CENTER" hgap="10.0" type="javafx.scene.layout.GridPane" vgap="10.0"
+         xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1">
     <padding>
-        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0"/>
     </padding>
     <children>
-        <Label text="Client" />
-        <ComboBox fx:id="pickupClient" GridPane.columnIndex="1" GridPane.columnSpan="2" />
-        <Label text="Deliver to" GridPane.columnIndex="3" />
-        <ComboBox fx:id="deliveryClient" GridPane.columnIndex="4" GridPane.columnSpan="2" />
-        <Label text="Pickup time" GridPane.rowIndex="1" />
-        <ComboBox fx:id="pickupHour" promptText="Hour" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-        <ComboBox fx:id="pickupMinute" promptText="Minute" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-        <DatePicker fx:id="pickupDate" promptText="Day" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-        <Label text="Estimated delivery time" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-        <TextField fx:id="estDeliveryTime" disable="true" editable="false" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-        <Label text="Estimated distance (blocks)" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-        <TextField fx:id="estDistance" disable="true" editable="false" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-        <CheckBox fx:id="charge" text="Charge to destination" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+        <Label text="Client"/>
+        <ComboBox fx:id="pickupClient" GridPane.columnIndex="1" GridPane.columnSpan="2"/>
+        <Label text="Deliver to" GridPane.columnIndex="3"/>
+        <ComboBox fx:id="deliveryClient" GridPane.columnIndex="4" GridPane.columnSpan="2"/>
+        <Label text="Pickup time" GridPane.rowIndex="1"/>
+        <ComboBox fx:id="pickupHour" promptText="Hour" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        <ComboBox fx:id="pickupMinute" promptText="Minute" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+        <DatePicker fx:id="pickupDate" promptText="Day" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+        <Label text="Estimated delivery time" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+        <TextField fx:id="estDeliveryTime" disable="true" editable="false" GridPane.columnIndex="4"
+                   GridPane.columnSpan="2" GridPane.rowIndex="1"/>
+        <Label text="Estimated distance (blocks)" GridPane.columnIndex="3" GridPane.rowIndex="2"/>
+        <TextField fx:id="estDistance" disable="true" editable="false" GridPane.columnIndex="4" GridPane.columnSpan="2"
+                   GridPane.rowIndex="2"/>
+        <CheckBox fx:id="charge" text="Charge to destination" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
         <Label text="Quote" GridPane.columnIndex="3" GridPane.rowIndex="3">
             <font>
-                <Font size="24.0" />
+                <Font size="24.0"/>
             </font>
         </Label>
-        <TextField fx:id="quote" disable="true" editable="false" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="3">
+        <TextField fx:id="quote" disable="true" editable="false" GridPane.columnIndex="4" GridPane.columnSpan="2"
+                   GridPane.rowIndex="3">
             <font>
-                <Font size="24.0" />
+                <Font size="24.0"/>
             </font>
         </TextField>
         <Label text="Ticket number" GridPane.columnIndex="3" GridPane.rowIndex="4">
             <font>
-                <Font size="24.0" />
+                <Font size="24.0"/>
             </font>
         </Label>
-        <TextField fx:id="ticketNumber" disable="true" editable="false" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="4">
+        <TextField fx:id="ticketNumber" disable="true" editable="false" GridPane.columnIndex="4" GridPane.columnSpan="2"
+                   GridPane.rowIndex="4">
             <font>
-                <Font size="24.0" />
+                <Font size="24.0"/>
             </font>
         </TextField>
-        <Label text="Courier" GridPane.rowIndex="4" />
-        <ComboBox fx:id="courier" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+        <Label text="Courier" GridPane.rowIndex="4"/>
+        <ComboBox fx:id="courier" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="4"/>
         <Label text="Leave time" GridPane.rowIndex="5">
             <font>
-                <Font size="24.0" />
+                <Font size="24.0"/>
             </font>
         </Label>
-        <TextField fx:id="leaveTime" disable="true" editable="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5">
+        <TextField fx:id="leaveTime" disable="true" editable="false" GridPane.columnIndex="1" GridPane.columnSpan="2"
+                   GridPane.rowIndex="5">
             <font>
-                <Font size="24.0" />
+                <Font size="24.0"/>
             </font>
         </TextField>
-        <Label text="Actual pick-up" GridPane.rowIndex="7" />
-        <ComboBox fx:id="actualPickupHour" promptText="Hour" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-        <ComboBox fx:id="actualPickupMinute" promptText="Minute" GridPane.columnIndex="2" GridPane.rowIndex="7" />
-        <DatePicker fx:id="actualPickupDate" promptText="Day" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="8" />
-        <Label text="Actual delivery" GridPane.columnIndex="3" GridPane.rowIndex="7" />
-        <ComboBox fx:id="actualDeliveryHour" promptText="Hour" GridPane.columnIndex="4" GridPane.rowIndex="7" />
-        <ComboBox fx:id="actualDeliveryMinute" promptText="Minute" GridPane.columnIndex="5" GridPane.rowIndex="7" />
-        <DatePicker fx:id="actualDeliveryDate" promptText="Day" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="8" />
-        <Button onAction="#update" text="Update" GridPane.columnSpan="5" GridPane.rowIndex="9" />
-        <Label fx:id="output" textFill="RED" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="9" />
-        <Button onAction="#generateDirections" text="Generate directions" GridPane.columnIndex="5" GridPane.rowIndex="9" />
+        <Label text="Actual pick-up" GridPane.rowIndex="7"/>
+        <ComboBox fx:id="actualPickupHour" promptText="Hour" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+        <ComboBox fx:id="actualPickupMinute" promptText="Minute" GridPane.columnIndex="2" GridPane.rowIndex="7"/>
+        <DatePicker fx:id="actualPickupDate" promptText="Day" GridPane.columnIndex="1" GridPane.columnSpan="2"
+                    GridPane.rowIndex="8"/>
+        <Label text="Actual delivery" GridPane.columnIndex="3" GridPane.rowIndex="7"/>
+        <ComboBox fx:id="actualDeliveryHour" promptText="Hour" GridPane.columnIndex="4" GridPane.rowIndex="7"/>
+        <ComboBox fx:id="actualDeliveryMinute" promptText="Minute" GridPane.columnIndex="5" GridPane.rowIndex="7"/>
+        <DatePicker fx:id="actualDeliveryDate" promptText="Day" GridPane.columnIndex="4" GridPane.columnSpan="2"
+                    GridPane.rowIndex="8"/>
+        <Button onAction="#update" text="Update" GridPane.columnSpan="5" GridPane.rowIndex="9"/>
+        <Label fx:id="output" textFill="RED" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="9"/>
+        <Button onAction="#generateDirections" text="Generate directions" GridPane.columnIndex="5"
+                GridPane.rowIndex="9"/>
     </children>
     <columnConstraints>
-        <ColumnConstraints />
-        <ColumnConstraints />
-        <ColumnConstraints />
-        <ColumnConstraints />
-        <ColumnConstraints />
-        <ColumnConstraints />
-        <ColumnConstraints />
+        <ColumnConstraints/>
+        <ColumnConstraints/>
+        <ColumnConstraints/>
+        <ColumnConstraints/>
+        <ColumnConstraints/>
+        <ColumnConstraints/>
+        <ColumnConstraints/>
     </columnConstraints>
     <rowConstraints>
-        <RowConstraints />
-        <RowConstraints />
-        <RowConstraints />
-        <RowConstraints />
-        <RowConstraints />
-        <RowConstraints />
-        <RowConstraints />
-        <RowConstraints />
-        <RowConstraints />
-        <RowConstraints />
+        <RowConstraints/>
+        <RowConstraints/>
+        <RowConstraints/>
+        <RowConstraints/>
+        <RowConstraints/>
+        <RowConstraints/>
+        <RowConstraints/>
+        <RowConstraints/>
+        <RowConstraints/>
+        <RowConstraints/>
     </rowConstraints>
 </fx:root>
