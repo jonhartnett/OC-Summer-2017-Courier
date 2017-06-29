@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <BorderPane xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.oc.courier.ui.TicketSelectorController">
@@ -12,12 +12,12 @@
                         <Insets right="15.0" />
                     </FlowPane.margin>
                 </Label>
-                <ChoiceBox fx:id="sortOrder" prefWidth="150.0">
+                <ComboBox fx:id="sortOrder">
                     <FlowPane.margin>
                         <Insets right="30.0" />
                     </FlowPane.margin>
-                </ChoiceBox>
-                <RadioButton fx:id="ascending" mnemonicParsing="false" text="Ascending">
+                </ComboBox>
+                <RadioButton mnemonicParsing="false" text="Ascending" userData="ASC">
                     <FlowPane.margin>
                         <Insets right="15.0" />
                     </FlowPane.margin>
@@ -25,7 +25,11 @@
                   <ToggleGroup fx:id="order" />
                </toggleGroup>
                 </RadioButton>
-                <RadioButton fx:id="descending" mnemonicParsing="false" text="Descending" toggleGroup="$order" />
+                <RadioButton mnemonicParsing="false" text="Descending" toggleGroup="$order" userData="DESC">
+               <FlowPane.margin>
+                  <Insets right="15.0" />
+               </FlowPane.margin></RadioButton>
+            <Button mnemonicParsing="false" onAction="#updateTickets" text="Update" />
             </children>
             <BorderPane.margin>
                 <Insets />
