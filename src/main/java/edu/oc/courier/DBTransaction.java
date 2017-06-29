@@ -38,7 +38,7 @@ public class DBTransaction implements AutoCloseable {
         final List<T> resultList = query.getResultList();
         if(resultList.isEmpty())
             return Optional.empty();
-        return Optional.of(resultList.get(0));
+        return Optional.ofNullable(resultList.get(0));
     }
 
     public <T, T2> Optional<T> get(Class<T> cls, T2 id){
@@ -51,7 +51,7 @@ public class DBTransaction implements AutoCloseable {
             return Optional.empty();
         if (resultList.size() != 1)
             throw new RuntimeException("Result not unique!");
-        return Optional.of(resultList.get(0));
+        return Optional.ofNullable(resultList.get(0));
     }
 
     public <T> List<T> getAll(TypedQuery<T> query){

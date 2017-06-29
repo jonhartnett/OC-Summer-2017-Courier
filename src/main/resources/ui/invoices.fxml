@@ -2,10 +2,13 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.*?>
 <GridPane hgap="10.0" vgap="10.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.oc.courier.ui.InvoicesController">
    <columnConstraints>
+      <ColumnConstraints />
+      <ColumnConstraints />
       <ColumnConstraints />
    </columnConstraints>
    <rowConstraints>
@@ -14,7 +17,9 @@
    </rowConstraints>
    <children>
       <ComboBox fx:id="clients" onAction="#updateAmount" promptText="Client" />
-      <Label fx:id="amount" GridPane.rowIndex="1" />
+      <DatePicker fx:id="startDate" onAction="#updateAmount" promptText="Start date" GridPane.columnIndex="1" />
+      <DatePicker fx:id="endDate" onAction="#updateAmount" promptText="End date" GridPane.columnIndex="2" />
+      <Label fx:id="amount" GridPane.columnSpan="3" GridPane.rowIndex="1" />
    </children>
    <opaqueInsets>
       <Insets />

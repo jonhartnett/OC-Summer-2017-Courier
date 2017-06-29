@@ -8,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 
 import java.math.BigDecimal;
@@ -22,10 +23,10 @@ import java.util.ResourceBundle;
 
 public class BonusesController implements Initializable {
 
-    @FXML
-    private ComboBox<Courier> couriers;
-    @FXML
-    private Label amount;
+    @FXML private ComboBox<Courier> couriers;
+    @FXML private DatePicker startDate;
+    @FXML private DatePicker endDate;
+    @FXML private Label amount;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -36,24 +37,29 @@ public class BonusesController implements Initializable {
         }
     }
 
-    public void updateAmount(ActionEvent actionEvent) {
+    @FXML
+    private void updateAmount(ActionEvent actionEvent) {
         try (DBTransaction transaction = DB.getTransation()) {
-            Instant pastWeek = Instant.now().minus(7, ChronoUnit.DAYS);
-            amount.setText(String.format("%s earned %s in bonuses for the week starting on %s",
-                    couriers.getSelectionModel().getSelectedItem().getName(),
-                    NumberFormat.getCurrencyInstance().format(
-                            transaction.get(
-                                    transaction.query(
-                                            "SELECT SUM(t.quote) * s.bonus FROM Ticket t, SystemInfo s " +
-                                                    "WHERE t.courier = :courier " +
-                                                    "AND t.orderTime > :time " +
-                                                    "AND t.estDeliveryTime < t.actualDeliveryTime",
-                                            BigDecimal.class)
-                                            .setParameter("courier", couriers.getValue())
-                                            .setParameter("time", pastWeek)
-                            ).get()
-                    ),
-                    pastWeek.atZone(ZoneId.systemDefault()).toLocalDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL))
+            Instant start = (startDate.getValue() != null) ? startDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now().minus(7, ChronoUnit.DAYS);
+            Instant end = (endDate.getValue() != null) ? endDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now();
+            amount.setText(String.format("%s earned %s in bonuses for %s to %s",
+                couriers.getSelectionModel().getSelectedItem().getName(),
+                NumberFormat.getCurrencyInstance().format(
+                    transaction.get(
+                        transaction.query(
+                    "SELECT SUM(t.quote) * s.bonus FROM Ticket t, SystemInfo s " +
+                            "WHERE t.courier = :courier " +
+                            "AND t.orderTime > :startTime " +
+                            "AND t.orderTime < :endTime " +
+                            "AND t.estDeliveryTime < t.actualDeliveryTime",
+                            BigDecimal.class)
+                        .setParameter("courier", couriers.getValue())
+                        .setParameter("startTime", start)
+                        .setParameter("endTime", end)
+                    ).orElse(new BigDecimal(0))
+                ),
+                start.atZone(ZoneId.systemDefault()).toLocalDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)),
+                end.atZone(ZoneId.systemDefault()).toLocalDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))
             ));
         }
     }
