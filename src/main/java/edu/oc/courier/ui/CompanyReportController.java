@@ -11,6 +11,7 @@ import javafx.scene.chart.BarChart;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 
@@ -20,6 +21,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,6 +29,8 @@ import java.util.ResourceBundle;
 
 public class CompanyReportController implements Initializable {
 
+    @FXML private DatePicker startDate;
+    @FXML private DatePicker endDate;
     @FXML private Label totalPackages;
     @FXML private PieChart pickup;
     @FXML private PieChart deliver;
@@ -51,11 +55,26 @@ public class CompanyReportController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        updateReports();
+    }
+
+    @FXML
+    private void updateReports() {
         Task task = new Task<Void>() {
             @Override
             public Void call() {
                 try (DBTransaction transaction = DB.getTransation()) {
-                    Collection<Ticket> tickets = transaction.getAll(transaction.query("SELECT t from Ticket t", Ticket.class));
+                    Instant start = (startDate.getValue() != null) ? startDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now().minus(365, ChronoUnit.DAYS);
+                    Instant end = (endDate.getValue() != null) ? endDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now();
+                    Collection<Ticket> tickets = transaction.getAll(
+                        transaction.query(
+                            "SELECT t from Ticket t " +
+                                    "WHERE t.orderTime > :startTime " +
+                                    "AND t.orderTime < :endTime",
+                            Ticket.class)
+                        .setParameter("startTime", start)
+                        .setParameter("endTime", end)
+                    );
                     numTickets = tickets.size();
                     int count = 0;
                     int currentYear = LocalDate.from(Instant.now().atZone(ZoneId.systemDefault())).getYear();
@@ -87,7 +106,7 @@ public class CompanyReportController implements Initializable {
                                 onTimePerDay.put(ticketDate, onTimePerDay.getOrDefault(ticketDate, 0) + 1);
                         }
 
-                        updateProgress(count++, numTickets);
+                        updateProgress(++count, numTickets);
                     }
                 }
                 return null;
@@ -96,16 +115,15 @@ public class CompanyReportController implements Initializable {
             @Override
             public void succeeded() {
                 super.succeeded();
-                updateReports();
+                drawReports();
             }
         };
 
         progress.progressProperty().bind(task.progressProperty());
-        Thread dataThread = new Thread(task);
-        dataThread.start();
+        new Thread(task).start();
     }
 
-    private void updateReports() {
+    private void drawReports() {
         totalPackages.setText(numTickets + " tickets");
 
         pickup.setData(FXCollections.observableArrayList(
@@ -126,6 +144,7 @@ public class CompanyReportController implements Initializable {
         for (Map.Entry<String, Integer> entry : packages.entrySet()) {
             courierSeries.getData().add(new XYChart.Data<>(entry.getKey(), entry.getValue()));
         }
+        packagesPerCourier.getData().clear();
         packagesPerCourier.getData().add(courierSeries);
 
         XYChart.Series<String, Double> onTimeSeries = new XYChart.Series<>();
@@ -135,6 +154,7 @@ public class CompanyReportController implements Initializable {
                     (double) onTimePerDay.getOrDefault(entry.getKey(), 0) / entry.getValue()
             ));
         }
+        amountOnTime.getData().clear();
         amountOnTime.getData().add(onTimeSeries);
     }
 }

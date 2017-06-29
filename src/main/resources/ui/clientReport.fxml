@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.*?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.layout.*?>
 <GridPane hgap="10.0" vgap="10.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.oc.courier.ui.ClientReportController">
   <columnConstraints>
@@ -14,7 +16,22 @@
       <RowConstraints />
   </rowConstraints>
    <children>
-      <ComboBox fx:id="clients" onAction="#update" promptText="Client" />
+      <FlowPane GridPane.columnSpan="2">
+         <children>
+            <ComboBox fx:id="clients" onAction="#update" promptText="Client">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <FlowPane.margin>
+                  <Insets right="30.0" />
+               </FlowPane.margin></ComboBox>
+            <DatePicker fx:id="startDate" onAction="#update" promptText="Start date">
+               <FlowPane.margin>
+                  <Insets right="15.0" />
+               </FlowPane.margin></DatePicker>
+            <DatePicker fx:id="endDate" onAction="#update" promptText="End date" />
+         </children>
+      </FlowPane>
       <PieChart fx:id="pickup" legendVisible="false" title="Amount picked up on time" GridPane.rowIndex="1" />
       <PieChart fx:id="deliver" legendVisible="false" title="Amount delivered on time" GridPane.columnIndex="1" GridPane.rowIndex="1" />
       <BarChart fx:id="packagesPerCourier" title="Packages handled by courier" GridPane.columnSpan="2" GridPane.rowIndex="2">

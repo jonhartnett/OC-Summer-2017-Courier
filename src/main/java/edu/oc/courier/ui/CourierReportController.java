@@ -6,21 +6,26 @@ import edu.oc.courier.Main;
 import edu.oc.courier.data.Courier;
 import edu.oc.courier.data.Ticket;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 
 import java.net.URL;
 import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.ResourceBundle;
 
 public class CourierReportController implements Initializable {
 
     @FXML private ComboBox<Courier> couriers;
+    @FXML private DatePicker startDate;
+    @FXML private DatePicker endDate;
     @FXML private PieChart pickup;
     @FXML private PieChart deliver;
     @FXML private Label speed;
@@ -34,9 +39,22 @@ public class CourierReportController implements Initializable {
         }
     }
 
-    public void update(ActionEvent actionEvent) {
+    @FXML
+    private void update() {
         try (DBTransaction transaction = DB.getTransation()) {
-            Collection<Ticket> tickets = transaction.getAll(transaction.where(Ticket.class, "courier", couriers.getValue()));
+            Instant start = (startDate.getValue() != null) ? startDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now().minus(365, ChronoUnit.DAYS);
+            Instant end = (endDate.getValue() != null) ? endDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now();
+            Collection<Ticket> tickets = transaction.getAll(
+                transaction.query(
+                "SELECT t FROM Ticket t " +
+                        "WHERE t.courier = :courier " +
+                        "AND t.orderTime > :startTime " +
+                        "AND t.orderTime < :endTime",
+                    Ticket.class)
+                .setParameter("courier", couriers.getValue())
+                .setParameter("startTime", start)
+                .setParameter("endTime", end)
+            );
             final int numTickets = tickets.size();
 
             int pickupOnTime = 0;

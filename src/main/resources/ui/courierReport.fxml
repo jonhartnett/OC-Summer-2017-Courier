@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
@@ -16,7 +18,21 @@
     <RowConstraints />
   </rowConstraints>
    <children>
-      <ComboBox fx:id="couriers" onAction="#update" promptText="Courier" />
+      <FlowPane>
+         <children>
+            <ComboBox fx:id="couriers" onAction="#update" promptText="Courier">
+               <FlowPane.margin>
+                  <Insets right="30.0" />
+               </FlowPane.margin>
+            </ComboBox>
+            <DatePicker fx:id="startDate" onAction="#update" promptText="Start date">
+               <FlowPane.margin>
+                  <Insets right="15.0" />
+               </FlowPane.margin>
+            </DatePicker>
+            <DatePicker fx:id="endDate" onAction="#update" promptText="End date" />
+         </children>
+      </FlowPane>
       <PieChart fx:id="pickup" legendVisible="false" title="Amount picked up on time" GridPane.rowIndex="1" />
       <PieChart fx:id="deliver" legendVisible="false" title="Amount delivered on time" GridPane.rowIndex="2" />
       <Label fx:id="speed" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
