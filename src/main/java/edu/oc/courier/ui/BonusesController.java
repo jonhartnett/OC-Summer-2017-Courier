@@ -14,6 +14,9 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.text.NumberFormat;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.time.temporal.ChronoUnit;
 import java.util.ResourceBundle;
 
@@ -35,17 +38,22 @@ public class BonusesController implements Initializable {
 
     public void updateAmount(ActionEvent actionEvent) {
         try (DBTransaction transaction = DB.getTransation()) {
-            amount.setText(NumberFormat.getCurrencyInstance().format(
-                transaction.get(
-                    transaction.query(
-                        "SELECT SUM(t.quote) * s.bonus FROM Ticket t, SystemInfo s " +
-                            "WHERE t.courier = :courier " +
-                            "AND t.orderTime > :time " +
-                            "AND t.estDeliveryTime < t.actualDeliveryTime",
-                        BigDecimal.class)
-                    .setParameter("courier", couriers.getValue())
-                    .setParameter("time", Instant.now().minus(7, ChronoUnit.DAYS))
-                ).get()
+            Instant pastWeek = Instant.now().minus(7, ChronoUnit.DAYS);
+            amount.setText(String.format("%s earned %s in bonuses for the week starting on %s",
+                    couriers.getSelectionModel().getSelectedItem().getName(),
+                    NumberFormat.getCurrencyInstance().format(
+                            transaction.get(
+                                    transaction.query(
+                                            "SELECT SUM(t.quote) * s.bonus FROM Ticket t, SystemInfo s " +
+                                                    "WHERE t.courier = :courier " +
+                                                    "AND t.orderTime > :time " +
+                                                    "AND t.estDeliveryTime < t.actualDeliveryTime",
+                                            BigDecimal.class)
+                                            .setParameter("courier", couriers.getValue())
+                                            .setParameter("time", pastWeek)
+                            ).get()
+                    ),
+                    pastWeek.atZone(ZoneId.systemDefault()).toLocalDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL))
             ));
         }
     }
