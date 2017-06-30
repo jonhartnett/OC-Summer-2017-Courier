@@ -22,10 +22,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.time.temporal.ChronoUnit;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class CompanyReportController implements Initializable {
 
@@ -50,7 +47,7 @@ public class CompanyReportController implements Initializable {
     public CompanyReportController() {
         packages = new HashMap<>();
         onTimePerDay = new HashMap<>();
-        packagesPerDay = new HashMap<>();
+        packagesPerDay = new TreeMap<>();
     }
 
     @Override
