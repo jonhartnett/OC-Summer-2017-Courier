@@ -40,30 +40,30 @@ public class CompanyReportController implements Initializable {
     private int pickupOnTime = 0;
     private int deliverOnTime = 0;
     private int totalOnTime = 0;
-    private Map<String, Integer> packages;
-    private Map<LocalDate, Integer> onTimePerDay;
-    private Map<LocalDate, Integer> packagesPerDay;
-
-    public CompanyReportController() {
-        packages = new HashMap<>();
-        onTimePerDay = new HashMap<>();
-        packagesPerDay = new TreeMap<>();
-    }
+    private final Map<String, Integer> packages = new HashMap<>();
+    private final Map<LocalDate, Integer> onTimePerDay = new HashMap<>();
+    private final Map<LocalDate, Integer> packagesPerDay = new HashMap<>();
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize(final URL location, final ResourceBundle resources) {
         updateReports();
     }
 
     @FXML
     private void updateReports() {
-        Task task = new Task<Void>() {
+        final Task task = new Task<Void>() {
             @Override
             public Void call() {
                 try (DBTransaction transaction = DB.getTransaction()) {
-                    Instant start = (startDate.getValue() != null) ? startDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now().minus(365, ChronoUnit.DAYS);
-                    Instant end = (endDate.getValue() != null) ? endDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now();
-                    Collection<Ticket> tickets = transaction.getAll(
+                    final Instant start = (startDate.getValue() != null) ?
+                                          startDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() :
+                                          Instant.now().minus(365, ChronoUnit.DAYS);
+
+                    final Instant end = (endDate.getValue() != null) ?
+                                        endDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() :
+                                        Instant.now();
+
+                    final Collection<Ticket> tickets = transaction.getAll(
                         transaction.query(
                             "SELECT t from Ticket t " +
                                     "WHERE t.orderTime > :startTime " +
@@ -74,7 +74,7 @@ public class CompanyReportController implements Initializable {
                     );
                     numTickets = tickets.size();
                     int count = 0;
-                    int currentYear = LocalDate.from(Instant.now().atZone(ZoneId.systemDefault())).getYear();
+                    final int currentYear = LocalDate.from(Instant.now().atZone(ZoneId.systemDefault())).getYear();
                     for (Ticket t : tickets) {
                         boolean onTime = true;
                         if (t.getActualPickupTime() != null && t.getPickupTime() != null) {
@@ -96,7 +96,7 @@ public class CompanyReportController implements Initializable {
 
                         packages.put(t.getCourier().getName(), packages.getOrDefault(t.getCourier().getName(), 0) + 1);
 
-                        LocalDate ticketDate = LocalDate.from(t.getOrderTime().atZone(ZoneId.systemDefault()));
+                        final LocalDate ticketDate = LocalDate.from(t.getOrderTime().atZone(ZoneId.systemDefault()));
                         if (LocalDate.from(t.getOrderTime().atZone(ZoneId.systemDefault())).getYear() == currentYear) {
                             packagesPerDay.put(ticketDate, packagesPerDay.getOrDefault(ticketDate, 0) + 1);
                             if (onTime)
@@ -136,7 +136,7 @@ public class CompanyReportController implements Initializable {
                 new PieChart.Data(numTickets - totalOnTime + " late", numTickets - totalOnTime)
         ));
 
-        XYChart.Series<String, Integer> courierSeries = new XYChart.Series<>();
+        final XYChart.Series<String, Integer> courierSeries = new XYChart.Series<>();
         courierSeries.setName("Packages");
         for (Map.Entry<String, Integer> entry : packages.entrySet()) {
             courierSeries.getData().add(new XYChart.Data<>(entry.getKey(), entry.getValue()));
@@ -144,7 +144,7 @@ public class CompanyReportController implements Initializable {
         packagesPerCourier.getData().clear();
         packagesPerCourier.getData().add(courierSeries);
 
-        XYChart.Series<String, Double> onTimeSeries = new XYChart.Series<>();
+        final XYChart.Series<String, Double> onTimeSeries = new XYChart.Series<>();
         for (Map.Entry<LocalDate, Integer> entry : packagesPerDay.entrySet()) {
             onTimeSeries.getData().add(new XYChart.Data<>(
                     entry.getKey().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)),

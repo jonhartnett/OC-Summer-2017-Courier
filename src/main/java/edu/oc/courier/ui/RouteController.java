@@ -17,20 +17,20 @@ import java.util.ResourceBundle;
 
 public class RouteController extends HBox implements Initializable {
 
-    @FXML
-    private Label first, last;
-    @FXML
-    private ComboBox<RouteCondition> condition;
+    @FXML private Label first;
+    @FXML private Label last;
+    @FXML private ComboBox<RouteCondition> condition;
 
-    private String f, l;
-    private RouteCondition c;
+    private final String firstString;
+    private final String lastString;
+    private final RouteCondition c;
 
-    public RouteController(String first, String last, RouteCondition condition) {
-        f = first;
-        l = last;
+    public RouteController(final String first, final String last, final RouteCondition condition) {
+        firstString = first;
+        lastString = last;
         c = condition;
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/route.fxml"));
+        final FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/route.fxml"));
         loader.setRoot(this);
         loader.setController(this);
 
@@ -42,13 +42,13 @@ public class RouteController extends HBox implements Initializable {
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize(final URL location, final ResourceBundle resources) {
         condition.setCellFactory(new Callback<ListView<RouteCondition>, ListCell<RouteCondition>>() {
             @Override
-            public ListCell<RouteCondition> call(ListView<RouteCondition> param) {
+            public ListCell<RouteCondition> call(final ListView<RouteCondition> param) {
                 return new ListCell<RouteCondition>() {
                     @Override
-                    public void updateItem(RouteCondition condition, boolean isEmpty) {
+                    public void updateItem(final RouteCondition condition, final boolean isEmpty) {
                         super.updateItem(condition, isEmpty);
                         if (condition != null) {
                             switch (condition) {
@@ -70,17 +70,17 @@ public class RouteController extends HBox implements Initializable {
         condition.setButtonCell(condition.getCellFactory().call(null));
         condition.getItems().addAll(RouteCondition.OPEN, RouteCondition.BUSY, RouteCondition.CLOSED);
 
-        first.setText(f);
-        last.setText(l);
+        first.setText(firstString);
+        last.setText(lastString);
         condition.setValue(c);
     }
 
     public String getFirst() {
-        return f;
+        return firstString;
     }
 
     public String getLast() {
-        return l;
+        return lastString;
     }
 
     public RouteCondition getCondition() {

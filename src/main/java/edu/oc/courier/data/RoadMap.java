@@ -9,14 +9,14 @@ import java.util.stream.Stream;
 
 @Entity
 public class RoadMap {
-    public static RoadMap getMap(DBTransaction trans) {
-        Optional<RoadMap> optional = trans.getAny(RoadMap.class);
+    public static RoadMap getMap(final DBTransaction trans) {
+        final Optional<RoadMap> optional = trans.getAny(RoadMap.class);
         if (optional.isPresent()) {
-            RoadMap instance = optional.get();
+            final RoadMap instance = optional.get();
             instance.onLoad();
             return instance;
         } else {
-            RoadMap instance = new RoadMap();
+            final RoadMap instance = new RoadMap();
             trans.save(instance);
             return instance;
         }
@@ -26,16 +26,11 @@ public class RoadMap {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int id = 1;
     @OneToMany(cascade = CascadeType.ALL)
-    public List<Node> nodeList = new ArrayList<>();
+    public final List<Node> nodeList = new ArrayList<>();
     @Transient
-    private Map<String, Node> nodes = new HashMap<>();
+    private final Map<String, Node> nodes = new HashMap<>();
 
     public RoadMap(){}
-
-    public RoadMap(Iterable<Node> nodes){
-        for(Node node : nodes)
-            this.nodes.put(node.getName(), node);
-    }
 
     public void onLoad(){
         for(Node node : nodeList){
@@ -45,15 +40,15 @@ public class RoadMap {
         }
     }
 
-    public void add(String key){
+    public void add(final String key){
         if(nodes.containsKey(key))
             throw new RuntimeException("Name " + key + " already in use.");
-        Node node = new Node(key);
+        final Node node = new Node(key);
         nodeList.add(node);
         nodes.put(key, node);
     }
 
-    public boolean has(String key) {
+    public boolean has(final String key) {
         return nodes.containsKey(key);
     }
 
@@ -62,15 +57,15 @@ public class RoadMap {
         nodes.clear();
     }
 
-    public void setLink(String key, String key2, double cost){
-        Node n1 = nodes.get(key);
-        Node n2 = nodes.get(key2);
+    public void setLink(final String key, final String key2, final double cost){
+        final Node n1 = nodes.get(key);
+        final Node n2 = nodes.get(key2);
         n1.link(n2, cost);
         n2.link(n1, cost);
     }
 
     public Stream<Triple<String, String, Double>> getLinks() {
-        Stream.Builder<Triple<String, String, Double>> builder = Stream.builder();
+        final Stream.Builder<Triple<String, String, Double>> builder = Stream.builder();
         for (Node node : nodes.values()) {
             for (Map.Entry<Node, Double> entry : node.inverseLinks.entrySet()) {
                 if (node.getName().compareTo(entry.getKey().getName()) <= 0) {
@@ -81,15 +76,15 @@ public class RoadMap {
         return builder.build();
     }
 
-    public void setOneWayLink(String src, String dest, double cost){
+    public void setOneWayLink(final String src, final String dest, final double cost){
         nodes.get(src).link(nodes.get(dest), cost);
     }
 
-    public void removeLink(String key, String key2){
+    public void removeLink(final String key, final String key2){
         this.setLink(key, key2, Double.POSITIVE_INFINITY);
     }
 
-    public Route getRoute(String start, String end){
+    public Route getRoute(final String start, final String end){
         return nodes.get(start).getRoute(nodes.get(end));
     }
 }

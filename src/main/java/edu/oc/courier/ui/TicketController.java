@@ -61,7 +61,7 @@ public class TicketController extends GridPane implements Initializable {
         this.ticket = new Ticket();
 
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/ticket.fxml"));
+        final FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/ticket.fxml"));
         loader.setRoot(this);
         loader.setController(this);
 
@@ -72,16 +72,17 @@ public class TicketController extends GridPane implements Initializable {
         }
     }
 
-    public TicketController(Ticket ticket) {
+    public TicketController(final Ticket ticket) {
         this();
         this.ticket = ticket;
         this.setUIFields();
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        ObservableList<Integer> hours = IntStream.rangeClosed(1, 24).boxed().collect(collectingAndThen(toList(), FXCollections::observableArrayList));
-        ObservableList<Integer> minutes = IntStream.rangeClosed(0, 60).boxed().collect(collectingAndThen(toList(), FXCollections::observableArrayList));
+    public void initialize(final URL location, final ResourceBundle resources) {
+        final ObservableList<Integer> hours = IntStream.rangeClosed(1, 24).boxed().collect(collectingAndThen(toList(), FXCollections::observableArrayList));
+        final ObservableList<Integer> minutes = IntStream.rangeClosed(0, 60).boxed().collect(collectingAndThen(toList(), FXCollections::observableArrayList));
+
         pickupHour.setItems(hours);
         pickupMinute.setItems(minutes);
         actualPickupHour.setItems(hours);
@@ -97,11 +98,11 @@ public class TicketController extends GridPane implements Initializable {
         courier.setButtonCell(Main.courierCallback.call(null));
 
         try (DBTransaction transaction = DB.getTransaction()) {
-            List<Client> clients = transaction.getAll(transaction.query("SELECT c FROM Client c", Client.class));
+            final List<Client> clients = transaction.getAll(transaction.query("SELECT c FROM Client c", Client.class));
             pickupClient.getItems().addAll(clients);
             deliveryClient.getItems().addAll(clients);
 
-            List<Courier> couriers = transaction.getAll(transaction.query("SELECT c FROM Courier c", Courier.class));
+            final List<Courier> couriers = transaction.getAll(transaction.query("SELECT c FROM Courier c", Courier.class));
             courier.getItems().addAll(couriers);
         }
         this.setUIFields();
@@ -133,9 +134,9 @@ public class TicketController extends GridPane implements Initializable {
         setUITime(ticket.getActualDeliveryTime(), actualDeliveryHour, actualDeliveryMinute, actualDeliveryDate);
     }
 
-    private void setUITime(Instant instant, ComboBox<Integer> hourBox, ComboBox<Integer> minuteBox, DatePicker datePicker) {
+    private void setUITime(final Instant instant, final ComboBox<Integer> hourBox, final ComboBox<Integer> minuteBox, final DatePicker datePicker) {
         try {
-            LocalDateTime dateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+            final LocalDateTime dateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
             hourBox.setValue(dateTime.getHour());
             minuteBox.setValue(dateTime.getMinute());
             datePicker.setValue(dateTime.toLocalDate());
@@ -147,10 +148,10 @@ public class TicketController extends GridPane implements Initializable {
     @FXML
     private void generateDirections() {
         try (DBTransaction transaction = DB.getTransaction()) {
-            RoadMap roadMap = RoadMap.getMap(transaction);
+            final RoadMap roadMap = RoadMap.getMap(transaction);
             transaction.getAny(SystemInfo.class).ifPresent(systemInfo -> {
-                Route routeToPickup = roadMap.getRoute(systemInfo.getCourierAddress(), pickupClient.getValue().getAddress());
-                Route routeToDeliver = roadMap.getRoute(pickupClient.getValue().getAddress(), deliveryClient.getValue().getAddress());
+                final Route routeToPickup = roadMap.getRoute(systemInfo.getCourierAddress(), pickupClient.getValue().getAddress());
+                final Route routeToDeliver = roadMap.getRoute(pickupClient.getValue().getAddress(), deliveryClient.getValue().getAddress());
                 output.setTextFill(BLACK);
                 output.setText(String.format("Pickup: %s\nDeliver: %s", routeToPickup.toString(), routeToDeliver.toString()));
             });
@@ -180,14 +181,14 @@ public class TicketController extends GridPane implements Initializable {
             }
 
             try (DBTransaction transaction = DB.getTransaction()) {
-                RoadMap roadMap = RoadMap.getMap(transaction);
+                final RoadMap roadMap = RoadMap.getMap(transaction);
                 transaction.getAny(SystemInfo.class).ifPresent(systemInfo -> {
-                    Route routeToPickup = roadMap.getRoute(systemInfo.getCourierAddress(), pickupClient.getValue().getAddress());
-                    Route routeToDeliver = roadMap.getRoute(pickupClient.getValue().getAddress(), deliveryClient.getValue().getAddress());
-                    double estDistance = routeToPickup.cost + routeToDeliver.cost;
+                    final Route routeToPickup = roadMap.getRoute(systemInfo.getCourierAddress(), pickupClient.getValue().getAddress());
+                    final Route routeToDeliver = roadMap.getRoute(pickupClient.getValue().getAddress(), deliveryClient.getValue().getAddress());
+                    final double estDistance = routeToPickup.cost + routeToDeliver.cost;
                     ticket.setEstDistance(estDistance);
                     ticket.setEstDeliveryTime(ticket.getPickupTime().plus(Math.round(systemInfo.getSpeed() * estDistance), ChronoUnit.HOURS));
-                    BigDecimal tripCost = systemInfo.getPrice().multiply(new BigDecimal(estDistance));
+                    final BigDecimal tripCost = systemInfo.getPrice().multiply(new BigDecimal(estDistance));
                     ticket.setQuote(tripCost.add(systemInfo.getBase()));
                 });
 
@@ -197,7 +198,7 @@ public class TicketController extends GridPane implements Initializable {
                 setUIFields();
                 output.setTextFill(GREEN);
                 output.setText("Updated successfully");
-                ContainerController.fade(3, output);
+                ContainerController.fade(output);
             }
         } catch (Exception e) {
             output.setTextFill(RED);

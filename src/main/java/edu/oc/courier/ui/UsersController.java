@@ -15,7 +15,7 @@ public class UsersController implements Initializable {
     @FXML private VBox userList;
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize(final URL location, final ResourceBundle resources) {
         try (DBTransaction transaction = DB.getTransaction()) {
             transaction.getAll(transaction.query("SELECT u FROM User u", User.class))
                 .forEach(user ->
@@ -29,7 +29,7 @@ public class UsersController implements Initializable {
         userList.getChildren().add(new UserController(new User(), this));
     }
 
-    public void removeUser(UserController child) {
+    public void removeUser(final UserController child) {
         userList.getChildren().remove(child);
     }
 }

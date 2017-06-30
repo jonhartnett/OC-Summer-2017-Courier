@@ -1,7 +1,5 @@
 package edu.oc.courier;
 
-import edu.oc.courier.data.User;
-
 import java.io.Closeable;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -9,10 +7,10 @@ import java.util.List;
 import java.util.Optional;
 import org.intellij.lang.annotations.Language;
 
-public class DBTransaction implements Closeable {
+public final class DBTransaction implements Closeable {
     private EntityManager manager;
 
-    public DBTransaction(EntityManager manager){
+    public DBTransaction(final EntityManager manager){
         this.manager = manager;
         manager.getTransaction().begin();
     }
@@ -30,24 +28,20 @@ public class DBTransaction implements Closeable {
         }
     }
 
-    public <T> Optional<T> getAny(Class<T> cls){
+    public <T> Optional<T> getAny(final Class<T> cls){
         return getFirst(
             query("SELECT e FROM " + cls.getName() + " e", cls)
         );
     }
 
-    public <T> Optional<T> getFirst(TypedQuery<T> query){
+    public <T> Optional<T> getFirst(final TypedQuery<T> query){
         final List<T> resultList = query.getResultList();
         if(resultList.isEmpty())
             return Optional.empty();
         return Optional.ofNullable(resultList.get(0));
     }
 
-    public <T> Optional<T> get(Class<T> cls, Object id){
-        return getWhere(cls, "id", id);
-    }
-
-    public <T> Optional<T> get(TypedQuery<T> query){
+    public <T> Optional<T> get(final TypedQuery<T> query){
         final List<T> resultList = query.getResultList();
         if (resultList.isEmpty())
             return Optional.empty();
@@ -56,38 +50,23 @@ public class DBTransaction implements Closeable {
         return Optional.ofNullable(resultList.get(0));
     }
 
-    public <T> List<T> getAll(TypedQuery<T> query){
+    public <T> List<T> getAll(final TypedQuery<T> query){
         return query.getResultList();
     }
 
-    public <T> Optional<T> getWhere(Class<T> cls, String column, Object value){
-        return get(
-            where(cls, column, value)
-        );
-    }
-
-    public void save(Object... entities){
+    public void save(final Object... entities){
         for(Object entity : entities) {
             manager.merge(entity);
         }
     }
 
-    public void delete(Object... entities){
+    public void delete(final Object... entities){
         for(Object entity : entities) {
             manager.remove(entity);
         }
     }
 
-    public <T> TypedQuery<T> query(@Language("HQL") String qlString, Class<T> resultClass){
+    public <T> TypedQuery<T> query(@Language("HQL") final String qlString, final Class<T> resultClass){
         return manager.createQuery(qlString, resultClass);
-    }
-
-    public <T> TypedQuery<T> where(Class<T> cls, String column, Object value){
-        return query("SELECT e FROM " + cls.getName() + " e WHERE e." + column + " = :value", cls)
-            .setParameter("value", value);
-    }
-
-    public Optional<User> getUser(String username){
-        return getWhere(User.class, "username", username);
     }
 }

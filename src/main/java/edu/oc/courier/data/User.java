@@ -37,7 +37,7 @@ public final class User {
         return currentUser;
     }
 
-    public static void setCurrentUser(User user) {
+    public static void setCurrentUser(final User user) {
         User.currentUser = user;
     }
 
@@ -46,14 +46,14 @@ public final class User {
         setPassword("temp");
     }
 
-    public User(String name, String username, String password, UserType type) {
+    public User(final String name, final String username, final String password, final UserType type) {
         setName(name);
         setUsername(username);
         setPassword(password);
         setType(type);
     }
 
-    public boolean isPasswordValid(String password) {
+    public boolean isPasswordValid(final String password) {
         Preconditions.checkNotNull(password, "password must not be null");
 
         final byte[] bytes;
@@ -66,7 +66,7 @@ public final class User {
         return Arrays.equals(this.password, bytes);
     }
 
-    public void setPassword(String password) {
+    public void setPassword(final String password) {
         Preconditions.checkNotNull(password, "password must not be null");
         generateSalt();
 
@@ -90,7 +90,7 @@ public final class User {
         return username;
     }
 
-    public void setUsername(String username) {
+    public void setUsername(final String username) {
         this.username = username;
     }
 
@@ -98,7 +98,7 @@ public final class User {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -106,7 +106,7 @@ public final class User {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(final int id) {
         this.id = id;
     }
 
@@ -114,7 +114,7 @@ public final class User {
         return password;
     }
 
-    public void setPassword(byte[] password) {
+    public void setPassword(final byte[] password) {
         this.password = password;
     }
 
@@ -122,7 +122,7 @@ public final class User {
         return salt;
     }
 
-    public void setSalt(String salt) {
+    public void setSalt(final String salt) {
         this.salt = salt;
     }
 
@@ -130,12 +130,12 @@ public final class User {
         return type;
     }
 
-    public void setType(UserType type) {
+    public void setType(final UserType type) {
         this.type = type;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }

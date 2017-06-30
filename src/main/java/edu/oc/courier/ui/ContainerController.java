@@ -19,11 +19,11 @@ import java.util.ResourceBundle;
 
 public class ContainerController implements Initializable {
 
-    public MenuBar menu;
+    @FXML private MenuBar menu;
     @FXML private BorderPane container;
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize(final URL location, final ResourceBundle resources) {
         try {
             loadScreen("login");
         } catch (IOException e) {
@@ -31,13 +31,13 @@ public class ContainerController implements Initializable {
         }
     }
 
-    void loadScreen(String fxmlName) throws IOException {
+    void loadScreen(final String fxmlName) throws IOException {
         //OH GOD MY EYES THIS IS SO BAD
         if(fxmlName.equalsIgnoreCase("ticket")) {
             container.setCenter(new TicketController());
         } else {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(String.format("/ui/%s.fxml", fxmlName)));
-            Parent screen = loader.load();
+            final FXMLLoader loader = new FXMLLoader(getClass().getResource(String.format("/ui/%s.fxml", fxmlName)));
+            final Parent screen = loader.load();
 
             //TODO: Create interface
             if (fxmlName.equalsIgnoreCase("login"))
@@ -49,23 +49,27 @@ public class ContainerController implements Initializable {
         }
     }
 
-    public void setCenter(Node node) {
+    public MenuBar getMenu() {
+        return menu;
+    }
+
+    public void setCenter(final Node node) {
         container.setCenter(node);
     }
 
     @FXML
-    private void switchScreen(ActionEvent actionEvent) throws IOException {
+    private void switchScreen(final ActionEvent actionEvent) throws IOException {
         final MenuItem item = (MenuItem) actionEvent.getSource();
         if (item.getId().equalsIgnoreCase("exit")) {
             Platform.exit();
         } else {
-            String[] ids = item.getId().split(",");
+            final String[] ids = item.getId().split(",");
             loadScreen(ids[ids.length - 1]);
         }
     }
 
-    public static void fade(int amount, Node node) {
-        FadeTransition transition = new FadeTransition(Duration.seconds(amount));
+    public static void fade(final Node node) {
+        final FadeTransition transition = new FadeTransition(Duration.seconds(3));
         transition.setNode(node);
         transition.setFromValue(1);
         transition.setToValue(0);

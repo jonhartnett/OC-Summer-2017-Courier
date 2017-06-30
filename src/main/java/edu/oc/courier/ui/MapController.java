@@ -15,17 +15,16 @@ import java.util.ResourceBundle;
 
 public class MapController implements Initializable {
 
-    @FXML
-    private VBox routes;
+    @FXML private VBox routes;
 
-    private Collection<RouteController> routeControllers;
+    private final Collection<RouteController> routeControllers;
 
     public MapController() {
         routeControllers = new LinkedList<>();
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize(final URL location, final ResourceBundle resources) {
         try (DBTransaction trans = DB.getTransaction()) {
             RoadMap.getMap(trans).getLinks().sorted((o1, o2) -> {
                 if (o1.x.equals(o2.x))
@@ -35,9 +34,9 @@ public class MapController implements Initializable {
                         return o1.y.compareTo(o2.y);
                 return o1.x.compareTo(o2.x);
             }).forEach(route -> {
-                RouteCondition routeCondition;
+                final RouteCondition routeCondition;
                 System.out.println(route.z);
-                long condition = Math.round(route.z);
+                final long condition = Math.round(route.z);
                 if (condition == 1)
                     routeCondition = RouteCondition.OPEN;
                 else if (condition == 2)
@@ -45,7 +44,7 @@ public class MapController implements Initializable {
                 else
                     routeCondition = RouteCondition.CLOSED;
 
-                RouteController routeController = new RouteController(route.x, route.y, routeCondition);
+                final RouteController routeController = new RouteController(route.x, route.y, routeCondition);
                 routeControllers.add(routeController);
             });
             routes.getChildren().addAll(routeControllers);
@@ -55,7 +54,7 @@ public class MapController implements Initializable {
     @FXML
     private void update() {
         try (DBTransaction trans = DB.getTransaction()) {
-            RoadMap map = RoadMap.getMap(trans);
+            final RoadMap map = RoadMap.getMap(trans);
             for (RouteController controller : routeControllers) {
                 map.setLink(controller.getFirst(), controller.getLast(), (double) controller.getCondition().getValue());
             }

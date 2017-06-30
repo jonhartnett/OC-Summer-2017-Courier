@@ -24,7 +24,7 @@ public final class DB {
     }
 
     @Nonnull
-    public static <T> Optional<T> first(TypedQuery<T> query) {
+    public static <T> Optional<T> first(final TypedQuery<T> query) {
         final List<T> resultList = query.getResultList();
         if (resultList.isEmpty()) {
             return Optional.empty();
@@ -34,7 +34,7 @@ public final class DB {
     }
 
     @Nonnull
-    public static <T> Optional<T> single(TypedQuery<T> query) {
+    public static <T> Optional<T> single(final TypedQuery<T> query) {
         final List<T> resultList = query.getResultList();
         if (resultList.isEmpty()) {
             return Optional.empty();
@@ -47,27 +47,15 @@ public final class DB {
         return Optional.of(resultList.get(0));
     }
 
-    public static void save(Object thing) {
-        entityManager.getTransaction().begin();
-        entityManager.persist(thing);
-        entityManager.getTransaction().commit();
-    }
-
-    public static void saveMulti(Object... things) {
+    public static void save(final Object... things) {
         entityManager.getTransaction().begin();
         for(Object thing: things) {
-            entityManager.persist(thing);
+            entityManager.merge(thing);
         }
         entityManager.getTransaction().commit();
     }
 
-    public static void delete(Object thing){
-        entityManager.getTransaction().begin();
-        entityManager.remove(thing);
-        entityManager.getTransaction().commit();
-    }
-
-    public static Optional<User> getUser(String username) {
+    public static Optional<User> getUser(final String username) {
         return DB.single(DB.m().createQuery("SELECT u FROM User u WHERE u.username = :username", User.class)
                 .setParameter("username", username));
     }

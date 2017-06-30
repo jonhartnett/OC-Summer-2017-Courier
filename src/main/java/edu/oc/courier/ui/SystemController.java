@@ -29,8 +29,8 @@ public class SystemController implements Initializable {
     private SystemInfo systemInfo;
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        Optional<SystemInfo> system = DB.first(DB.m().createQuery("SELECT s FROM SystemInfo s", SystemInfo.class));
+    public void initialize(final URL location, final ResourceBundle resources) {
+        final Optional<SystemInfo> system = DB.first(DB.m().createQuery("SELECT s FROM SystemInfo s", SystemInfo.class));
         if(!system.isPresent())
             throw new RuntimeException("No system info found");
         else
@@ -51,7 +51,7 @@ public class SystemController implements Initializable {
             systemInfo.setPrice(new BigDecimal(price.getText()));
             systemInfo.setBonus(new BigDecimal(bonus.getText()));
 
-            String address = courierAddress.getText();
+            final String address = courierAddress.getText();
             if (RoadMap.getMap(transaction).has(address))
                 systemInfo.setCourierAddress(address);
             else
@@ -62,7 +62,7 @@ public class SystemController implements Initializable {
 
             output.setTextFill(GREEN);
             output.setText("Updated successfully");
-            ContainerController.fade(3, output);
+            ContainerController.fade(output);
         } catch (Exception e) {
             output.setTextFill(RED);
             output.setText(e.getClass() + " " + e.getLocalizedMessage());

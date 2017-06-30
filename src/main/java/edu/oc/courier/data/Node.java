@@ -7,13 +7,14 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Stream;
 
+@SuppressWarnings("unused")
 @Entity
 public class Node {
     private static class RoutingEntry{
         Node next;
         double cost;
 
-        RoutingEntry(Node next, double cost){
+        RoutingEntry(final Node next, final double cost){
             this.next = next;
             this.cost = cost;
         }
@@ -40,7 +41,7 @@ public class Node {
 
     public Node(){}
 
-    public Node(String name){
+    public Node(final String name){
         this.name = name;
         initRoutingTable();
     }
@@ -53,7 +54,7 @@ public class Node {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(final int id) {
         this.id = id;
     }
 
@@ -61,12 +62,12 @@ public class Node {
         return name;
     }
 
-    public void setName(String name){
+    public void setName(final String name){
         this.name = name;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if(this == o)
             return true;
         if(o == null || getClass() != o.getClass())
@@ -80,44 +81,44 @@ public class Node {
         return Objects.hash(name);
     }
 
-    public Route getRoute(Node dest){
+    public Route getRoute(final Node dest){
         try{
             System.out.println("New Route");
-            Stream.Builder builder = Stream.builder();
-            double cost = this.constructRoute(this, dest, builder);
+            final Stream.Builder<String> builder = Stream.builder();
+            final double cost = this.constructRoute(this, dest, builder);
             return new Route(builder.build(), cost);
         }catch(RouteException ex){
             return null;
         }
     }
 
-    private double constructRoute(Node prev, Node dest, Stream.Builder builder){
+    private double constructRoute(final Node prev, final Node dest, final Stream.Builder<String> builder){
         builder.add(this.name);
         if(dest == this)
             return inverseLinks.getOrDefault(prev, 0.0);
 
-        RoutingEntry entry = routingTable.get(dest);
+        final RoutingEntry entry = routingTable.get(dest);
         if(entry == null)
             throw new RouteException();
-        Node next = entry.next;
+        final Node next = entry.next;
         return inverseLinks.getOrDefault(prev, 0.0) + next.constructRoute(this, dest, builder);
     }
 
-    public void link(Node next, double cost){
+    public void link(final Node next, final double cost){
         if(!Double.isInfinite(cost)){
             next.inverseLinks.put(this, cost);
         }else{
-            Double prev = next.inverseLinks.remove(this);
+            final Double prev = next.inverseLinks.remove(this);
             if(prev == null)
                 return;
         }
 
-        Set<Entry<Node, RoutingEntry>> entries = new HashSet<>(next.routingTable.entrySet());
+        final Set<Entry<Node, RoutingEntry>> entries = new HashSet<>(next.routingTable.entrySet());
         for(Entry<Node, RoutingEntry> entry : entries){
             this.update(entry.getKey(), next, entry.getValue().cost + cost);
         }
     }
-    public void unlink(Node next){
+    public void unlink(final Node next){
         this.link(next, Double.POSITIVE_INFINITY);
     }
 
@@ -125,7 +126,7 @@ public class Node {
         propagate(this, 0);
     }
 
-    private void update(Node dest, Node next, double cost){
+    private void update(final Node dest, final Node next, final double cost){
         if(this.dirty){
             this.dirty = false;
             this.dirtyUpdate(dest);
@@ -149,8 +150,8 @@ public class Node {
             this.propagate(dest, entry.cost);
         }
     }
-    private void dirtyUpdate(Node dest){
-        RoutingEntry entry = this.getBestEntry(dest);
+    private void dirtyUpdate(final Node dest){
+        final RoutingEntry entry = this.getBestEntry(dest);
         if(entry != null){
             routingTable.put(dest, entry);
             this.propagate(dest, entry.cost);
@@ -158,8 +159,8 @@ public class Node {
             routingTable.remove(dest);
         }
     }
-    private void purge(Node dest, Node next){
-        RoutingEntry entry = routingTable.get(dest);
+    private void purge(final Node dest, final Node next){
+        final RoutingEntry entry = routingTable.get(dest);
         if (entry != null && entry.next == next) {
             this.dirty = true;
             routingTable.remove(dest);
@@ -167,19 +168,19 @@ public class Node {
                 link.getKey().purge(dest, this);
         }
     }
-    private void propagate(Node dest, double cost){
+    private void propagate(final Node dest, final double cost){
         for(Entry<Node, Double> link : inverseLinks.entrySet()){
-            Node node = link.getKey();
-            double linkCost = link.getValue();
+            final Node node = link.getKey();
+            final double linkCost = link.getValue();
             node.update(dest, this, cost + linkCost);
         }
     }
-    private RoutingEntry getBestEntry(Node dest){
-        RoutingEntry entry = new RoutingEntry(null, Double.POSITIVE_INFINITY);
+    private RoutingEntry getBestEntry(final Node dest){
+        final RoutingEntry entry = new RoutingEntry(null, Double.POSITIVE_INFINITY);
         for(Entry<Node, Double> link : inverseLinks.entrySet()){
-            Node node = link.getKey();
-            double linkCost = link.getValue();
-            RoutingEntry linkEntry = node.routingTable.get(dest);
+            final Node node = link.getKey();
+            final double linkCost = link.getValue();
+            final RoutingEntry linkEntry = node.routingTable.get(dest);
             if(linkEntry != null){
                 if(linkEntry.cost + linkCost < entry.cost){
                     entry.next = node;

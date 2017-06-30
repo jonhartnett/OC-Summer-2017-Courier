@@ -4,10 +4,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Route {
-    public Stream<String> path;
-    public double cost;
+    public final Stream<String> path;
+    public final double cost;
 
-    protected Route(Stream<String> path, double cost){
+    protected Route(final Stream<String> path, final double cost){
         this.path = path;
         this.cost = cost;
     }

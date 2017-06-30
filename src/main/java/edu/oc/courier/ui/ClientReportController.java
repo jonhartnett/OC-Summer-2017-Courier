@@ -33,7 +33,7 @@ public class ClientReportController implements Initializable {
     @FXML private BarChart<String, Integer> packagesPerCourier;
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize(final URL location, final ResourceBundle resources) {
         clients.setCellFactory(Main.clientCallback);
         clients.setButtonCell(Main.clientCallback.call(null));
         try (DBTransaction transaction = DB.getTransaction()) {
@@ -44,9 +44,15 @@ public class ClientReportController implements Initializable {
     @FXML
     private void update() {
         try (DBTransaction transaction = DB.getTransaction()) {
-            Instant start = (startDate.getValue() != null) ? startDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now().minus(365, ChronoUnit.DAYS);
-            Instant end = (endDate.getValue() != null) ? endDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now();
-            Collection<Ticket> tickets = transaction.getAll(
+            final Instant start = (startDate.getValue() != null) ?
+                            startDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() :
+                            Instant.now().minus(365, ChronoUnit.DAYS);
+
+            final Instant end = (endDate.getValue() != null) ?
+                                endDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() :
+                                Instant.now();
+
+            final Collection<Ticket> tickets = transaction.getAll(
                 transaction.query(
                     "SELECT t from Ticket t " +
                             "WHERE t.pickupClient = :client " +
@@ -62,7 +68,7 @@ public class ClientReportController implements Initializable {
 
             int pickupOnTime = 0;
             int deliverOnTime = 0;
-            Map<String, Integer> packages = new HashMap<>();
+            final Map<String, Integer> packages = new HashMap<>();
             for (Ticket t : tickets) {
                 if (t.getActualPickupTime() != null && t.getPickupTime() != null)
                     if (t.getActualPickupTime().isBefore(t.getPickupTime()) || t.getActualPickupTime().equals(t.getPickupTime()))
@@ -84,7 +90,7 @@ public class ClientReportController implements Initializable {
                     new PieChart.Data(numTickets - deliverOnTime + " late", numTickets - deliverOnTime)
             ));
 
-            XYChart.Series<String, Integer> series = new XYChart.Series<>();
+            final XYChart.Series<String, Integer> series = new XYChart.Series<>();
             series.setName("Packages");
             for (Map.Entry<String, Integer> entry : packages.entrySet()) {
                 series.getData().add(new XYChart.Data<>(entry.getKey(), entry.getValue()));

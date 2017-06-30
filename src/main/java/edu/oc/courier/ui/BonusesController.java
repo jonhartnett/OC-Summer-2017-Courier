@@ -28,7 +28,7 @@ public class BonusesController implements Initializable {
     @FXML private Label amount;
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize(final URL location, final ResourceBundle resources) {
         couriers.setCellFactory(Main.courierCallback);
         couriers.setButtonCell(Main.courierCallback.call(null));
         try (DBTransaction transaction = DB.getTransaction()) {
@@ -39,8 +39,14 @@ public class BonusesController implements Initializable {
     @FXML
     private void updateAmount() {
         try (DBTransaction transaction = DB.getTransaction()) {
-            Instant start = (startDate.getValue() != null) ? startDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now().minus(7, ChronoUnit.DAYS);
-            Instant end = (endDate.getValue() != null) ? endDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now();
+            final Instant start = (startDate.getValue() != null) ?
+                                  startDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() :
+                                  Instant.now().minus(7, ChronoUnit.DAYS);
+
+            final Instant end = (endDate.getValue() != null) ?
+                                endDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() :
+                                Instant.now();
+
             amount.setText(String.format("%s earned %s in bonuses for %s to %s",
                 couriers.getValue().getName(),
                 NumberFormat.getCurrencyInstance().format(
@@ -51,11 +57,11 @@ public class BonusesController implements Initializable {
                             "AND t.orderTime > :startTime " +
                             "AND t.orderTime < :endTime " +
                             "AND t.estDeliveryTime < t.actualDeliveryTime",
-                            BigDecimal.class)
-                        .setParameter("courier", couriers.getValue())
-                        .setParameter("startTime", start)
-                        .setParameter("endTime", end)
-                    ).orElse(new BigDecimal(0))
+                            BigDecimal.class
+                        ).setParameter("courier", couriers.getValue())
+                            .setParameter("startTime", start)
+                            .setParameter("endTime", end)
+                    ).orElse(BigDecimal.ZERO)
                 ),
                 start.atZone(ZoneId.systemDefault()).toLocalDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)),
                 end.atZone(ZoneId.systemDefault()).toLocalDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))

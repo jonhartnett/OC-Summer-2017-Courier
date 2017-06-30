@@ -16,17 +16,17 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-public class Main extends Application {
+public final class Main extends Application {
 
     private static final Logger log = LoggerFactory.getLogger(Main.class);
-    private final boolean testing = false;
+    private final boolean testing = Boolean.FALSE;
 
-    public static Callback<ListView<Client>, ListCell<Client>> clientCallback = new Callback<ListView<Client>, ListCell<Client>>() {
+    public static final Callback<ListView<Client>, ListCell<Client>> clientCallback = new Callback<ListView<Client>, ListCell<Client>>() {
         @Override
-        public ListCell<Client> call(ListView<Client> param) {
+        public ListCell<Client> call(final ListView<Client> param) {
             return new ListCell<Client>() {
                 @Override
-                public void updateItem(Client client, boolean isEmpty) {
+                public void updateItem(final Client client, final boolean isEmpty) {
                     super.updateItem(client, isEmpty);
                     if (client != null)
                         setText(client.getName());
@@ -35,12 +35,12 @@ public class Main extends Application {
         }
     };
 
-    public static Callback<ListView<Courier>, ListCell<Courier>> courierCallback = new Callback<ListView<Courier>, ListCell<Courier>>() {
+    public static final Callback<ListView<Courier>, ListCell<Courier>> courierCallback = new Callback<ListView<Courier>, ListCell<Courier>>() {
         @Override
-        public ListCell<Courier> call(ListView<Courier> param) {
+        public ListCell<Courier> call(final ListView<Courier> param) {
             return new ListCell<Courier>() {
                 @Override
-                public void updateItem(Courier courier, boolean isEmpty) {
+                public void updateItem(final Courier courier, final boolean isEmpty) {
                     super.updateItem(courier, isEmpty);
                     if (courier != null)
                         setText(courier.getName());
@@ -49,18 +49,18 @@ public class Main extends Application {
         }
     };
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         launch(args);
     }
 
     @Override
-    public void start(Stage primaryStage) throws IOException {
+    public void start(final Stage primaryStage) throws IOException {
         if (testing) {
             testDB();
         } else {
             setSystem();
             setAdmin();
-            setRoadmap();
+            setRoadMap();
             final Parent root = FXMLLoader.load(getClass().getResource("/ui/container.fxml"));
             primaryStage.setScene(new Scene(root));
             primaryStage.setTitle("Courier service");
@@ -70,26 +70,26 @@ public class Main extends Application {
     }
 
     private void setSystem() {
-        SystemInfo s = DB.first(DB.m().createQuery("SELECT s FROM SystemInfo s", SystemInfo.class))
-                .orElse(new SystemInfo(5.0f, new BigDecimal(10), new BigDecimal(2), new BigDecimal(5), "4th and D"));
+        final SystemInfo s = DB.first(DB.m().createQuery("SELECT s FROM SystemInfo s", SystemInfo.class))
+                .orElse(new SystemInfo(5.0f, BigDecimal.TEN, new BigDecimal(2), new BigDecimal(5), "4th and D"));
 
         DB.save(s);
     }
 
     private void setAdmin() {
-        User admin = DB.getUser("admin")
+        final User admin = DB.getUser("admin")
                 .orElse(new User("Admin", "Admin", "root", UserType.ADMIN));
 
         DB.save(admin);
     }
 
-    private void setRoadmap(){
+    private void setRoadMap(){
         try(DBTransaction trans = DB.getTransaction()){
             if (!trans.getAny(RoadMap.class).isPresent()) {
                 final RoadMap roadMap = RoadMap.getMap(trans);
 
-                String[] aves = new String[]{"1st", "2nd", "3rd", "4th", "5th", "6th", "7th"};
-                String[] sts = new String[]{"A", "B", "C", "D", "E", "F", "G"};
+                final String[] aves = new String[]{"1st", "2nd", "3rd", "4th", "5th", "6th", "7th"};
+                final String[] sts = new String[]{"A", "B", "C", "D", "E", "F", "G"};
                 for (String ave : aves) {
                     for (String st : sts) {
                         roadMap.add(ave + " and " + st);
@@ -116,7 +116,7 @@ public class Main extends Application {
 
             final Client client = new Client();
             client.setName("MegaCorp");
-            client.setAddress("Broadway");
+            client.setAddress();
 
             final Invoice invoice = new Invoice();
             invoice.setClient(client);
@@ -146,10 +146,10 @@ public class Main extends Application {
         try(DBTransaction trans = DB.getTransaction()){
             final RoadMap roadMap = RoadMap.getMap(trans);
             System.out.println(roadMap.id);
-            Route route1 = roadMap.getRoute("1", "4");
-            Route route2 = roadMap.getRoute("2", "3");
-            Route route3 = roadMap.getRoute("4", "1");
-            Route route4 = roadMap.getRoute("5", "1");
+            final Route route1 = roadMap.getRoute("1", "4");
+            final Route route2 = roadMap.getRoute("2", "3");
+            final Route route3 = roadMap.getRoute("4", "1");
+            final Route route4 = roadMap.getRoute("5", "1");
             System.out.println(route1);
             System.out.println(route2);
             System.out.println(route3);
@@ -167,10 +167,10 @@ public class Main extends Application {
             roadMap.setOneWayLink("3", "4", 5);
             trans.save(roadMap);
 
-            Route route1 = roadMap.getRoute("1", "4");
-            Route route2 = roadMap.getRoute("2", "3");
-            Route route3 = roadMap.getRoute("4", "1");
-            Route route4 = roadMap.getRoute("5", "1");
+            final Route route1 = roadMap.getRoute("1", "4");
+            final Route route2 = roadMap.getRoute("2", "3");
+            final Route route3 = roadMap.getRoute("4", "1");
+            final Route route4 = roadMap.getRoute("5", "1");
             System.out.println(route1);
             System.out.println(route2);
             System.out.println(route3);
@@ -188,10 +188,10 @@ public class Main extends Application {
             roadMap.setOneWayLink("4", "3", 5);
             trans.save(roadMap);
 
-            Route route1 = roadMap.getRoute("1", "4");
-            Route route2 = roadMap.getRoute("2", "3");
-            Route route3 = roadMap.getRoute("4", "1");
-            Route route4 = roadMap.getRoute("5", "1");
+            final Route route1 = roadMap.getRoute("1", "4");
+            final Route route2 = roadMap.getRoute("2", "3");
+            final Route route3 = roadMap.getRoute("4", "1");
+            final Route route4 = roadMap.getRoute("5", "1");
             System.out.println(route1);
             System.out.println(route2);
             System.out.println(route3);

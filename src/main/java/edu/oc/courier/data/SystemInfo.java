@@ -22,7 +22,7 @@ public class SystemInfo {
     private BigDecimal bonus;
     private String courierAddress;
 
-    public SystemInfo(float speed, BigDecimal base, BigDecimal price, BigDecimal bonus, String courierAddress) {
+    public SystemInfo(final float speed, final BigDecimal base, final BigDecimal price, final BigDecimal bonus, final String courierAddress) {
         this.speed = speed;
         this.base = base;
         this.price = price;
@@ -37,7 +37,7 @@ public class SystemInfo {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(final int id) {
         this.id = id;
     }
 
@@ -45,7 +45,7 @@ public class SystemInfo {
         return speed;
     }
 
-    public void setSpeed(float speed) {
+    public void setSpeed(final float speed) {
         this.speed = speed;
     }
 
@@ -53,7 +53,7 @@ public class SystemInfo {
         return base;
     }
 
-    public void setBase(BigDecimal base) {
+    public void setBase(final BigDecimal base) {
         this.base = base;
     }
 
@@ -61,7 +61,7 @@ public class SystemInfo {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(final BigDecimal price) {
         this.price = price;
     }
 
@@ -69,25 +69,25 @@ public class SystemInfo {
         return bonus;
     }
 
-    public void setBonus(BigDecimal bonus) {
+    public void setBonus(final BigDecimal bonus) {
         this.bonus = bonus;
     }
 
     public String getCourierAddress(){ return courierAddress; }
 
-    public void setCourierAddress(String address){
+    public void setCourierAddress(final String address){
         this.courierAddress = address;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o)
             return true;
 
         if (o == null || this.getClass() != o.getClass())
             return false;
 
-        SystemInfo systemInfo = (SystemInfo) o;
+        final SystemInfo systemInfo = (SystemInfo) o;
         return this.id == systemInfo.getId();
     }
 

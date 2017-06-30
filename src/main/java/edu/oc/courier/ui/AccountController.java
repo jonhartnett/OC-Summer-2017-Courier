@@ -23,7 +23,7 @@ public class AccountController implements Initializable {
     private User user;
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize(final URL location, final ResourceBundle resources) {
         this.user = User.getCurrentUser();
         username.setText(user.getName());
     }
@@ -31,7 +31,7 @@ public class AccountController implements Initializable {
     @FXML
     private void updateUser() {
         user.setName(username.getText());
-        String password = this.password.getText();
+        final String password = this.password.getText();
         if (password.length() > 0)
             user.setPassword(password);
         try(DBTransaction transaction = DB.getTransaction()){
@@ -39,9 +39,9 @@ public class AccountController implements Initializable {
             transaction.commit();
             output.setTextFill(GREEN);
             output.setText("Updated successfully");
-            ContainerController.fade(3, output);
+            ContainerController.fade(output);
         }
 
-        ContainerController.fade(3, output);
+        ContainerController.fade(output);
     }
 }

@@ -17,14 +17,14 @@ public class CourierController extends HBox implements Initializable {
 
     @FXML private TextField name;
 
-    private Courier courier;
-    private CouriersController parent;
+    private final Courier courier;
+    private final CouriersController parent;
 
-    public CourierController(Courier courier, CouriersController parent) {
+    public CourierController(final Courier courier, final CouriersController parent) {
         this.courier = courier;
         this.parent = parent;
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/courier.fxml"));
+        final FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/courier.fxml"));
         loader.setRoot(this);
         loader.setController(this);
 
@@ -36,7 +36,7 @@ public class CourierController extends HBox implements Initializable {
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize(final URL location, final ResourceBundle resources) {
         name.setText(courier.getName());
     }
 

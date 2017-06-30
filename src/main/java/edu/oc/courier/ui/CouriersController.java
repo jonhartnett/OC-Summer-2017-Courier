@@ -12,11 +12,10 @@ import java.util.ResourceBundle;
 
 public class CouriersController implements Initializable {
 
-    @FXML
-    private VBox courierList;
+    @FXML private VBox courierList;
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize(final URL location, final ResourceBundle resources) {
         try(DBTransaction transaction = DB.getTransaction()){
             transaction.getAll(transaction.query("SELECT c FROM Courier c", Courier.class))
                     .forEach(courier ->
@@ -30,7 +29,7 @@ public class CouriersController implements Initializable {
         courierList.getChildren().add(new CourierController(new Courier(), this));
     }
 
-    public void removeCourier(CourierController child) {
+    public void removeCourier(final CourierController child) {
         courierList.getChildren().remove(child);
     }
 }

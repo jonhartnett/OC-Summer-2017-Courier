@@ -23,7 +23,7 @@ public final class Client {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(final int id) {
         this.id = id;
     }
 
@@ -31,7 +31,7 @@ public final class Client {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -39,20 +39,20 @@ public final class Client {
         return address;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setAddress() {
+        this.address = "Broadway";
     }
 
     public String getDeliveryInstructions() {
         return deliveryInstructions;
     }
 
-    public void setDeliveryInstructions(String deliveryInstructions) {
+    public void setDeliveryInstructions(final String deliveryInstructions) {
         this.deliveryInstructions = deliveryInstructions;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }

@@ -17,7 +17,7 @@ public final class Courier {
 
     public Courier(){}
 
-    public Courier(String name) {
+    public Courier(final String name) {
         this.name = name;
     }
 
@@ -25,7 +25,7 @@ public final class Courier {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -33,12 +33,12 @@ public final class Courier {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(final int id) {
         this.id = id;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
