@@ -2,6 +2,7 @@ package edu.oc.courier.ui;
 
 import edu.oc.courier.DB;
 import edu.oc.courier.DBTransaction;
+import edu.oc.courier.Tuple;
 import edu.oc.courier.data.Ticket;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -17,16 +18,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class TicketSelectorController implements Initializable {
-
-    private class Tuple<X, Y> {
-        public X x;
-        public Y y;
-
-        public Tuple(X x, Y y){
-            this.x = x;
-            this.y = y;
-        }
-    }
 
     @FXML private ComboBox<Tuple<String, String>> sortOrder;
     @FXML private ToggleGroup order;

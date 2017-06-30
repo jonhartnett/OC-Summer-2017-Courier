@@ -1,6 +1,5 @@
 package edu.oc.courier;
 
-import edu.oc.courier.data.RoadMap;
 import edu.oc.courier.data.User;
 
 import javax.annotation.Nonnull;
@@ -14,10 +13,6 @@ public final class DB {
 
     public static final EntityManager entityManager = Persistence.createEntityManagerFactory("courier-types")
         .createEntityManager();
-
-    static {
-        RoadMap.initInstance();
-    }
 
     @Nonnull
     public static EntityManager m() {

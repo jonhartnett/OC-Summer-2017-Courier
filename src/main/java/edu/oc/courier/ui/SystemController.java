@@ -52,7 +52,7 @@ public class SystemController implements Initializable {
             systemInfo.setBonus(new BigDecimal(bonus.getText()));
 
             String address = courierAddress.getText();
-            if(RoadMap.getMap().has(address))
+            if (RoadMap.getMap(transaction).has(address))
                 systemInfo.setCourierAddress(address);
             else
                 throw new RuntimeException("Address does not exist");

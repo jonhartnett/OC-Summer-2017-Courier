@@ -154,7 +154,7 @@ public class TicketController extends GridPane implements Initializable {
     @FXML
     private void generateDirections() {
         try (DBTransaction transaction = DB.getTransation()) {
-            RoadMap roadMap = RoadMap.getMap();
+            RoadMap roadMap = RoadMap.getMap(transaction);
             transaction.getAny(SystemInfo.class).ifPresent(systemInfo -> {
                 Route routeToPickup = roadMap.getRoute(systemInfo.getCourierAddress(), pickupClient.getValue().getAddress());
                 Route routeToDeliver = roadMap.getRoute(pickupClient.getValue().getAddress(), deliveryClient.getValue().getAddress());
@@ -188,7 +188,7 @@ public class TicketController extends GridPane implements Initializable {
 
             }
             try (DBTransaction transaction = DB.getTransation()) {
-                RoadMap roadMap = RoadMap.getMap();
+                RoadMap roadMap = RoadMap.getMap(transaction);
                 transaction.getAny(SystemInfo.class).ifPresent(systemInfo -> {
                     Route routeToPickup = roadMap.getRoute(systemInfo.getCourierAddress(), pickupClient.getValue().getAddress());
                     Route routeToDeliver = roadMap.getRoute(pickupClient.getValue().getAddress(), deliveryClient.getValue().getAddress());

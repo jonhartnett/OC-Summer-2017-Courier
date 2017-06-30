@@ -30,7 +30,7 @@ public class Node {
     private int id;
     private String name;
     @ElementCollection
-    private Map<Node, Double> inverseLinks = new HashMap<>();
+    public Map<Node, Double> inverseLinks = new HashMap<>();
 
     @Transient
     HashMap<Node, RoutingEntry> routingTable = new HashMap<>();

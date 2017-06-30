@@ -1,35 +1,31 @@
 package edu.oc.courier.data;
 
-import edu.oc.courier.DB;
 import edu.oc.courier.DBTransaction;
+import edu.oc.courier.Triple;
 
 import javax.persistence.*;
 import java.util.*;
+import java.util.stream.Stream;
 
 @Entity
 public class RoadMap {
-    private static RoadMap instance;
-    public static void initInstance(){
-        try(DBTransaction trans = DB.getTransation()){
-            Optional<RoadMap> optional = trans.getAny(RoadMap.class);
-            if(optional.isPresent()){
-                instance = optional.get();
-                instance.onLoad();
-            }else{
-                instance = new RoadMap();
-                trans.save(instance);
-            }
+    public static RoadMap getMap(DBTransaction trans) {
+        Optional<RoadMap> optional = trans.getAny(RoadMap.class);
+        if (optional.isPresent()) {
+            RoadMap instance = optional.get();
+            instance.onLoad();
+            return instance;
+        } else {
+            RoadMap instance = new RoadMap();
+            trans.save(instance);
+            return instance;
         }
-    }
-
-    public static RoadMap getMap(){
-        return instance;
     }
 
     @Id
     public int id = 1;
     @OneToMany(cascade = CascadeType.ALL)
-    private List<Node> nodeList = new ArrayList<>();
+    public List<Node> nodeList = new ArrayList<>();
     @Transient
     private Map<String, Node> nodes = new HashMap<>();
 
@@ -70,6 +66,18 @@ public class RoadMap {
         Node n2 = nodes.get(key2);
         n1.link(n2, cost);
         n2.link(n1, cost);
+    }
+
+    public Stream<Triple<String, String, Double>> getLinks() {
+        Stream.Builder<Triple<String, String, Double>> builder = Stream.builder();
+        for (Node node : nodes.values()) {
+            for (Map.Entry<Node, Double> entry : node.inverseLinks.entrySet()) {
+                if (node.getName().compareTo(entry.getKey().getName()) <= 0) {
+                    builder.add(new Triple<>(node.getName(), entry.getKey().getName(), entry.getValue()));
+                }
+            }
+        }
+        return builder.build();
     }
 
     public void setOneWayLink(String src, String dest, double cost){

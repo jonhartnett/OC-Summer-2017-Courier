@@ -85,7 +85,7 @@ public class Main extends Application {
 
     private void setRoadmap(){
         try(DBTransaction trans = DB.getTransation()){
-            final RoadMap roadMap = RoadMap.getMap();
+            final RoadMap roadMap = RoadMap.getMap(trans);
             roadMap.clear();
 
             String[] aves = new String[]{ "1st", "2nd", "3rd", "4th", "5th", "6th", "7th" };
@@ -125,7 +125,7 @@ public class Main extends Application {
             courier.setName("Tim");
             trans.save(courier);
 
-            final RoadMap roadMap = RoadMap.getMap();
+            final RoadMap roadMap = RoadMap.getMap(trans);
             System.out.println(roadMap.id);
             roadMap.clear();
             roadMap.add("1");
@@ -143,7 +143,7 @@ public class Main extends Application {
         }
 
         try(DBTransaction trans = DB.getTransation()){
-            final RoadMap roadMap = RoadMap.getMap();
+            final RoadMap roadMap = RoadMap.getMap(trans);
             System.out.println(roadMap.id);
             Route route1 = roadMap.getRoute("1", "4");
             Route route2 = roadMap.getRoute("2", "3");
@@ -159,7 +159,7 @@ public class Main extends Application {
         }
 
         try(DBTransaction trans = DB.getTransation()){
-            final RoadMap roadMap = RoadMap.getMap();
+            final RoadMap roadMap = RoadMap.getMap(trans);
             System.out.println(roadMap.id);
 
             roadMap.removeLink("1", "4");
@@ -180,7 +180,7 @@ public class Main extends Application {
         }
 
         try(DBTransaction trans = DB.getTransation()){
-            final RoadMap roadMap = RoadMap.getMap();
+            final RoadMap roadMap = RoadMap.getMap(trans);
             System.out.println(roadMap.id);
 
             roadMap.removeLink("3", "4");
