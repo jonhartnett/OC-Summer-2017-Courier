@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
+import org.intellij.lang.annotations.Language;
 
 public class DBTransaction implements Closeable {
     private EntityManager manager;
@@ -42,7 +43,7 @@ public class DBTransaction implements Closeable {
         return Optional.ofNullable(resultList.get(0));
     }
 
-    public <T, T2> Optional<T> get(Class<T> cls, T2 id){
+    public <T> Optional<T> get(Class<T> cls, Object id){
         return getWhere(cls, "id", id);
     }
 
@@ -59,28 +60,29 @@ public class DBTransaction implements Closeable {
         return query.getResultList();
     }
 
-    public <T, T2> Optional<T> getWhere(Class<T> cls, String column, T2 value){
+    public <T> Optional<T> getWhere(Class<T> cls, String column, Object value){
         return get(
             where(cls, column, value)
         );
     }
 
-    public <T> void save(T... entities){
-        for(T entity : entities) {
+    public void save(Object... entities){
+        for(Object entity : entities) {
             manager.merge(entity);
         }
     }
 
-    public <T> void delete(T... entities){
-        for(T entity : entities)
+    public void delete(Object... entities){
+        for(Object entity : entities) {
             manager.remove(entity);
+        }
     }
 
-    public <T> TypedQuery<T> query(String qlString, Class<T> resultClass){
+    public <T> TypedQuery<T> query(@Language("HQL") String qlString, Class<T> resultClass){
         return manager.createQuery(qlString, resultClass);
     }
 
-    public <T, T2> TypedQuery<T> where(Class<T> cls, String column, T2 value){
+    public <T> TypedQuery<T> where(Class<T> cls, String column, Object value){
         return query("SELECT e FROM " + cls.getName() + " e WHERE e." + column + " = :value", cls)
             .setParameter("value", value);
     }
