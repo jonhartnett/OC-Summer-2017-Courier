@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.IntStream;
@@ -55,7 +56,6 @@ public class TicketController extends GridPane implements Initializable {
     @FXML private Label output;
 
     private Ticket ticket;
-    private boolean loadedComboBoxes = false;
 
     public TicketController() {
         this.ticket = new Ticket();
@@ -80,46 +80,41 @@ public class TicketController extends GridPane implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        ObservableList<Integer> hours = IntStream.rangeClosed(1, 24).boxed().collect(collectingAndThen(toList(), FXCollections::observableArrayList));
+        ObservableList<Integer> minutes = IntStream.rangeClosed(0, 60).boxed().collect(collectingAndThen(toList(), FXCollections::observableArrayList));
+        pickupHour.setItems(hours);
+        pickupMinute.setItems(minutes);
+        actualPickupHour.setItems(hours);
+        actualPickupMinute.setItems(minutes);
+        actualDeliveryHour.setItems(hours);
+        actualDeliveryMinute.setItems(minutes);
+
+        pickupClient.setCellFactory(Main.clientCallback);
+        pickupClient.setButtonCell(Main.clientCallback.call(null));
+        deliveryClient.setCellFactory(Main.clientCallback);
+        deliveryClient.setButtonCell(Main.clientCallback.call(null));
+        courier.setCellFactory(Main.courierCallback);
+        courier.setButtonCell(Main.courierCallback.call(null));
+
+        try (DBTransaction transaction = DB.getTransation()) {
+            List<Client> clients = transaction.getAll(transaction.query("SELECT c FROM Client c", Client.class));
+            pickupClient.getItems().addAll(clients);
+            deliveryClient.getItems().addAll(clients);
+
+            List<Courier> couriers = transaction.getAll(transaction.query("SELECT c FROM Courier c", Courier.class));
+            courier.getItems().addAll(couriers);
+        }
         this.setUIFields();
     }
 
     private void setUIFields() {
-        if (!loadedComboBoxes) {
-            ObservableList<Integer> hours = IntStream.rangeClosed(1, 24).boxed().collect(collectingAndThen(toList(), FXCollections::observableArrayList));
-            ObservableList<Integer> minutes = IntStream.rangeClosed(0, 60).boxed().collect(collectingAndThen(toList(), FXCollections::observableArrayList));
-            pickupHour.setItems(hours);
-            pickupMinute.setItems(minutes);
-            actualPickupHour.setItems(hours);
-            actualPickupMinute.setItems(minutes);
-            actualDeliveryHour.setItems(hours);
-            actualDeliveryMinute.setItems(minutes);
-
-            pickupClient.setCellFactory(Main.clientCallback);
-            pickupClient.setButtonCell(Main.clientCallback.call(null));
-            deliveryClient.setCellFactory(Main.clientCallback);
-            deliveryClient.setButtonCell(Main.clientCallback.call(null));
-            courier.setCellFactory(Main.courierCallback);
-            courier.setButtonCell(Main.courierCallback.call(null));
-
-            try (DBTransaction transaction = DB.getTransation()) {
-                List<Client> clients = transaction.getAll(transaction.query("SELECT c FROM Client c", Client.class));
-                pickupClient.getItems().addAll(clients);
-                deliveryClient.getItems().addAll(clients);
-
-                List<Courier> couriers = transaction.getAll(transaction.query("SELECT c FROM Courier c", Courier.class));
-                courier.getItems().addAll(couriers);
-            }
-            loadedComboBoxes = true;
-        }
-
-        pickupClient.getSelectionModel().select(ticket.getPickupClient());
-        deliveryClient.getSelectionModel().select(ticket.getDeliveryClient());
+        pickupClient.setValue(ticket.getPickupClient());
+        deliveryClient.setValue(ticket.getDeliveryClient());
 
         setUITime(ticket.getPickupTime(), pickupHour, pickupMinute, pickupDate);
         try {
             estDeliveryTime.setText(ticket.getEstDeliveryTime().atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.MEDIUM)));
         } catch (NullPointerException ignored) {
-
         }
         estDistance.setText(String.format("%.2f blocks", ticket.getEstDistance()));
 
@@ -127,24 +122,22 @@ public class TicketController extends GridPane implements Initializable {
         try {
             quote.setText(NumberFormat.getCurrencyInstance().format(ticket.getQuote()));
         } catch (IllegalArgumentException ignored) {
-
         }
-        courier.getSelectionModel().select(ticket.getCourier());
+        courier.setValue(ticket.getCourier());
         ticketNumber.setText(String.valueOf(ticket.getId()));
         try {
             leaveTime.setText(ticket.getLeaveTime().atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.MEDIUM)));
         } catch (NullPointerException ignored) {
-
         }
         setUITime(ticket.getActualPickupTime(), actualPickupHour, actualPickupMinute, actualPickupDate);
         setUITime(ticket.getActualDeliveryTime(), actualDeliveryHour, actualDeliveryMinute, actualDeliveryDate);
     }
 
-    private void setUITime(Instant instant, ComboBox hourBox, ComboBox minuteBox, DatePicker datePicker) {
+    private void setUITime(Instant instant, ComboBox<Integer> hourBox, ComboBox<Integer> minuteBox, DatePicker datePicker) {
         try {
             LocalDateTime dateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
-            hourBox.getSelectionModel().select(dateTime.getHour());
-            minuteBox.getSelectionModel().select(dateTime.getMinute());
+            hourBox.setValue(dateTime.getHour());
+            minuteBox.setValue(dateTime.getMinute());
             datePicker.setValue(dateTime.toLocalDate());
         } catch (NullPointerException ignored) {
 
@@ -171,22 +164,19 @@ public class TicketController extends GridPane implements Initializable {
             try {
                 ticket.setPickupTime(pickupDate.getValue().atTime(pickupHour.getValue(), pickupMinute.getValue()).atZone(ZoneId.systemDefault()).toInstant());
             } catch (NullPointerException ignored) {
-
             }
             ticket.setDeliveryClient(deliveryClient.getValue());
             ticket.setChargeToDestination(charge.isSelected());
             ticket.setCourier(courier.getValue());
-            ticket.setChargeToDestination(charge.isSelected());
             try {
                 ticket.setActualPickupTime(actualPickupDate.getValue().atTime(actualPickupHour.getValue(), actualPickupMinute.getValue()).atZone(ZoneId.systemDefault()).toInstant());
             } catch (NullPointerException ignored) {
-
             }
             try {
                 ticket.setActualDeliveryTime(actualDeliveryDate.getValue().atTime(actualDeliveryHour.getValue(), actualDeliveryMinute.getValue()).atZone(ZoneId.systemDefault()).toInstant());
             } catch (NullPointerException ignored) {
-
             }
+
             try (DBTransaction transaction = DB.getTransation()) {
                 RoadMap roadMap = RoadMap.getMap(transaction);
                 transaction.getAny(SystemInfo.class).ifPresent(systemInfo -> {
@@ -194,6 +184,7 @@ public class TicketController extends GridPane implements Initializable {
                     Route routeToDeliver = roadMap.getRoute(pickupClient.getValue().getAddress(), deliveryClient.getValue().getAddress());
                     double estDistance = routeToPickup.cost + routeToDeliver.cost;
                     ticket.setEstDistance(estDistance);
+                    ticket.setEstDeliveryTime(ticket.getPickupTime().plus(Math.round(systemInfo.getSpeed() * estDistance), ChronoUnit.HOURS));
                     BigDecimal tripCost = systemInfo.getPrice().multiply(new BigDecimal(estDistance));
                     ticket.setQuote(tripCost.add(systemInfo.getBase()));
                 });
