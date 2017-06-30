@@ -28,6 +28,7 @@ public class Node {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(unique = true)
     private String name;
     @ElementCollection
     public Map<Node, Double> inverseLinks = new HashMap<>();

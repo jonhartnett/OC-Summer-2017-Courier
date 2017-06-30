@@ -85,26 +85,27 @@ public class Main extends Application {
 
     private void setRoadmap(){
         try(DBTransaction trans = DB.getTransation()){
-            final RoadMap roadMap = RoadMap.getMap(trans);
-            roadMap.clear();
+            if (!trans.getAny(RoadMap.class).isPresent()) {
+                final RoadMap roadMap = RoadMap.getMap(trans);
 
-            String[] aves = new String[]{ "1st", "2nd", "3rd", "4th", "5th", "6th", "7th" };
-            String[] sts = new String[]{ "A", "B", "C", "D", "E", "F", "G" };
-            for(String ave : aves){
-                for(String st : sts){
-                    roadMap.add(ave + " and " + st);
+                String[] aves = new String[]{"1st", "2nd", "3rd", "4th", "5th", "6th", "7th"};
+                String[] sts = new String[]{"A", "B", "C", "D", "E", "F", "G"};
+                for (String ave : aves) {
+                    for (String st : sts) {
+                        roadMap.add(ave + " and " + st);
+                    }
                 }
-            }
-            for(int y = 0; y < aves.length; y++){
-                for(int x = 0; x < sts.length; x++){
-                    if(x > 0)
-                        roadMap.setLink(aves[y] + " and " + sts[x], aves[y] + " and " + sts[x - 1], 1);
-                    if(y > 0)
-                        roadMap.setLink(aves[y] + " and " + sts[x], aves[y - 1] + " and " + sts[x], 1);
+                for (int y = 0; y < aves.length; y++) {
+                    for (int x = 0; x < sts.length; x++) {
+                        if (x > 0)
+                            roadMap.setLink(aves[y] + " and " + sts[x], aves[y] + " and " + sts[x - 1], 1);
+                        if (y > 0)
+                            roadMap.setLink(aves[y] + " and " + sts[x], aves[y - 1] + " and " + sts[x], 1);
+                    }
                 }
+                trans.save(roadMap);
+                trans.commit();
             }
-            trans.save(roadMap);
-            trans.commit();
         }
     }
 

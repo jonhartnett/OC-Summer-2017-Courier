@@ -36,6 +36,7 @@ public class MapController implements Initializable {
                 return o1.x.compareTo(o2.x);
             }).forEach(route -> {
                 RouteCondition routeCondition;
+                System.out.println(route.z);
                 long condition = Math.round(route.z);
                 if (condition == 1)
                     routeCondition = RouteCondition.OPEN;
