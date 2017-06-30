@@ -34,14 +34,14 @@ public class CourierReportController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         couriers.setCellFactory(Main.courierCallback);
         couriers.setButtonCell(Main.courierCallback.call(null));
-        try (DBTransaction transaction = DB.getTransation()) {
+        try (DBTransaction transaction = DB.getTransaction()) {
             couriers.getItems().addAll(transaction.getAll(transaction.query("SELECT c FROM Courier c", Courier.class)));
         }
     }
 
     @FXML
     private void update() {
-        try (DBTransaction transaction = DB.getTransation()) {
+        try (DBTransaction transaction = DB.getTransaction()) {
             Instant start = (startDate.getValue() != null) ? startDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now().minus(365, ChronoUnit.DAYS);
             Instant end = (endDate.getValue() != null) ? endDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now();
             Collection<Ticket> tickets = transaction.getAll(

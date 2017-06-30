@@ -60,7 +60,7 @@ public class CompanyReportController implements Initializable {
         Task task = new Task<Void>() {
             @Override
             public Void call() {
-                try (DBTransaction transaction = DB.getTransation()) {
+                try (DBTransaction transaction = DB.getTransaction()) {
                     Instant start = (startDate.getValue() != null) ? startDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now().minus(365, ChronoUnit.DAYS);
                     Instant end = (endDate.getValue() != null) ? endDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now();
                     Collection<Ticket> tickets = transaction.getAll(

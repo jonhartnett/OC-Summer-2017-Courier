@@ -16,7 +16,7 @@ public class UsersController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        try (DBTransaction transaction = DB.getTransation()) {
+        try (DBTransaction transaction = DB.getTransaction()) {
             transaction.getAll(transaction.query("SELECT u FROM User u", User.class))
                 .forEach(user ->
                         userList.getChildren().add(new UserController(user, this))

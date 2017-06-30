@@ -26,7 +26,7 @@ public class MapController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        try (DBTransaction trans = DB.getTransation()) {
+        try (DBTransaction trans = DB.getTransaction()) {
             RoadMap.getMap(trans).getLinks().sorted((o1, o2) -> {
                 if (o1.x.equals(o2.x))
                     if (o1.y.equals(o2.y))
@@ -54,7 +54,7 @@ public class MapController implements Initializable {
 
     @FXML
     private void update() {
-        try (DBTransaction trans = DB.getTransation()) {
+        try (DBTransaction trans = DB.getTransaction()) {
             RoadMap map = RoadMap.getMap(trans);
             for (RouteController controller : routeControllers) {
                 map.setLink(controller.getFirst(), controller.getLast(), (double) controller.getCondition().getValue());

@@ -2,12 +2,13 @@ package edu.oc.courier;
 
 import edu.oc.courier.data.User;
 
+import java.io.Closeable;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
-public class DBTransaction implements AutoCloseable {
+public class DBTransaction implements Closeable {
     private EntityManager manager;
 
     public DBTransaction(EntityManager manager){
@@ -66,11 +67,7 @@ public class DBTransaction implements AutoCloseable {
 
     public <T> void save(T... entities){
         for(T entity : entities) {
-            try {
-                manager.merge(entity);
-            } catch (Throwable lol) {
-                manager.persist(entity);
-            }
+            manager.merge(entity);
         }
     }
 

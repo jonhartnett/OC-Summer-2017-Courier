@@ -17,14 +17,14 @@ public final class Ticket {
     private int id;
 
     private Instant orderTime;
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.ALL)
     private User orderTaker;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.ALL)
     private Client pickupClient;
     private Instant pickupTime;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.ALL)
     private Client deliveryClient;
 
     private boolean chargeToDestination;
@@ -33,7 +33,7 @@ public final class Ticket {
     private double estDistance;
     private BigDecimal quote;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.ALL)
     private Courier courier;
     private Instant leaveTime;
     private Instant actualPickupTime;
@@ -42,7 +42,7 @@ public final class Ticket {
     public Ticket() {
         this.id = 0;
         this.orderTime = Instant.now();
-        this.orderTaker = LoginController.currentUser;
+        this.orderTaker = User.getCurrentUser();
     }
 
     public int getId() {

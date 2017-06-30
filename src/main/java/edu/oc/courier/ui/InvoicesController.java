@@ -31,14 +31,14 @@ public class InvoicesController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         clients.setCellFactory(Main.clientCallback);
         clients.setButtonCell(Main.clientCallback.call(null));
-        try (DBTransaction transaction = DB.getTransation()) {
+        try (DBTransaction transaction = DB.getTransaction()) {
             clients.getItems().addAll(transaction.getAll(transaction.query("SELECT c FROM Client c", Client.class)));
         }
     }
 
     @FXML
     private void updateAmount() {
-        try (DBTransaction transaction = DB.getTransation()) {
+        try (DBTransaction transaction = DB.getTransaction()) {
             Instant start = (startDate.getValue() != null) ? startDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now().minus(7, ChronoUnit.DAYS);
             Instant end = (endDate.getValue() != null) ? endDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now();
             amount.setText(String.format("%s owes %s for %s to %s",

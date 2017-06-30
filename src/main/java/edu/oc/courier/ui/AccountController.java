@@ -24,7 +24,7 @@ public class AccountController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        this.user = LoginController.currentUser;
+        this.user = User.getCurrentUser();
         username.setText(user.getName());
     }
 
@@ -34,7 +34,7 @@ public class AccountController implements Initializable {
         String password = this.password.getText();
         if (password.length() > 0)
             user.setPassword(password);
-        try(DBTransaction transaction = DB.getTransation()){
+        try(DBTransaction transaction = DB.getTransaction()){
             transaction.save(user);
             transaction.commit();
             output.setTextFill(GREEN);

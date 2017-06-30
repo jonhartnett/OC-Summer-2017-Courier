@@ -22,6 +22,8 @@ public final class User {
     private static final Random rand = new Random();
     private static final MessageDigest digest;
 
+    private static User currentUser = null;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -30,6 +32,14 @@ public final class User {
     private byte[] password;
     private String salt;
     private UserType type;
+
+    public static User getCurrentUser() {
+        return currentUser;
+    }
+
+    public static void setCurrentUser(User user) {
+        User.currentUser = user;
+    }
 
     public User(){
         setType(UserType.ORDER_TAKER);

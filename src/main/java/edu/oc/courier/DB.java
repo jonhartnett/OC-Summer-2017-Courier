@@ -19,7 +19,7 @@ public final class DB {
         return entityManager;
     }
 
-    public static DBTransaction getTransation(){
+    public static DBTransaction getTransaction(){
         return new DBTransaction(entityManager);
     }
 

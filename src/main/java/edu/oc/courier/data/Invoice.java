@@ -15,9 +15,9 @@ public final class Invoice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String description;
-    @OneToMany(cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Ticket> tickets;
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.ALL)
     private Client client;
 
     public void generate(OutputStream outputStream) {

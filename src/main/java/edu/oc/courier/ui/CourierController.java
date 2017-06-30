@@ -43,7 +43,7 @@ public class CourierController extends HBox implements Initializable {
     @FXML
     private void setName() {
         courier.setName(name.getText());
-        try (DBTransaction transaction = DB.getTransation()) {
+        try (DBTransaction transaction = DB.getTransaction()) {
             transaction.save(courier);
             transaction.commit();
         }
@@ -51,7 +51,7 @@ public class CourierController extends HBox implements Initializable {
 
     @FXML
     private void removeCourier() {
-        try (DBTransaction transaction = DB.getTransation()) {
+        try (DBTransaction transaction = DB.getTransaction()) {
             transaction.delete(courier);
             transaction.commit();
             parent.removeCourier(this);

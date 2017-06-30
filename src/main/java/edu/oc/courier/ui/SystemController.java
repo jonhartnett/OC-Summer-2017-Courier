@@ -45,7 +45,7 @@ public class SystemController implements Initializable {
 
     @FXML
     private void updateSystem() {
-        try(DBTransaction transaction = DB.getTransation()) {
+        try(DBTransaction transaction = DB.getTransaction()) {
             systemInfo.setSpeed(Float.parseFloat(avgSpeed.getText()));
             systemInfo.setBase(new BigDecimal(basePrice.getText()));
             systemInfo.setPrice(new BigDecimal(price.getText()));

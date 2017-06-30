@@ -84,7 +84,7 @@ public class Main extends Application {
     }
 
     private void setRoadmap(){
-        try(DBTransaction trans = DB.getTransation()){
+        try(DBTransaction trans = DB.getTransaction()){
             if (!trans.getAny(RoadMap.class).isPresent()) {
                 final RoadMap roadMap = RoadMap.getMap(trans);
 
@@ -110,7 +110,7 @@ public class Main extends Application {
     }
 
     private void testDB() {
-        try(DBTransaction trans = DB.getTransation()){
+        try(DBTransaction trans = DB.getTransaction()){
             final Optional<Invoice> inv = trans.getAny(Invoice.class);
             inv.ifPresent(i -> log.info(i.toString()));
 
@@ -143,7 +143,7 @@ public class Main extends Application {
             trans.commit();
         }
 
-        try(DBTransaction trans = DB.getTransation()){
+        try(DBTransaction trans = DB.getTransaction()){
             final RoadMap roadMap = RoadMap.getMap(trans);
             System.out.println(roadMap.id);
             Route route1 = roadMap.getRoute("1", "4");
@@ -159,7 +159,7 @@ public class Main extends Application {
             trans.commit();
         }
 
-        try(DBTransaction trans = DB.getTransation()){
+        try(DBTransaction trans = DB.getTransaction()){
             final RoadMap roadMap = RoadMap.getMap(trans);
             System.out.println(roadMap.id);
 
@@ -180,7 +180,7 @@ public class Main extends Application {
             trans.commit();
         }
 
-        try(DBTransaction trans = DB.getTransation()){
+        try(DBTransaction trans = DB.getTransaction()){
             final RoadMap roadMap = RoadMap.getMap(trans);
             System.out.println(roadMap.id);
 

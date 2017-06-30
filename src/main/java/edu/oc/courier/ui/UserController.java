@@ -68,7 +68,7 @@ public class UserController extends HBox implements Initializable {
 
     @FXML
     private void removeUser() {
-        try (DBTransaction transaction = DB.getTransation()) {
+        try (DBTransaction transaction = DB.getTransaction()) {
             transaction.delete(user);
             transaction.commit();
             parent.removeUser(this);
@@ -78,7 +78,7 @@ public class UserController extends HBox implements Initializable {
     @FXML
     private void saveUser() {
         user.setUsername(username.getText());
-        try (DBTransaction transaction = DB.getTransation()) {
+        try (DBTransaction transaction = DB.getTransaction()) {
             transaction.save(user);
             transaction.commit();
         }

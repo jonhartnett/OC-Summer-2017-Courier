@@ -74,7 +74,7 @@ public class TicketSelectorController implements Initializable {
             query += " ORDER BY t." + field.y + " " + order.getSelectedToggle().getUserData();
         }
         this.tickets.getChildren().clear();
-        try (DBTransaction transaction = DB.getTransation()) {
+        try (DBTransaction transaction = DB.getTransaction()) {
             transaction.getAll(transaction.query(query, Ticket.class).setMaxResults(100))
                 .forEach(ticket ->
                     this.tickets.getChildren().add(new TicketSelectionController(ticket, this))

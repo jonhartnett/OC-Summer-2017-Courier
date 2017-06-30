@@ -96,7 +96,7 @@ public class TicketController extends GridPane implements Initializable {
         courier.setCellFactory(Main.courierCallback);
         courier.setButtonCell(Main.courierCallback.call(null));
 
-        try (DBTransaction transaction = DB.getTransation()) {
+        try (DBTransaction transaction = DB.getTransaction()) {
             List<Client> clients = transaction.getAll(transaction.query("SELECT c FROM Client c", Client.class));
             pickupClient.getItems().addAll(clients);
             deliveryClient.getItems().addAll(clients);
@@ -146,7 +146,7 @@ public class TicketController extends GridPane implements Initializable {
 
     @FXML
     private void generateDirections() {
-        try (DBTransaction transaction = DB.getTransation()) {
+        try (DBTransaction transaction = DB.getTransaction()) {
             RoadMap roadMap = RoadMap.getMap(transaction);
             transaction.getAny(SystemInfo.class).ifPresent(systemInfo -> {
                 Route routeToPickup = roadMap.getRoute(systemInfo.getCourierAddress(), pickupClient.getValue().getAddress());
@@ -160,6 +160,8 @@ public class TicketController extends GridPane implements Initializable {
     @FXML
     private void update() {
         try {
+            ticket.setOrderTaker(User.getCurrentUser());
+
             ticket.setPickupClient(pickupClient.getValue());
             try {
                 ticket.setPickupTime(pickupDate.getValue().atTime(pickupHour.getValue(), pickupMinute.getValue()).atZone(ZoneId.systemDefault()).toInstant());
@@ -177,7 +179,7 @@ public class TicketController extends GridPane implements Initializable {
             } catch (NullPointerException ignored) {
             }
 
-            try (DBTransaction transaction = DB.getTransation()) {
+            try (DBTransaction transaction = DB.getTransaction()) {
                 RoadMap roadMap = RoadMap.getMap(transaction);
                 transaction.getAny(SystemInfo.class).ifPresent(systemInfo -> {
                     Route routeToPickup = roadMap.getRoute(systemInfo.getCourierAddress(), pickupClient.getValue().getAddress());

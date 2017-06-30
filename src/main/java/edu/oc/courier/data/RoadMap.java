@@ -23,15 +23,16 @@ public class RoadMap {
     }
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int id = 1;
     @OneToMany(cascade = CascadeType.ALL)
     public List<Node> nodeList = new ArrayList<>();
     @Transient
     private Map<String, Node> nodes = new HashMap<>();
 
-    private RoadMap(){}
+    public RoadMap(){}
 
-    private RoadMap(Iterable<Node> nodes){
+    public RoadMap(Iterable<Node> nodes){
         for(Node node : nodes)
             this.nodes.put(node.getName(), node);
     }

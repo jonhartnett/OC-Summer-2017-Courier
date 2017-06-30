@@ -17,7 +17,7 @@ public class CouriersController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        try(DBTransaction transaction = DB.getTransation()){
+        try(DBTransaction transaction = DB.getTransaction()){
             transaction.getAll(transaction.query("SELECT c FROM Courier c", Courier.class))
                     .forEach(courier ->
                         courierList.getChildren().add(new CourierController(courier, this))

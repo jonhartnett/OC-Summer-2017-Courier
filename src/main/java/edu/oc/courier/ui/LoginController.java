@@ -16,8 +16,6 @@ import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
 
-    public static User currentUser;
-
     @FXML private TextField username;
     @FXML private PasswordField password;
     @FXML private Label output;
@@ -68,7 +66,7 @@ public class LoginController implements Initializable {
                             menuItem.setDisable(false);
                     }
                 }));
-                currentUser = user;
+                User.setCurrentUser(user);
                 container.loadScreen("ticket");
             } else {
                 reset();
