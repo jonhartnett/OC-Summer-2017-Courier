@@ -21,7 +21,7 @@ import java.util.ResourceBundle;
 
 public class MapController implements Initializable {
 
-    public GridPane mapGrid;
+    @FXML private GridPane mapGrid;
 
     private RoadMap map;
 
