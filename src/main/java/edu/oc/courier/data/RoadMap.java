@@ -64,6 +64,12 @@ public class RoadMap {
         n2.link(n1, cost);
     }
 
+    public boolean hasLink(final String key, final String key2){
+        final Node n1 = nodes.get(key);
+        final Node n2 = nodes.get(key2);
+        return n2.inverseLinks.containsKey(n1);
+    }
+
     public Stream<Triple<String, String, Double>> getLinks() {
         final Stream.Builder<Triple<String, String, Double>> builder = Stream.builder();
         for (Node node : nodes.values()) {

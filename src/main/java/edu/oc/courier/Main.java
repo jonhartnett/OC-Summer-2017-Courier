@@ -86,6 +86,7 @@ public final class Main extends Application {
     private void setRoadMap(){
         try(DBTransaction trans = DB.getTransaction()){
             if (!trans.getAny(RoadMap.class).isPresent()) {
+                //TODO: set one-way links
                 final RoadMap roadMap = RoadMap.getMap(trans);
 
                 final String[] aves = new String[]{"1st", "2nd", "3rd", "4th", "5th", "6th", "7th"};
