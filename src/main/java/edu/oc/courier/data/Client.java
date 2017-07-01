@@ -39,8 +39,8 @@ public final class Client {
         return address;
     }
 
-    public void setAddress() {
-        this.address = "Broadway";
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getDeliveryInstructions() {

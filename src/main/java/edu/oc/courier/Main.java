@@ -117,7 +117,7 @@ public final class Main extends Application {
 
             final Client client = new Client();
             client.setName("MegaCorp");
-            client.setAddress();
+            client.setAddress("Broadway");
 
             final Invoice invoice = new Invoice();
             invoice.setClient(client);
