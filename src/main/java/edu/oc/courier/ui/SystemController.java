@@ -6,24 +6,28 @@ import edu.oc.courier.data.RoadMap;
 import edu.oc.courier.data.SystemInfo;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.stage.Modality;
+import javafx.util.Pair;
 
 import java.math.BigDecimal;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 import static javafx.scene.paint.Color.GREEN;
 import static javafx.scene.paint.Color.RED;
 
 public class SystemController implements Initializable {
 
+
     @FXML private TextField avgSpeed;
     @FXML private TextField basePrice;
     @FXML private TextField price;
     @FXML private TextField bonus;
-    @FXML private TextField courierAddress;
+    @FXML private Button courierAddress;
+
     @FXML private Label output;
 
     private SystemInfo systemInfo;
@@ -68,5 +72,12 @@ public class SystemController implements Initializable {
             output.setText(e.getClass() + " " + e.getLocalizedMessage());
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    private void selectAddress() {
+        AddressPicker dialog = new AddressPicker();
+        dialog.showAndWait().ifPresent(systemInfo::setCourierAddress);
+        courierAddress.setText(systemInfo.getCourierAddress());
     }
 }

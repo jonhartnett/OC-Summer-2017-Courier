@@ -57,7 +57,7 @@ public class MapController implements Initializable {
         }
     }
 
-    private Tuple<Integer, Integer> getPosition(String address) {
+    public static Tuple<Integer, Integer> getPosition(String address) {
         //ASCII '1' is at 49
         int col = address.charAt(0) - 49;
         //ASCII 'A' is at 65

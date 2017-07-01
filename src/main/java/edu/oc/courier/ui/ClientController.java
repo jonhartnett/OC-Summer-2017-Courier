@@ -9,6 +9,7 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
@@ -23,7 +24,7 @@ import static java.util.stream.Collectors.toList;
 public class ClientController extends HBox implements Initializable {
 
     @FXML private TextField name;
-    @FXML private ComboBox<String> address;
+    @FXML private Button address;
 
     private final Client client;
     private final ClientsController parent;
@@ -46,17 +47,18 @@ public class ClientController extends HBox implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         name.setText(client.getName());
+    }
 
-        try(DBTransaction transaction = DB.getTransaction()) {
-            address.setItems(RoadMap.getMap(transaction).nodeList.stream().map(Node::getName).collect(collectingAndThen(toList(), FXCollections::observableArrayList)));
-            address.setValue(client.getAddress());
-        }
+    @FXML
+    private void selectAddress() {
+        AddressPicker dialog = new AddressPicker();
+        dialog.showAndWait().ifPresent(client::setAddress);
+        address.setText(client.getAddress());
     }
 
     @FXML
     private void update() {
         client.setName(name.getText());
-        client.setAddress(address.getValue());
         try(DBTransaction transaction = DB.getTransaction()) {
             transaction.save(client);
             transaction.commit();
