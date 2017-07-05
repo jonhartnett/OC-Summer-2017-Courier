@@ -1,9 +1,8 @@
 package edu.oc.courier.ui;
 
-import edu.oc.courier.DB;
-import edu.oc.courier.DBTransaction;
 import edu.oc.courier.Main;
 import edu.oc.courier.data.Courier;
+import edu.oc.courier.util.DB;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
@@ -31,35 +30,30 @@ public class BonusesController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         couriers.setCellFactory(Main.courierCallback);
         couriers.setButtonCell(Main.courierCallback.call(null));
-        try (DBTransaction transaction = DB.getTransation()) {
-            couriers.getItems().addAll(transaction.getAll(transaction.query("SELECT c FROM Courier c", Courier.class)));
-        }
+        Courier.table.getAll().forEachOrdered(couriers.getItems()::add);
     }
 
     @FXML
     private void updateAmount() {
-        try (DBTransaction transaction = DB.getTransation()) {
-            Instant start = (startDate.getValue() != null) ? startDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now().minus(7, ChronoUnit.DAYS);
-            Instant end = (endDate.getValue() != null) ? endDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now();
-            amount.setText(String.format("%s earned %s in bonuses for %s to %s",
-                couriers.getValue().getName(),
-                NumberFormat.getCurrencyInstance().format(
-                    transaction.get(
-                        transaction.query(
-                    "SELECT SUM(t.quote) * s.bonus FROM Ticket t, SystemInfo s " +
-                            "WHERE t.courier = :courier " +
-                            "AND t.orderTime > :startTime " +
-                            "AND t.orderTime < :endTime " +
-                            "AND t.estDeliveryTime < t.actualDeliveryTime",
-                            BigDecimal.class)
-                        .setParameter("courier", couriers.getValue())
-                        .setParameter("startTime", start)
-                        .setParameter("endTime", end)
-                    ).orElse(new BigDecimal(0))
-                ),
-                start.atZone(ZoneId.systemDefault()).toLocalDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)),
-                end.atZone(ZoneId.systemDefault()).toLocalDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))
-            ));
-        }
+        Instant start = (startDate.getValue() != null) ? startDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now().minus(7, ChronoUnit.DAYS);
+        Instant end = (endDate.getValue() != null) ? endDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now();
+
+        BigDecimal quote = DB.query(BigDecimal.class,
+            "SELECT SUM(t.quote) * s.bonus FROM Ticket t, SystemInfo s " +
+            "WHERE t.courier = ? " +
+            "AND t.orderTime > ? " +
+            "AND t.orderTime < ? " +
+            "AND t.estDeliveryTime < t.actualDeliveryTime",
+            couriers.getValue().getId(),
+            start,
+            end
+        ).findFirst().orElse(BigDecimal.ZERO);
+
+        amount.setText(String.format("%s earned %s in bonuses for %s to %s",
+            couriers.getValue().getName(),
+            NumberFormat.getCurrencyInstance().format(quote),
+            start.atZone(ZoneId.systemDefault()).toLocalDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)),
+            end.atZone(ZoneId.systemDefault()).toLocalDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))
+        ));
     }
 }

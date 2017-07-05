@@ -1,9 +1,8 @@
 package edu.oc.courier.ui;
 
-import edu.oc.courier.DB;
-import edu.oc.courier.DBTransaction;
 import edu.oc.courier.Tuple;
 import edu.oc.courier.data.Ticket;
+import edu.oc.courier.util.Table;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
@@ -18,6 +17,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class TicketSelectorController implements Initializable {
+    private static Table<Ticket>.CustomQuery getTicketPage = Ticket.table.getCustom().paginated().build();
 
     @FXML private ComboBox<Tuple<String, String>> sortOrder;
     @FXML private ToggleGroup order;
@@ -74,11 +74,8 @@ public class TicketSelectorController implements Initializable {
             query += " ORDER BY t." + field.y + " " + order.getSelectedToggle().getUserData();
         }
         this.tickets.getChildren().clear();
-        try (DBTransaction transaction = DB.getTransation()) {
-            transaction.getAll(transaction.query(query, Ticket.class).setMaxResults(100))
-                .forEach(ticket ->
-                    this.tickets.getChildren().add(new TicketSelectionController(ticket, this))
-            );
-        }
+        getTicketPage.executePage(0, 100).forEachOrdered(ticket ->
+            this.tickets.getChildren().add(new TicketSelectionController(ticket, this))
+        );
     }
 }

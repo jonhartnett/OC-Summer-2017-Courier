@@ -2,38 +2,53 @@ package edu.oc.courier.data;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
+import edu.oc.courier.util.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Random;
 
 @SuppressWarnings("unused")
-@Entity
+@Savable
 public final class User {
+    public static Table<User> table = Table.from(User.class);
+    private static Table<User>.CustomQuery getByUser = table.getCustom().where("username=?");
+    public static Optional<User> getByUsername(String username){
+        return getByUser.execute(username).findFirst();
+    }
 
     private static final String alpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_";
     private static final Random rand = new Random();
     private static final MessageDigest digest;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column
     private int id;
+    @Column
     private String name;
+    @Unique
+    @Column
     private String username;
+    @Column
     private byte[] password;
+    @Column
     private String salt;
+    @Column
     private UserType type;
 
-    public User(){
-        setType(UserType.ORDER_TAKER);
-        setPassword("temp");
+    public User(){}
+
+    public User(int id, String name, byte[] password, String salt, UserType type, String username){
+        this.id = id;
+        this.name = name;
+        this.password = password;
+        this.salt = salt;
+        this.type = type;
+        this.username = username;
     }
 
     public User(String name, String username, String password, UserType type) {

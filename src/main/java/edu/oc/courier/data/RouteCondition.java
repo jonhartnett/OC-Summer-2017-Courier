@@ -1,15 +1,22 @@
 package edu.oc.courier.data;
 
 public enum RouteCondition {
-    OPEN(1), BUSY(2), CLOSED(Integer.MAX_VALUE), REMOVE(-1);
+    OPEN, LIGHT_TRAFFIC, TRAFFIC, HEAVY_TRAFFIC, CLOSED;
 
-    private final int value;
-
-    RouteCondition(int value) {
-        this.value = value;
-    }
-
-    public int getValue() {
-        return value;
+    double cost(){
+        switch(this){
+            case OPEN:
+                return 1;
+            case LIGHT_TRAFFIC:
+                return 1.5;
+            case TRAFFIC:
+                return 2;
+            case HEAVY_TRAFFIC:
+                return 4;
+            case CLOSED:
+                return Double.POSITIVE_INFINITY;
+            default:
+                throw new RuntimeException("Invalid RouteCondition " + this.toString());
+        }
     }
 }

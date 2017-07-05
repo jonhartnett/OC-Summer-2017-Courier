@@ -1,7 +1,5 @@
 package edu.oc.courier.ui;
 
-import edu.oc.courier.DB;
-import edu.oc.courier.DBTransaction;
 import edu.oc.courier.data.Courier;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -43,18 +41,12 @@ public class CourierController extends HBox implements Initializable {
     @FXML
     private void setName() {
         courier.setName(name.getText());
-        try (DBTransaction transaction = DB.getTransation()) {
-            transaction.save(courier);
-            transaction.commit();
-        }
+        Courier.table.set(courier);
     }
 
     @FXML
     private void removeCourier() {
-        try (DBTransaction transaction = DB.getTransation()) {
-            transaction.delete(courier);
-            transaction.commit();
-            parent.removeCourier(this);
-        }
+        Courier.table.delete(courier);
+        parent.removeCourier(this);
     }
 }

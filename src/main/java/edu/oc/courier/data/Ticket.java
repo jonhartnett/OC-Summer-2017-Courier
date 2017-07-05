@@ -3,40 +3,47 @@ package edu.oc.courier.data;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import edu.oc.courier.ui.LoginController;
+import edu.oc.courier.util.Column;
+import edu.oc.courier.util.Id;
+import edu.oc.courier.util.Savable;
+import edu.oc.courier.util.Table;
 
-import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
 
 @SuppressWarnings("unused")
-@Entity
+@Savable
 public final class Ticket {
+    public static Table<Ticket> table = Table.from(Ticket.class);
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column
     private int id;
-
+    @Column
     private Instant orderTime;
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @Column
     private User orderTaker;
-
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @Column
     private Client pickupClient;
+    @Column
     private Instant pickupTime;
-
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @Column
     private Client deliveryClient;
-
+    @Column
     private boolean chargeToDestination;
-
+    @Column
     private Instant estDeliveryTime;
+    @Column
     private double estDistance;
+    @Column
     private BigDecimal quote;
-
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @Column
     private Courier courier;
+    @Column
     private Instant leaveTime;
+    @Column
     private Instant actualPickupTime;
+    @Column
     private Instant actualDeliveryTime;
 
     public Ticket() {

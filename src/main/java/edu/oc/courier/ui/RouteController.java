@@ -55,8 +55,14 @@ public class RouteController extends HBox implements Initializable {
                                 case OPEN:
                                     setText("Open");
                                     break;
-                                case BUSY:
-                                    setText("Busy");
+                                case LIGHT_TRAFFIC:
+                                    setText("Light Traffic");
+                                    break;
+                                case TRAFFIC:
+                                    setText("Traffic");
+                                    break;
+                                case HEAVY_TRAFFIC:
+                                    setText("Heavy Traffic");
                                     break;
                                 case CLOSED:
                                     setText("Closed");
@@ -68,7 +74,7 @@ public class RouteController extends HBox implements Initializable {
             }
         });
         condition.setButtonCell(condition.getCellFactory().call(null));
-        condition.getItems().addAll(RouteCondition.OPEN, RouteCondition.BUSY, RouteCondition.CLOSED);
+        condition.getItems().addAll(RouteCondition.values());
 
         first.setText(f);
         last.setText(l);

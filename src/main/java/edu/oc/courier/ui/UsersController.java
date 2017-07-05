@@ -1,7 +1,5 @@
 package edu.oc.courier.ui;
 
-import edu.oc.courier.DB;
-import edu.oc.courier.DBTransaction;
 import edu.oc.courier.data.User;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -16,12 +14,7 @@ public class UsersController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        try (DBTransaction transaction = DB.getTransation()) {
-            transaction.getAll(transaction.query("SELECT u FROM User u", User.class))
-                .forEach(user ->
-                        userList.getChildren().add(new UserController(user, this))
-                );
-        }
+        User.table.getAll().forEachOrdered(user -> userList.getChildren().add(new UserController(user, this)));
     }
 
     @FXML

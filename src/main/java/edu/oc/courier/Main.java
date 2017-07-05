@@ -9,17 +9,12 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Optional;
 
 public class Main extends Application {
-
-    private static final Logger log = LoggerFactory.getLogger(Main.class);
-    private final boolean testing = false;
+    private static final boolean testing = false;
 
     public static Callback<ListView<Client>, ListCell<Client>> clientCallback = new Callback<ListView<Client>, ListCell<Client>>() {
         @Override
@@ -58,9 +53,9 @@ public class Main extends Application {
         if (testing) {
             testDB();
         } else {
+            setRoadmap();
             setSystem();
             setAdmin();
-            setRoadmap();
             final Parent root = FXMLLoader.load(getClass().getResource("/ui/container.fxml"));
             primaryStage.setScene(new Scene(root));
             primaryStage.setTitle("Courier service");
@@ -70,135 +65,139 @@ public class Main extends Application {
     }
 
     private void setSystem() {
-        SystemInfo s = DB.first(DB.m().createQuery("SELECT s FROM SystemInfo s", SystemInfo.class))
-                .orElse(new SystemInfo(5.0f, new BigDecimal(10), new BigDecimal(2), new BigDecimal(5), "4th and D"));
-
-        DB.save(s);
+        SystemInfo info = SystemInfo.get()
+            .orElseGet(() ->
+                new SystemInfo(5.0f, new BigDecimal(10), new BigDecimal(2), new BigDecimal(5), RoadMap.get().get("4th and D"))
+            );
+        SystemInfo.table.set(info);
     }
 
     private void setAdmin() {
-        User admin = DB.getUser("admin")
-                .orElse(new User("Admin", "Admin", "root", UserType.ADMIN));
-
-        DB.save(admin);
+        User admin = User.getByUsername("admin")
+                .orElseGet(() -> new User("Admin", "admin", "root", UserType.ADMIN));
+        User.table.set(admin);
     }
 
     private void setRoadmap(){
-        try(DBTransaction trans = DB.getTransation()){
-            if (!trans.getAny(RoadMap.class).isPresent()) {
-                final RoadMap roadMap = RoadMap.getMap(trans);
+        RoadMap map = new RoadMap();
+        map.load();
 
-                String[] aves = new String[]{"1st", "2nd", "3rd", "4th", "5th", "6th", "7th"};
-                String[] sts = new String[]{"A", "B", "C", "D", "E", "F", "G"};
-                for (String ave : aves) {
-                    for (String st : sts) {
-                        roadMap.add(ave + " and " + st);
+        if(map.isEmpty()){
+            String[] aves = new String[]{"1st", "2nd", "3rd", "4th", "5th", "6th", "7th"};
+            String[] sts = new String[]{"A", "B", "C", "D", "E", "F", "G"};
+            for (String ave : aves) {
+                for (String st : sts) {
+                    String name = ave + " and " + st;
+                    if(!map.has(name))
+                        map.add(name);
+                }
+            }
+            for(int y = 0; y < aves.length; y++){
+                for(int x = 0; x < sts.length; x++){
+                    if(x > 0){
+                        boolean added = false;
+                        if(x == 1 || x == 6){
+                            added = true;
+                            if(y % 2 == 0)
+                                map.setOneWayLink(aves[y] + " and " + sts[x], aves[y] + " and " + sts[x - 1], RouteCondition.OPEN);
+                            else if(y == 3)
+                                map.setOneWayLink(aves[y] + " and " + sts[x - 1], aves[y] + " and " + sts[x], RouteCondition.OPEN);
+                            else
+                                added = false;
+                        }
+                        if(!added)
+                            map.setLink(aves[y] + " and " + sts[x], aves[y] + " and " + sts[x - 1], RouteCondition.OPEN);
+                    }
+                    if(y > 0){
+                        boolean added = false;
+                        if(y == 1 || y == 6){
+                            added = true;
+                            if(y == 1 || y == 5)
+                                map.setOneWayLink(aves[y] + " and " + sts[x], aves[y - 1] + " and " + sts[x], RouteCondition.OPEN);
+                            else if(y % 2 == 0)
+                                map.setOneWayLink(aves[y - 1] + " and " + sts[x], aves[y] + " and " + sts[x], RouteCondition.OPEN);
+                            else
+                                added = false;
+                        }
+                        if(!added)
+                            map.setLink(aves[y] + " and " + sts[x], aves[y - 1] + " and " + sts[x], RouteCondition.OPEN);
                     }
                 }
-                for (int y = 0; y < aves.length; y++) {
-                    for (int x = 0; x < sts.length; x++) {
-                        if (x > 0)
-                            roadMap.setLink(aves[y] + " and " + sts[x], aves[y] + " and " + sts[x - 1], 1);
-                        if (y > 0)
-                            roadMap.setLink(aves[y] + " and " + sts[x], aves[y - 1] + " and " + sts[x], 1);
-                    }
-                }
-                trans.save(roadMap);
-                trans.commit();
             }
         }
     }
 
     private void testDB() {
-        try(DBTransaction trans = DB.getTransation()){
-            final Optional<Invoice> inv = trans.getAny(Invoice.class);
-            inv.ifPresent(i -> log.info(i.toString()));
+        final Client client = new Client();
+        client.setName("MegaCorp");
 
-            final Client client = new Client();
-            client.setName("MegaCorp");
-            client.setAddress("Broadway");
+        final Invoice invoice = new Invoice();
+        invoice.setClient(client);
+        Invoice.table.set(invoice);
 
-            final Invoice invoice = new Invoice();
-            invoice.setClient(client);
-            trans.save(invoice);
+        final Courier courier = new Courier();
+        courier.setName("Tim");
+        Courier.table.set(courier);
 
-            final Courier courier = new Courier();
-            courier.setName("Tim");
-            trans.save(courier);
+        RoadMap roadMap = RoadMap.get();
+        roadMap.clear();
+        roadMap.add("1");
+        roadMap.add("2");
+        roadMap.add("3");
+        roadMap.add("4");
+        roadMap.add("5");
+        roadMap.setLink("1", "3", RouteCondition.OPEN);
+        roadMap.setLink("1", "4", RouteCondition.TRAFFIC);
+        roadMap.setOneWayLink("1", "2", RouteCondition.OPEN);
+        roadMap.setOneWayLink("2", "4", RouteCondition.CLOSED);
+        roadMap.setOneWayLink("4", "5", RouteCondition.OPEN);
+        roadMap.save();
 
-            final RoadMap roadMap = RoadMap.getMap(trans);
-            System.out.println(roadMap.id);
-            roadMap.clear();
-            roadMap.add("1");
-            roadMap.add("2");
-            roadMap.add("3");
-            roadMap.add("4");
-            roadMap.add("5");
-            roadMap.setLink("1", "3", 1);
-            roadMap.setLink("1", "4", 2);
-            roadMap.setOneWayLink("1", "2", 1);
-            roadMap.setOneWayLink("2", "4", 0);
-            roadMap.setOneWayLink("4", "5", 1);
+        roadMap = RoadMap.get();
+        Route route1 = roadMap.getRoute("1", "4");
+        Route route2 = roadMap.getRoute("2", "3");
+        Route route3 = roadMap.getRoute("4", "1");
+        Route route4 = roadMap.getRoute("5", "1");
+        System.out.println(route1);
+        System.out.println(route2);
+        System.out.println(route3);
+        System.out.println(route4);
+        System.out.println("----------");
 
-            trans.commit();
-        }
 
-        try(DBTransaction trans = DB.getTransation()){
-            final RoadMap roadMap = RoadMap.getMap(trans);
-            System.out.println(roadMap.id);
-            Route route1 = roadMap.getRoute("1", "4");
-            Route route2 = roadMap.getRoute("2", "3");
-            Route route3 = roadMap.getRoute("4", "1");
-            Route route4 = roadMap.getRoute("5", "1");
-            System.out.println(route1);
-            System.out.println(route2);
-            System.out.println(route3);
-            System.out.println(route4);
-            System.out.println("----------");
 
-            trans.commit();
-        }
+        roadMap = RoadMap.get();
 
-        try(DBTransaction trans = DB.getTransation()){
-            final RoadMap roadMap = RoadMap.getMap(trans);
-            System.out.println(roadMap.id);
+        roadMap.removeLink("1", "4");
+        roadMap.setOneWayLink("3", "4", RouteCondition.HEAVY_TRAFFIC);
+        roadMap.save();
 
-            roadMap.removeLink("1", "4");
-            roadMap.setOneWayLink("3", "4", 5);
-            trans.save(roadMap);
+        route1 = roadMap.getRoute("1", "4");
+        route2 = roadMap.getRoute("2", "3");
+        route3 = roadMap.getRoute("4", "1");
+        route4 = roadMap.getRoute("5", "1");
+        System.out.println(route1);
+        System.out.println(route2);
+        System.out.println(route3);
+        System.out.println(route4);
+        System.out.println("----------");
 
-            Route route1 = roadMap.getRoute("1", "4");
-            Route route2 = roadMap.getRoute("2", "3");
-            Route route3 = roadMap.getRoute("4", "1");
-            Route route4 = roadMap.getRoute("5", "1");
-            System.out.println(route1);
-            System.out.println(route2);
-            System.out.println(route3);
-            System.out.println(route4);
-            System.out.println("----------");
 
-            trans.commit();
-        }
 
-        try(DBTransaction trans = DB.getTransation()){
-            final RoadMap roadMap = RoadMap.getMap(trans);
-            System.out.println(roadMap.id);
+        roadMap = RoadMap.get();
 
-            roadMap.removeLink("3", "4");
-            roadMap.setOneWayLink("4", "3", 5);
-            trans.save(roadMap);
+        roadMap.removeLink("3", "4");
+        roadMap.setOneWayLink("4", "3", RouteCondition.HEAVY_TRAFFIC);
+        roadMap.save();
 
-            Route route1 = roadMap.getRoute("1", "4");
-            Route route2 = roadMap.getRoute("2", "3");
-            Route route3 = roadMap.getRoute("4", "1");
-            Route route4 = roadMap.getRoute("5", "1");
-            System.out.println(route1);
-            System.out.println(route2);
-            System.out.println(route3);
-            System.out.println(route4);
-            System.out.println("----------");
-
-            trans.commit();
-        }
+        route1 = roadMap.getRoute("1", "4");
+        route2 = roadMap.getRoute("2", "3");
+        route3 = roadMap.getRoute("4", "1");
+        route4 = roadMap.getRoute("5", "1");
+        System.out.println(route1);
+        System.out.println(route2);
+        System.out.println(route3);
+        System.out.println(route4);
+        System.out.println("----------");
     }
 }

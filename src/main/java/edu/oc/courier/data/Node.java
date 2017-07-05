@@ -1,14 +1,16 @@
 package edu.oc.courier.data;
 
 import com.google.common.base.MoreObjects;
+import edu.oc.courier.util.*;
 
-import javax.persistence.*;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Stream;
 
-@Entity
-public class Node {
+@Savable
+public class Node{
+    public static Table<Node> table = Table.from(Node.class);
+
     private static class RoutingEntry{
         Node next;
         double cost;
@@ -26,16 +28,15 @@ public class Node {
     private static class RouteException extends RuntimeException{}
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column
     private int id;
-    @Column(unique = true)
+    @Unique
+    @Column
     private String name;
-    @ElementCollection
-    public Map<Node, Double> inverseLinks = new HashMap<>();
+    @Column
+    public Map<Node, RouteCondition> inverseLinks = new HashMap<>();
 
-    @Transient
-    HashMap<Node, RoutingEntry> routingTable = new HashMap<>();
-    @Transient
+    public HashMap<Node, RoutingEntry> routingTable = new HashMap<>();
     private boolean dirty = false;
 
     public Node(){}
@@ -83,7 +84,7 @@ public class Node {
     public Route getRoute(Node dest){
         try{
             System.out.println("New Route");
-            Stream.Builder builder = Stream.builder();
+            Stream.Builder<String> builder = Stream.builder();
             double cost = this.constructRoute(this, dest, builder);
             return new Route(builder.build(), cost);
         }catch(RouteException ex){
@@ -91,34 +92,34 @@ public class Node {
         }
     }
 
-    private double constructRoute(Node prev, Node dest, Stream.Builder builder){
+    private double constructRoute(Node prev, Node dest, Stream.Builder<String> builder){
         builder.add(this.name);
         if(dest == this)
-            return inverseLinks.getOrDefault(prev, 0.0);
+            return inverseLinks.get(prev).cost();
 
         RoutingEntry entry = routingTable.get(dest);
         if(entry == null)
             throw new RouteException();
         Node next = entry.next;
-        return inverseLinks.getOrDefault(prev, 0.0) + next.constructRoute(this, dest, builder);
+        return inverseLinks.get(prev).cost()
+            + next.constructRoute(this, dest, builder);
     }
 
-    public void link(Node next, double cost){
-        if(!Double.isInfinite(cost)){
+    public void link(Node next, RouteCondition cost){
+        if(cost != null){
             next.inverseLinks.put(this, cost);
         }else{
-            Double prev = next.inverseLinks.remove(this);
+            RouteCondition prev = next.inverseLinks.remove(this);
             if(prev == null)
                 return;
         }
 
         Set<Entry<Node, RoutingEntry>> entries = new HashSet<>(next.routingTable.entrySet());
-        for(Entry<Node, RoutingEntry> entry : entries){
-            this.update(entry.getKey(), next, entry.getValue().cost + cost);
-        }
+        for(Entry<Node, RoutingEntry> entry : entries)
+            this.update(entry.getKey(), next, entry.getValue().cost + cost.cost());
     }
     public void unlink(Node next){
-        this.link(next, Double.POSITIVE_INFINITY);
+        this.link(next, null);
     }
 
     public void revive(){
@@ -163,22 +164,22 @@ public class Node {
         if (entry != null && entry.next == next) {
             this.dirty = true;
             routingTable.remove(dest);
-            for(Entry<Node, Double> link : inverseLinks.entrySet())
+            for(Entry<Node, RouteCondition> link : inverseLinks.entrySet())
                 link.getKey().purge(dest, this);
         }
     }
     private void propagate(Node dest, double cost){
-        for(Entry<Node, Double> link : inverseLinks.entrySet()){
+        for(Entry<Node, RouteCondition> link : inverseLinks.entrySet()){
             Node node = link.getKey();
-            double linkCost = link.getValue();
+            double linkCost = link.getValue().cost();
             node.update(dest, this, cost + linkCost);
         }
     }
     private RoutingEntry getBestEntry(Node dest){
         RoutingEntry entry = new RoutingEntry(null, Double.POSITIVE_INFINITY);
-        for(Entry<Node, Double> link : inverseLinks.entrySet()){
+        for(Entry<Node, RouteCondition> link : inverseLinks.entrySet()){
             Node node = link.getKey();
-            double linkCost = link.getValue();
+            double linkCost = link.getValue().cost();
             RoutingEntry linkEntry = node.routingTable.get(dest);
             if(linkEntry != null){
                 if(linkEntry.cost + linkCost < entry.cost){

@@ -1,18 +1,22 @@
 package edu.oc.courier.data;
 
 import com.google.common.base.MoreObjects;
+import edu.oc.courier.util.Column;
+import edu.oc.courier.util.Id;
+import edu.oc.courier.util.Savable;
+import edu.oc.courier.util.Table;
 
-import javax.persistence.*;
 import java.util.Objects;
 
 @SuppressWarnings("unused")
-@Entity
+@Savable
 public final class Courier {
+    public static Table<Courier> table = Table.from(Courier.class);
 
     @Id
-    @Column(name="id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column
     private int id;
+    @Column
     private String name;
 
     public Courier(){}

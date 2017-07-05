@@ -1,7 +1,5 @@
 package edu.oc.courier.ui;
 
-import edu.oc.courier.DB;
-import edu.oc.courier.DBTransaction;
 import edu.oc.courier.data.RoadMap;
 import edu.oc.courier.data.SystemInfo;
 import javafx.fxml.FXML;
@@ -30,7 +28,7 @@ public class SystemController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Optional<SystemInfo> system = DB.first(DB.m().createQuery("SELECT s FROM SystemInfo s", SystemInfo.class));
+        Optional<SystemInfo> system = SystemInfo.get();
         if(!system.isPresent())
             throw new RuntimeException("No system info found");
         else
@@ -40,25 +38,25 @@ public class SystemController implements Initializable {
         basePrice.setText(systemInfo.getBase().toPlainString());
         price.setText(systemInfo.getPrice().toPlainString());
         bonus.setText(systemInfo.getBonus().toPlainString());
-        courierAddress.setText(systemInfo.getCourierAddress());
+        courierAddress.setText(systemInfo.getAddress().getName());
     }
 
     @FXML
     private void updateSystem() {
-        try(DBTransaction transaction = DB.getTransation()) {
+        try{
             systemInfo.setSpeed(Float.parseFloat(avgSpeed.getText()));
             systemInfo.setBase(new BigDecimal(basePrice.getText()));
             systemInfo.setPrice(new BigDecimal(price.getText()));
             systemInfo.setBonus(new BigDecimal(bonus.getText()));
 
             String address = courierAddress.getText();
-            if (RoadMap.getMap(transaction).has(address))
-                systemInfo.setCourierAddress(address);
+            RoadMap map = RoadMap.get();
+            if (map.containsKey(address))
+                systemInfo.setAddress(map.get(address));
             else
                 throw new RuntimeException("Address does not exist");
 
-            transaction.save(systemInfo);
-            transaction.commit();
+            SystemInfo.table.set(systemInfo);
 
             output.setTextFill(GREEN);
             output.setText("Updated successfully");

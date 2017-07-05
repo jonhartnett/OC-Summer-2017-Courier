@@ -1,7 +1,5 @@
 package edu.oc.courier.ui;
 
-import edu.oc.courier.DB;
-import edu.oc.courier.DBTransaction;
 import edu.oc.courier.data.User;
 import edu.oc.courier.data.UserType;
 import javafx.fxml.FXML;
@@ -68,19 +66,13 @@ public class UserController extends HBox implements Initializable {
 
     @FXML
     private void removeUser() {
-        try (DBTransaction transaction = DB.getTransation()) {
-            transaction.delete(user);
-            transaction.commit();
-            parent.removeUser(this);
-        }
+        User.table.delete(user);
+        parent.removeUser(this);
     }
 
     @FXML
     private void saveUser() {
         user.setUsername(username.getText());
-        try (DBTransaction transaction = DB.getTransation()) {
-            transaction.save(user);
-            transaction.commit();
-        }
+        User.table.set(user);
     }
 }

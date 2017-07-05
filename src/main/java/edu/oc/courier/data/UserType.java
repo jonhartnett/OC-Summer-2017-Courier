@@ -1,7 +1,6 @@
 package edu.oc.courier.data;
 
 @SuppressWarnings("unused")
-public enum  UserType {
-
+public enum UserType {
     ORDER_TAKER, ADMIN
 }

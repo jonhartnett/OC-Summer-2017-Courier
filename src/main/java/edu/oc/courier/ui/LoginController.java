@@ -1,6 +1,5 @@
 package edu.oc.courier.ui;
 
-import edu.oc.courier.DB;
 import edu.oc.courier.data.User;
 import edu.oc.courier.data.UserType;
 import javafx.fxml.FXML;
@@ -15,7 +14,6 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
-
     public static User currentUser;
 
     @FXML private TextField username;
@@ -36,7 +34,7 @@ public class LoginController implements Initializable {
     @FXML
     private void login() throws IOException {
         final String usernameText = this.username.getText();
-        final Optional<User> userOpt = DB.getUser(usernameText);
+        final Optional<User> userOpt = User.getByUsername(usernameText);
 
         if (!userOpt.isPresent()) {
             reset();

@@ -1,7 +1,5 @@
 package edu.oc.courier.ui;
 
-import edu.oc.courier.DB;
-import edu.oc.courier.DBTransaction;
 import edu.oc.courier.Main;
 import edu.oc.courier.data.Client;
 import edu.oc.courier.data.Ticket;
@@ -22,6 +20,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class ClientReportController implements Initializable {
 
@@ -36,61 +35,50 @@ public class ClientReportController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         clients.setCellFactory(Main.clientCallback);
         clients.setButtonCell(Main.clientCallback.call(null));
-        try (DBTransaction transaction = DB.getTransation()) {
-            clients.getItems().addAll(transaction.getAll(transaction.query("SELECT c FROM Client c", Client.class)));
-        }
+        Client.table.getAll().forEachOrdered(clients.getItems()::add);
     }
 
     @FXML
     private void update() {
-        try (DBTransaction transaction = DB.getTransation()) {
-            Instant start = (startDate.getValue() != null) ? startDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now().minus(365, ChronoUnit.DAYS);
-            Instant end = (endDate.getValue() != null) ? endDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now();
-            Collection<Ticket> tickets = transaction.getAll(
-                transaction.query(
-                    "SELECT t from Ticket t " +
-                            "WHERE t.pickupClient = :client " +
-                            "OR t.deliveryClient = :client " +
-                            "AND t.orderTime > :startTime " +
-                            "AND t.orderTime < :endTime",
-                    Ticket.class)
-                .setParameter("client", clients.getValue())
-                .setParameter("startTime", start)
-                .setParameter("endTime", end)
-            );
-            final int numTickets = tickets.size();
+        Instant start = (startDate.getValue() != null) ? startDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now().minus(365, ChronoUnit.DAYS);
+        Instant end = (endDate.getValue() != null) ? endDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now();
 
-            int pickupOnTime = 0;
-            int deliverOnTime = 0;
-            Map<String, Integer> packages = new HashMap<>();
-            for (Ticket t : tickets) {
-                if (t.getActualPickupTime() != null && t.getPickupTime() != null)
-                    if (t.getActualPickupTime().isBefore(t.getPickupTime()) || t.getActualPickupTime().equals(t.getPickupTime()))
-                        pickupOnTime++;
+        Collection<Ticket> tickets = Ticket.table.getCustom()
+            .where("pickupClient = ? OR deliveryClient = ? AND orderTime > ? AND orderTime < ?")
+            .execute(clients.getValue(), clients.getValue(), start, end)
+            .collect(Collectors.toList());
+        final int numTickets = tickets.size();
 
-                if (t.getActualDeliveryTime() != null && t.getEstDeliveryTime() != null)
-                    if (t.getActualDeliveryTime().isBefore(t.getEstDeliveryTime()) || t.getActualDeliveryTime().equals(t.getEstDeliveryTime()))
-                        deliverOnTime++;
+        int pickupOnTime = 0;
+        int deliverOnTime = 0;
+        Map<String, Integer> packages = new HashMap<>();
+        for (Ticket t : tickets) {
+            if (t.getActualPickupTime() != null && t.getPickupTime() != null)
+                if (t.getActualPickupTime().isBefore(t.getPickupTime()) || t.getActualPickupTime().equals(t.getPickupTime()))
+                    pickupOnTime++;
 
-                packages.put(t.getCourier().getName(), packages.getOrDefault(t.getCourier().getName(), 0) + 1);
-            }
+            if (t.getActualDeliveryTime() != null && t.getEstDeliveryTime() != null)
+                if (t.getActualDeliveryTime().isBefore(t.getEstDeliveryTime()) || t.getActualDeliveryTime().equals(t.getEstDeliveryTime()))
+                    deliverOnTime++;
 
-            pickup.setData(FXCollections.observableArrayList(
-                    new PieChart.Data(pickupOnTime + " on time", pickupOnTime),
-                    new PieChart.Data(numTickets - pickupOnTime + " late", numTickets - pickupOnTime)
-            ));
-            deliver.setData(FXCollections.observableArrayList(
-                    new PieChart.Data(deliverOnTime + " on time", deliverOnTime),
-                    new PieChart.Data(numTickets - deliverOnTime + " late", numTickets - deliverOnTime)
-            ));
-
-            XYChart.Series<String, Integer> series = new XYChart.Series<>();
-            series.setName("Packages");
-            for (Map.Entry<String, Integer> entry : packages.entrySet()) {
-                series.getData().add(new XYChart.Data<>(entry.getKey(), entry.getValue()));
-            }
-            packagesPerCourier.getData().clear();
-            packagesPerCourier.getData().add(series);
+            packages.put(t.getCourier().getName(), packages.getOrDefault(t.getCourier().getName(), 0) + 1);
         }
+
+        pickup.setData(FXCollections.observableArrayList(
+                new PieChart.Data(pickupOnTime + " on time", pickupOnTime),
+                new PieChart.Data(numTickets - pickupOnTime + " late", numTickets - pickupOnTime)
+        ));
+        deliver.setData(FXCollections.observableArrayList(
+                new PieChart.Data(deliverOnTime + " on time", deliverOnTime),
+                new PieChart.Data(numTickets - deliverOnTime + " late", numTickets - deliverOnTime)
+        ));
+
+        XYChart.Series<String, Integer> series = new XYChart.Series<>();
+        series.setName("Packages");
+        for (Map.Entry<String, Integer> entry : packages.entrySet()) {
+            series.getData().add(new XYChart.Data<>(entry.getKey(), entry.getValue()));
+        }
+        packagesPerCourier.getData().clear();
+        packagesPerCourier.getData().add(series);
     }
 }

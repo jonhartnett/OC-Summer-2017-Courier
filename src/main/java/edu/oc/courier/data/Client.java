@@ -1,22 +1,26 @@
 package edu.oc.courier.data;
 
 import com.google.common.base.MoreObjects;
+import edu.oc.courier.util.Column;
+import edu.oc.courier.util.Id;
+import edu.oc.courier.util.Savable;
+import edu.oc.courier.util.Table;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import java.util.Objects;
 
 @SuppressWarnings("unused")
-@Entity
+@Savable
 public final class Client {
+    public static Table<Client> table = Table.from(Client.class);
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column
     private int id;
+    @Column
     private String name;
-    private String address;
+    @Column
+    private Node address;
+    @Column
     private String deliveryInstructions;
 
     public int getId() {
@@ -35,11 +39,11 @@ public final class Client {
         this.name = name;
     }
 
-    public String getAddress() {
+    public Node getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(Node address) {
         this.address = address;
     }
 

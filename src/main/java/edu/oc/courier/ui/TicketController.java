@@ -1,7 +1,5 @@
 package edu.oc.courier.ui;
 
-import edu.oc.courier.DB;
-import edu.oc.courier.DBTransaction;
 import edu.oc.courier.Main;
 import edu.oc.courier.data.*;
 import javafx.collections.FXCollections;
@@ -101,14 +99,13 @@ public class TicketController extends GridPane implements Initializable {
             courier.setCellFactory(Main.courierCallback);
             courier.setButtonCell(Main.courierCallback.call(null));
 
-            try (DBTransaction transaction = DB.getTransation()) {
-                List<Client> clients = transaction.getAll(transaction.query("SELECT c FROM Client c", Client.class));
-                pickupClient.getItems().addAll(clients);
-                deliveryClient.getItems().addAll(clients);
+            List<Client> clients = Client.table.getAll().collect(toList());
+            pickupClient.getItems().addAll(clients);
+            deliveryClient.getItems().addAll(clients);
 
-                List<Courier> couriers = transaction.getAll(transaction.query("SELECT c FROM Courier c", Courier.class));
-                courier.getItems().addAll(couriers);
-            }
+            List<Courier> couriers = Courier.table.getAll().collect(toList());
+            courier.getItems().addAll(couriers);
+
             loadedComboBoxes = true;
         }
 
@@ -153,15 +150,13 @@ public class TicketController extends GridPane implements Initializable {
 
     @FXML
     private void generateDirections() {
-        try (DBTransaction transaction = DB.getTransation()) {
-            RoadMap roadMap = RoadMap.getMap(transaction);
-            transaction.getAny(SystemInfo.class).ifPresent(systemInfo -> {
-                Route routeToPickup = roadMap.getRoute(systemInfo.getCourierAddress(), pickupClient.getValue().getAddress());
-                Route routeToDeliver = roadMap.getRoute(pickupClient.getValue().getAddress(), deliveryClient.getValue().getAddress());
-                output.setTextFill(BLACK);
-                output.setText(String.format("Pickup: %s\nDeliver: %s", routeToPickup.toString(), routeToDeliver.toString()));
-            });
-        }
+        RoadMap roadMap = RoadMap.get();
+        SystemInfo info = SystemInfo.get().get();
+
+        Route routeToPickup = roadMap.getRoute(info.getAddress(), pickupClient.getValue().getAddress());
+        Route routeToDeliver = roadMap.getRoute(pickupClient.getValue().getAddress(), deliveryClient.getValue().getAddress());
+        output.setTextFill(BLACK);
+        output.setText(String.format("Pickup: %s\nDeliver: %s", routeToPickup.toString(), routeToDeliver.toString()));
     }
 
     @FXML
@@ -187,25 +182,22 @@ public class TicketController extends GridPane implements Initializable {
             } catch (NullPointerException ignored) {
 
             }
-            try (DBTransaction transaction = DB.getTransation()) {
-                RoadMap roadMap = RoadMap.getMap(transaction);
-                transaction.getAny(SystemInfo.class).ifPresent(systemInfo -> {
-                    Route routeToPickup = roadMap.getRoute(systemInfo.getCourierAddress(), pickupClient.getValue().getAddress());
-                    Route routeToDeliver = roadMap.getRoute(pickupClient.getValue().getAddress(), deliveryClient.getValue().getAddress());
-                    double estDistance = routeToPickup.cost + routeToDeliver.cost;
-                    ticket.setEstDistance(estDistance);
-                    BigDecimal tripCost = systemInfo.getPrice().multiply(new BigDecimal(estDistance));
-                    ticket.setQuote(tripCost.add(systemInfo.getBase()));
-                });
+            RoadMap roadMap = RoadMap.get();
+            SystemInfo info = SystemInfo.get().get();
 
-                transaction.save(ticket);
-                transaction.commit();
+            Route routeToPickup = roadMap.getRoute(info.getAddress(), pickupClient.getValue().getAddress());
+            Route routeToDeliver = roadMap.getRoute(pickupClient.getValue().getAddress(), deliveryClient.getValue().getAddress());
+            double estDistance = routeToPickup.cost + routeToDeliver.cost;
+            ticket.setEstDistance(estDistance);
+            BigDecimal tripCost = info.getPrice().multiply(new BigDecimal(estDistance));
+            ticket.setQuote(tripCost.add(info.getBase()));
 
-                setUIFields();
-                output.setTextFill(GREEN);
-                output.setText("Updated successfully");
-                ContainerController.fade(3, output);
-            }
+            Ticket.table.set(ticket);
+
+            setUIFields();
+            output.setTextFill(GREEN);
+            output.setText("Updated successfully");
+            ContainerController.fade(3, output);
         } catch (Exception e) {
             output.setTextFill(RED);
             output.setText(e.getClass() + " " + e.getLocalizedMessage());

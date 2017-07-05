@@ -1,33 +1,42 @@
 package edu.oc.courier.data;
 
 import com.google.common.base.MoreObjects;
+import edu.oc.courier.util.Column;
+import edu.oc.courier.util.Id;
+import edu.oc.courier.util.Savable;
+import edu.oc.courier.util.Table;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import java.math.BigDecimal;
 import java.util.Objects;
+import java.util.Optional;
 
-@Entity
+@Savable
 public class SystemInfo {
+    public static Table<SystemInfo> table = Table.from(SystemInfo.class);
+    public static Optional<SystemInfo> get(){
+        return table.getAll().findFirst();
+    }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column
     private int id;
-
+    @Column
     private float speed;
+    @Column
     private BigDecimal base;
+    @Column
     private BigDecimal price;
+    @Column
     private BigDecimal bonus;
-    private String courierAddress;
+    @Column
+    private Node address;
 
-    public SystemInfo(float speed, BigDecimal base, BigDecimal price, BigDecimal bonus, String courierAddress) {
+    public SystemInfo(float speed, BigDecimal base, BigDecimal price, BigDecimal bonus, Node address) {
         this.speed = speed;
         this.base = base;
         this.price = price;
         this.bonus = bonus;
-        this.courierAddress = courierAddress;
+        this.address = address;
     }
 
     public SystemInfo() {
@@ -73,10 +82,10 @@ public class SystemInfo {
         this.bonus = bonus;
     }
 
-    public String getCourierAddress(){ return courierAddress; }
+    public Node getAddress(){ return address; }
 
-    public void setCourierAddress(String address){
-        this.courierAddress = address;
+    public void setAddress(Node address){
+        this.address = address;
     }
 
     @Override
@@ -93,7 +102,7 @@ public class SystemInfo {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, speed, base, price, bonus, courierAddress);
+        return Objects.hash(id, speed, base, price, bonus, address);
     }
 
     @Override
@@ -104,7 +113,7 @@ public class SystemInfo {
                 .add("base price", base)
                 .add("unit price", price)
                 .add("bonus", bonus)
-                .add("courierAddress", courierAddress)
+                .add("address", address)
                 .toString();
     }
 }

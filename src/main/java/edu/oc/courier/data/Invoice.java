@@ -1,23 +1,28 @@
 package edu.oc.courier.data;
 
 import com.google.common.base.MoreObjects;
+import edu.oc.courier.util.Column;
+import edu.oc.courier.util.Id;
+import edu.oc.courier.util.Savable;
+import edu.oc.courier.util.Table;
 
-import javax.persistence.*;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Objects;
 
 @SuppressWarnings("unused")
-@Entity
+@Savable
 public final class Invoice {
+    public static Table<Invoice> table = Table.from(Invoice.class);
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column
     private int id;
+    @Column
     private String description;
-    @OneToMany(cascade = CascadeType.PERSIST)
+    @Column
     private List<Ticket> tickets;
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @Column
     private Client client;
 
     public void generate(OutputStream outputStream) {

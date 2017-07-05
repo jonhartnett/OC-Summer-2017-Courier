@@ -1,9 +1,8 @@
 package edu.oc.courier.ui;
 
-import edu.oc.courier.DB;
-import edu.oc.courier.DBTransaction;
 import edu.oc.courier.Main;
 import edu.oc.courier.data.Client;
+import edu.oc.courier.util.DB;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
@@ -31,35 +30,33 @@ public class InvoicesController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         clients.setCellFactory(Main.clientCallback);
         clients.setButtonCell(Main.clientCallback.call(null));
-        try (DBTransaction transaction = DB.getTransation()) {
-            clients.getItems().addAll(transaction.getAll(transaction.query("SELECT c FROM Client c", Client.class)));
-        }
+        Client.table.getAll().forEachOrdered(clients.getItems()::add);
     }
 
     @FXML
     private void updateAmount() {
-        try (DBTransaction transaction = DB.getTransation()) {
-            Instant start = (startDate.getValue() != null) ? startDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now().minus(7, ChronoUnit.DAYS);
-            Instant end = (endDate.getValue() != null) ? endDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now();
-            amount.setText(String.format("%s owes %s for %s to %s",
-                clients.getValue().getName(),
-                NumberFormat.getCurrencyInstance().format(
-                    transaction.get(
-                        transaction.query(
-                        "SELECT SUM(t.quote) FROM Ticket t " +
-                            "WHERE t.orderTime > :startTime " +
-                            "AND t.orderTime < :endTime " +
-                            "AND ((t.chargeToDestination = true AND t.deliveryClient = :client) OR " +
-                            "(t.chargeToDestination = false AND t.pickupClient = :client))",
-                            BigDecimal.class)
-                        .setParameter("client", clients.getValue())
-                        .setParameter("startTime", start)
-                        .setParameter("endTime", end)
-                    ).orElse(new BigDecimal(0))
-                ),
-                start.atZone(ZoneId.systemDefault()).toLocalDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)),
-                end.atZone(ZoneId.systemDefault()).toLocalDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))
-            ));
-        }
+        Instant start = (startDate.getValue() != null) ? startDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now().minus(7, ChronoUnit.DAYS);
+        Instant end = (endDate.getValue() != null) ? endDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now();
+
+        BigDecimal quote = DB.query(BigDecimal.class,
+            "SELECT SUM(quote) FROM Ticket " +
+            "WHERE orderTime > ? " +
+            "AND orderTime < ? " +
+            "AND (" +
+                "(chargeToDestination = true AND deliveryClient = ?) " +
+                "OR (chargeToDestination = false AND pickupClient = ?)" +
+            ")",
+            start,
+            end,
+            clients.getValue().getId(),
+            clients.getValue().getId()
+        ).findFirst().orElse(BigDecimal.ZERO);
+
+        amount.setText(String.format("%s owes %s for %s to %s",
+            clients.getValue().getName(),
+            NumberFormat.getCurrencyInstance().format(quote),
+            start.atZone(ZoneId.systemDefault()).toLocalDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)),
+            end.atZone(ZoneId.systemDefault()).toLocalDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))
+        ));
     }
 }
