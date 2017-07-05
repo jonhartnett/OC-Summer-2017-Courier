@@ -3,44 +3,43 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<BorderPane xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="edu.oc.courier.ui.TicketSelectorController">
+<BorderPane xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.oc.courier.ui.TicketSelectorController">
     <top>
         <FlowPane BorderPane.alignment="CENTER">
             <children>
                 <Label text="Sort by">
                     <FlowPane.margin>
-                        <Insets right="15.0"/>
+                        <Insets right="15.0" />
                     </FlowPane.margin>
                 </Label>
                 <ComboBox fx:id="sortOrder">
                     <FlowPane.margin>
-                        <Insets right="30.0"/>
+                        <Insets right="30.0" />
                     </FlowPane.margin>
                 </ComboBox>
                 <RadioButton mnemonicParsing="false" text="Ascending" userData="ASC">
                     <FlowPane.margin>
-                        <Insets right="15.0"/>
+                        <Insets right="15.0" />
                     </FlowPane.margin>
                     <toggleGroup>
-                        <ToggleGroup fx:id="order"/>
+                        <ToggleGroup fx:id="order" />
                     </toggleGroup>
                 </RadioButton>
                 <RadioButton mnemonicParsing="false" text="Descending" toggleGroup="$order" userData="DESC">
                     <FlowPane.margin>
-                        <Insets right="15.0"/>
+                        <Insets right="15.0" />
                     </FlowPane.margin>
                 </RadioButton>
-                <Button mnemonicParsing="false" onAction="#updateTickets" text="Update"/>
+                <Button mnemonicParsing="false" onAction="#updateTickets" text="Update" />
             </children>
             <BorderPane.margin>
-                <Insets/>
+                <Insets />
             </BorderPane.margin>
         </FlowPane>
     </top>
     <center>
-        <ScrollPane fitToHeight="true" fitToWidth="true" BorderPane.alignment="CENTER">
-            <FlowPane fx:id="tickets"/>
+        <ScrollPane fx:id="scroll" fitToHeight="true" fitToWidth="true" onScroll="#addTickets" BorderPane.alignment="CENTER">
+            <FlowPane fx:id="ticketsDisplay" />
         </ScrollPane>
     </center>
 </BorderPane>
