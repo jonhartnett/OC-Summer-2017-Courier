@@ -28,7 +28,8 @@ import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
-import static javafx.scene.paint.Color.*;
+import static javafx.scene.paint.Color.GREEN;
+import static javafx.scene.paint.Color.RED;
 
 public class TicketController extends GridPane implements Initializable {
 
@@ -152,8 +153,8 @@ public class TicketController extends GridPane implements Initializable {
             transaction.getAny(SystemInfo.class).ifPresent(systemInfo -> {
                 final Route routeToPickup = roadMap.getRoute(systemInfo.getCourierAddress(), pickupClient.getValue().getAddress());
                 final Route routeToDeliver = roadMap.getRoute(pickupClient.getValue().getAddress(), deliveryClient.getValue().getAddress());
-                output.setTextFill(BLACK);
-                output.setText(String.format("Pickup: %s\nDeliver: %s", routeToPickup.toString(), routeToDeliver.toString()));
+                DirectionDisplay display = new DirectionDisplay(roadMap, routeToPickup, routeToDeliver);
+                display.showAndWait();
             });
         }
     }
