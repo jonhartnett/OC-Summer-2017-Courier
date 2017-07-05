@@ -21,14 +21,14 @@ public class UserController extends HBox implements Initializable {
     @FXML private RadioButton orderTakerButton;
     @FXML private RadioButton adminButton;
 
-    private User user;
-    private UsersController parent;
+    private final User user;
+    private final UsersController parent;
 
-    public UserController(User user, UsersController parent) {
+    public UserController(final User user, final UsersController parent) {
         this.user = user;
         this.parent = parent;
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/user.fxml"));
+        final FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/user.fxml"));
         loader.setRoot(this);
         loader.setController(this);
 
@@ -40,7 +40,7 @@ public class UserController extends HBox implements Initializable {
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize(final URL location, final ResourceBundle resources) {
         username.setText(user.getUsername());
         if (user.getType() != null) {
             switch (user.getType()) {

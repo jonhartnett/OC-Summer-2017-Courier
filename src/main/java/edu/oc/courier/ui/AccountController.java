@@ -21,15 +21,15 @@ public class AccountController implements Initializable {
     private User user;
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        this.user = LoginController.currentUser;
+    public void initialize(final URL location, final ResourceBundle resources) {
+        this.user = User.getCurrentUser();
         username.setText(user.getName());
     }
 
     @FXML
     private void updateUser() {
         user.setName(username.getText());
-        String password = this.password.getText();
+        final String password = this.password.getText();
         if (password.length() > 0)
             user.setPassword(password);
 
@@ -37,8 +37,6 @@ public class AccountController implements Initializable {
 
         output.setTextFill(GREEN);
         output.setText("Updated successfully");
-        ContainerController.fade(3, output);
-
-        ContainerController.fade(3, output);
+        ContainerController.fade(output);
     }
 }

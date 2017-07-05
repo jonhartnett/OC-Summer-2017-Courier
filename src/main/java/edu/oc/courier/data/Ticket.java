@@ -49,14 +49,14 @@ public final class Ticket {
     public Ticket() {
         this.id = 0;
         this.orderTime = Instant.now();
-        this.orderTaker = LoginController.currentUser;
+        this.orderTaker = User.getCurrentUser();
     }
 
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(final int id) {
         this.id = id;
     }
 
@@ -64,7 +64,7 @@ public final class Ticket {
         return orderTime;
     }
 
-    public void setOrderTime(Instant orderTime) {
+    public void setOrderTime(final Instant orderTime) {
         this.orderTime = orderTime;
     }
 
@@ -72,7 +72,7 @@ public final class Ticket {
         return orderTaker;
     }
 
-    public void setOrderTaker(User orderTaker) {
+    public void setOrderTaker(final User orderTaker) {
         this.orderTaker = orderTaker;
     }
 
@@ -80,7 +80,7 @@ public final class Ticket {
         return pickupClient;
     }
 
-    public void setPickupClient(Client pickupClient) {
+    public void setPickupClient(final Client pickupClient) {
         this.pickupClient = pickupClient;
     }
 
@@ -88,7 +88,7 @@ public final class Ticket {
         return pickupTime;
     }
 
-    public void setPickupTime(Instant pickupTime) {
+    public void setPickupTime(final Instant pickupTime) {
         this.pickupTime = pickupTime;
     }
 
@@ -96,7 +96,7 @@ public final class Ticket {
         return deliveryClient;
     }
 
-    public void setDeliveryClient(Client deliveryClient) {
+    public void setDeliveryClient(final Client deliveryClient) {
         this.deliveryClient = deliveryClient;
     }
 
@@ -104,7 +104,7 @@ public final class Ticket {
         return chargeToDestination;
     }
 
-    public void setChargeToDestination(boolean chargeToDestination) {
+    public void setChargeToDestination(final boolean chargeToDestination) {
         this.chargeToDestination = chargeToDestination;
     }
 
@@ -112,7 +112,7 @@ public final class Ticket {
         return estDeliveryTime;
     }
 
-    public void setEstDeliveryTime(Instant deliveryTime) {
+    public void setEstDeliveryTime(final Instant deliveryTime) {
         this.estDeliveryTime = deliveryTime;
     }
 
@@ -120,7 +120,7 @@ public final class Ticket {
         return estDistance;
     }
 
-    public void setEstDistance(double estDistance) {
+    public void setEstDistance(final double estDistance) {
         this.estDistance = estDistance;
     }
 
@@ -128,7 +128,7 @@ public final class Ticket {
         return quote;
     }
 
-    public void setQuote(BigDecimal quote) {
+    public void setQuote(final BigDecimal quote) {
         this.quote = quote;
     }
 
@@ -136,7 +136,7 @@ public final class Ticket {
         return courier;
     }
 
-    public void setCourier(Courier courier) {
+    public void setCourier(final Courier courier) {
         this.courier = courier;
     }
 
@@ -144,7 +144,7 @@ public final class Ticket {
         return leaveTime;
     }
 
-    public void setLeaveTime(Instant leaveTime) {
+    public void setLeaveTime(final Instant leaveTime) {
         this.leaveTime = leaveTime;
     }
 
@@ -152,7 +152,7 @@ public final class Ticket {
         return actualPickupTime;
     }
 
-    public void setActualPickupTime(Instant actualPickupTime) {
+    public void setActualPickupTime(final Instant actualPickupTime) {
         this.actualPickupTime = actualPickupTime;
     }
 
@@ -160,12 +160,12 @@ public final class Ticket {
         return actualDeliveryTime;
     }
 
-    public void setActualDeliveryTime(Instant actualDeliveryTime) {
+    public void setActualDeliveryTime(final Instant actualDeliveryTime) {
         this.actualDeliveryTime = actualDeliveryTime;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }

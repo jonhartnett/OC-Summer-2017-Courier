@@ -1,6 +1,9 @@
 package edu.oc.courier.ui;
 
 import edu.oc.courier.data.Ticket;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -14,19 +17,21 @@ import java.util.ResourceBundle;
 
 public class TicketSelectionController extends GridPane implements Initializable {
 
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yy hh:mm aa");
+
     @FXML private Label ticketNumber;
     @FXML private Label clientName;
     @FXML private Label leaveTime;
     @FXML private Label status;
 
-    private TicketSelectorController ticketSelector;
-    private Ticket ticket;
+    private final TicketSelectorController ticketSelector;
+    private final Ticket ticket;
 
-    public TicketSelectionController(Ticket ticket, TicketSelectorController ticketSelector) {
+    public TicketSelectionController(final Ticket ticket, final TicketSelectorController ticketSelector) {
         this.ticketSelector = ticketSelector;
         this.ticket = ticket;
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/ticketSelection.fxml"));
+        final FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/ticketSelection.fxml"));
         loader.setRoot(this);
         loader.setController(this);
 
@@ -38,11 +43,14 @@ public class TicketSelectionController extends GridPane implements Initializable
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize(final URL location, final ResourceBundle resources) {
         this.ticketNumber.setText("" + ticket.getId());
         this.clientName.setText(ticket.getPickupClient().getName());
-        this.leaveTime.setText(ticket.getLeaveTime().toString());
-        String status;
+        final Instant leaveTime = ticket.getLeaveTime();
+        if (leaveTime != null) {
+            this.leaveTime.setText(dateFormat.format(Date.from(leaveTime)));
+        }
+        final String status;
         if(ticket.getActualDeliveryTime() != null)
             status = "Completed";
         else if(ticket.getPickupTime() != null)
@@ -53,7 +61,7 @@ public class TicketSelectionController extends GridPane implements Initializable
     }
 
     @FXML
-    private void select(MouseEvent mouseEvent) throws IOException {
+    private void select(final MouseEvent mouseEvent) throws IOException {
         ticketSelector.select(ticket);
     }
 }

@@ -14,7 +14,6 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
-    public static User currentUser;
 
     @FXML private TextField username;
     @FXML private PasswordField password;
@@ -23,11 +22,9 @@ public class LoginController implements Initializable {
     private ContainerController container;
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize(final URL location, final ResourceBundle resources) {}
 
-    }
-
-    public void setContainer(ContainerController container) {
+    public void setContainer(final ContainerController container) {
         this.container = container;
     }
 
@@ -41,9 +38,9 @@ public class LoginController implements Initializable {
             output.setText("User not found");
         } else {
             final User user = userOpt.get();
-            UserType type = user.getType();
+            final UserType type = user.getType();
             if (user.isPasswordValid(password.getText())) {
-                container.menu.getMenus().forEach(menu -> menu.getItems().forEach(menuItem -> {
+                container.getMenu().getMenus().forEach(menu -> menu.getItems().forEach(menuItem -> {
                     switch (menuItem.getId().split(",")[0]) {
                         case "orderTaker":
                             if (type == UserType.ORDER_TAKER || type == UserType.ADMIN) {
@@ -66,7 +63,7 @@ public class LoginController implements Initializable {
                             menuItem.setDisable(false);
                     }
                 }));
-                currentUser = user;
+                User.setCurrentUser(user);
                 container.loadScreen("ticket");
             } else {
                 reset();

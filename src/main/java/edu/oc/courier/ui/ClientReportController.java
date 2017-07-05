@@ -32,7 +32,7 @@ public class ClientReportController implements Initializable {
     @FXML private BarChart<String, Integer> packagesPerCourier;
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize(final URL location, final ResourceBundle resources) {
         clients.setCellFactory(Main.clientCallback);
         clients.setButtonCell(Main.clientCallback.call(null));
         Client.table.getAll().forEachOrdered(clients.getItems()::add);
@@ -40,8 +40,8 @@ public class ClientReportController implements Initializable {
 
     @FXML
     private void update() {
-        Instant start = (startDate.getValue() != null) ? startDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now().minus(365, ChronoUnit.DAYS);
-        Instant end = (endDate.getValue() != null) ? endDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now();
+        final Instant start = (startDate.getValue() != null) ? startDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now().minus(365, ChronoUnit.DAYS);
+        final Instant end = (endDate.getValue() != null) ? endDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now();
 
         Collection<Ticket> tickets = Ticket.table.getCustom()
             .where("pickupClient = ? OR deliveryClient = ? AND orderTime > ? AND orderTime < ?")
@@ -49,13 +49,13 @@ public class ClientReportController implements Initializable {
             .collect(Collectors.toList());
         final int numTickets = tickets.size();
 
-        int pickupOnTime = 0;
-        int deliverOnTime = 0;
-        Map<String, Integer> packages = new HashMap<>();
-        for (Ticket t : tickets) {
-            if (t.getActualPickupTime() != null && t.getPickupTime() != null)
-                if (t.getActualPickupTime().isBefore(t.getPickupTime()) || t.getActualPickupTime().equals(t.getPickupTime()))
-                    pickupOnTime++;
+            int pickupOnTime = 0;
+            int deliverOnTime = 0;
+            final Map<String, Integer> packages = new HashMap<>();
+            for (Ticket t : tickets) {
+                if (t.getActualPickupTime() != null && t.getPickupTime() != null)
+                    if (t.getActualPickupTime().isBefore(t.getPickupTime()) || t.getActualPickupTime().equals(t.getPickupTime()))
+                        pickupOnTime++;
 
             if (t.getActualDeliveryTime() != null && t.getEstDeliveryTime() != null)
                 if (t.getActualDeliveryTime().isBefore(t.getEstDeliveryTime()) || t.getActualDeliveryTime().equals(t.getEstDeliveryTime()))
@@ -73,12 +73,12 @@ public class ClientReportController implements Initializable {
                 new PieChart.Data(numTickets - deliverOnTime + " late", numTickets - deliverOnTime)
         ));
 
-        XYChart.Series<String, Integer> series = new XYChart.Series<>();
-        series.setName("Packages");
-        for (Map.Entry<String, Integer> entry : packages.entrySet()) {
-            series.getData().add(new XYChart.Data<>(entry.getKey(), entry.getValue()));
-        }
-        packagesPerCourier.getData().clear();
-        packagesPerCourier.getData().add(series);
+            final XYChart.Series<String, Integer> series = new XYChart.Series<>();
+            series.setName("Packages");
+            for (Map.Entry<String, Integer> entry : packages.entrySet()) {
+                series.getData().add(new XYChart.Data<>(entry.getKey(), entry.getValue()));
+            }
+            packagesPerCourier.getData().clear();
+            packagesPerCourier.getData().add(series);
     }
 }

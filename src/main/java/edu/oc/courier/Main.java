@@ -13,15 +13,15 @@ import javafx.util.Callback;
 import java.io.IOException;
 import java.math.BigDecimal;
 
-public class Main extends Application {
+public final class Main extends Application {
     private static final boolean testing = false;
 
-    public static Callback<ListView<Client>, ListCell<Client>> clientCallback = new Callback<ListView<Client>, ListCell<Client>>() {
+    public static final Callback<ListView<Client>, ListCell<Client>> clientCallback = new Callback<ListView<Client>, ListCell<Client>>() {
         @Override
-        public ListCell<Client> call(ListView<Client> param) {
+        public ListCell<Client> call(final ListView<Client> param) {
             return new ListCell<Client>() {
                 @Override
-                public void updateItem(Client client, boolean isEmpty) {
+                public void updateItem(final Client client, final boolean isEmpty) {
                     super.updateItem(client, isEmpty);
                     if (client != null)
                         setText(client.getName());
@@ -30,12 +30,12 @@ public class Main extends Application {
         }
     };
 
-    public static Callback<ListView<Courier>, ListCell<Courier>> courierCallback = new Callback<ListView<Courier>, ListCell<Courier>>() {
+    public static final Callback<ListView<Courier>, ListCell<Courier>> courierCallback = new Callback<ListView<Courier>, ListCell<Courier>>() {
         @Override
-        public ListCell<Courier> call(ListView<Courier> param) {
+        public ListCell<Courier> call(final ListView<Courier> param) {
             return new ListCell<Courier>() {
                 @Override
-                public void updateItem(Courier courier, boolean isEmpty) {
+                public void updateItem(final Courier courier, final boolean isEmpty) {
                     super.updateItem(courier, isEmpty);
                     if (courier != null)
                         setText(courier.getName());
@@ -44,12 +44,12 @@ public class Main extends Application {
         }
     };
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         launch(args);
     }
 
     @Override
-    public void start(Stage primaryStage) throws IOException {
+    public void start(final Stage primaryStage) throws IOException {
         if (testing) {
             testDB();
         } else {
@@ -65,7 +65,7 @@ public class Main extends Application {
     }
 
     private void setSystem() {
-        SystemInfo info = SystemInfo.get()
+        final SystemInfo info = SystemInfo.get()
             .orElseGet(() ->
                 new SystemInfo(5.0f, new BigDecimal(10), new BigDecimal(2), new BigDecimal(5), RoadMap.get().get("4th and D"))
             );
@@ -73,13 +73,13 @@ public class Main extends Application {
     }
 
     private void setAdmin() {
-        User admin = User.getByUsername("admin")
+        final User admin = User.getByUsername("admin")
                 .orElseGet(() -> new User("Admin", "admin", "root", UserType.ADMIN));
         User.table.set(admin);
     }
 
     private void setRoadmap(){
-        RoadMap map = new RoadMap();
+        final RoadMap map = new RoadMap();
         map.load();
 
         if(map.isEmpty()){

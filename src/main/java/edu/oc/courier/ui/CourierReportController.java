@@ -30,7 +30,7 @@ public class CourierReportController implements Initializable {
     @FXML private Label speed;
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize(final URL location, final ResourceBundle resources) {
         couriers.setCellFactory(Main.courierCallback);
         couriers.setButtonCell(Main.courierCallback.call(null));
         Courier.table.getAll().forEachOrdered(couriers.getItems()::add);
@@ -38,9 +38,9 @@ public class CourierReportController implements Initializable {
 
     @FXML
     private void update() {
-        Instant start = (startDate.getValue() != null) ? startDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now().minus(365, ChronoUnit.DAYS);
-        Instant end = (endDate.getValue() != null) ? endDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now();
-        Collection<Ticket> tickets = Ticket.table.getCustom()
+        final Instant start = (startDate.getValue() != null) ? startDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now().minus(365, ChronoUnit.DAYS);
+        final Instant end = (endDate.getValue() != null) ? endDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now();
+        final Collection<Ticket> tickets = Ticket.table.getCustom()
             .where("courier = ? AND orderTime > ? AND orderTime < ?")
             .execute(couriers.getValue().getId(), start, end)
             .collect(Collectors.toList());

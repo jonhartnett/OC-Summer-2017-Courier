@@ -10,8 +10,7 @@ import java.util.ResourceBundle;
 
 public class CouriersController implements Initializable {
 
-    @FXML
-    private VBox courierList;
+    @FXML private VBox courierList;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -23,7 +22,7 @@ public class CouriersController implements Initializable {
         courierList.getChildren().add(new CourierController(new Courier(), this));
     }
 
-    public void removeCourier(CourierController child) {
+    public void removeCourier(final CourierController child) {
         courierList.getChildren().remove(child);
     }
 }

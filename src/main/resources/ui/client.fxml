@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+
+<fx:root type="HBox" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1">
+    <TextField fx:id="name" promptText="Name">
+        <HBox.margin>
+          <Insets right="15.0" />
+        </HBox.margin>
+    </TextField>
+    <Button fx:id="address" onAction="#selectAddress" text="Address">
+        <HBox.margin>
+          <Insets right="30.0" />
+        </HBox.margin>
+    </Button>
+    <Button mnemonicParsing="false" onAction="#update" text="Update">
+        <HBox.margin>
+          <Insets right="15.0" />
+        </HBox.margin>
+    </Button>
+    <Button mnemonicParsing="false" onAction="#remove" text="Remove" />
+</fx:root>

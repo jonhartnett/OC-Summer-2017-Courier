@@ -13,7 +13,7 @@ public class UsersController implements Initializable {
     @FXML private VBox userList;
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize(final URL location, final ResourceBundle resources) {
         User.table.getAll().forEachOrdered(user -> userList.getChildren().add(new UserController(user, this)));
     }
 
@@ -22,7 +22,7 @@ public class UsersController implements Initializable {
         userList.getChildren().add(new UserController(new User(), this));
     }
 
-    public void removeUser(UserController child) {
+    public void removeUser(final UserController child) {
         userList.getChildren().remove(child);
     }
 }

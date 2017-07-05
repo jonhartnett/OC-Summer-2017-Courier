@@ -25,15 +25,11 @@ public final class Invoice {
     @Column
     private Client client;
 
-    public void generate(OutputStream outputStream) {
-        throw new UnsupportedOperationException("TODO");
-    }
-
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(final int id) {
         this.id = id;
     }
 
@@ -41,7 +37,7 @@ public final class Invoice {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
 
@@ -49,7 +45,7 @@ public final class Invoice {
         return tickets;
     }
 
-    public void setTickets(List<Ticket> tickets) {
+    public void setTickets(final List<Ticket> tickets) {
         this.tickets = tickets;
     }
 
@@ -57,12 +53,12 @@ public final class Invoice {
         return client;
     }
 
-    public void setClient(Client client) {
+    public void setClient(final Client client) {
         this.client = client;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }

@@ -19,13 +19,16 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
-import static javafx.scene.paint.Color.*;
+import static javafx.scene.paint.Color.BLACK;
+import static javafx.scene.paint.Color.GREEN;
+import static javafx.scene.paint.Color.RED;
 
 public class TicketController extends GridPane implements Initializable {
 
@@ -53,13 +56,12 @@ public class TicketController extends GridPane implements Initializable {
     @FXML private Label output;
 
     private Ticket ticket;
-    private boolean loadedComboBoxes = false;
 
     public TicketController() {
         this.ticket = new Ticket();
 
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/ticket.fxml"));
+        final FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/ticket.fxml"));
         loader.setRoot(this);
         loader.setController(this);
 
@@ -70,53 +72,49 @@ public class TicketController extends GridPane implements Initializable {
         }
     }
 
-    public TicketController(Ticket ticket) {
+    public TicketController(final Ticket ticket) {
         this();
         this.ticket = ticket;
         this.setUIFields();
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize(final URL location, final ResourceBundle resources) {
+        final ObservableList<Integer> hours = IntStream.rangeClosed(1, 24).boxed().collect(collectingAndThen(toList(), FXCollections::observableArrayList));
+        final ObservableList<Integer> minutes = IntStream.rangeClosed(0, 60).boxed().collect(collectingAndThen(toList(), FXCollections::observableArrayList));
+
+        pickupHour.setItems(hours);
+        pickupMinute.setItems(minutes);
+        actualPickupHour.setItems(hours);
+        actualPickupMinute.setItems(minutes);
+        actualDeliveryHour.setItems(hours);
+        actualDeliveryMinute.setItems(minutes);
+
+        pickupClient.setCellFactory(Main.clientCallback);
+        pickupClient.setButtonCell(Main.clientCallback.call(null));
+        deliveryClient.setCellFactory(Main.clientCallback);
+        deliveryClient.setButtonCell(Main.clientCallback.call(null));
+        courier.setCellFactory(Main.courierCallback);
+        courier.setButtonCell(Main.courierCallback.call(null));
+
+        final List<Client> clients = Client.table.getAll().collect(toList());
+        pickupClient.getItems().addAll(clients);
+        deliveryClient.getItems().addAll(clients);
+
+        final List<Courier> couriers =  Courier .table.getAll().collect(toList());
+        courier.getItems().addAll(couriers);
+
         this.setUIFields();
     }
 
     private void setUIFields() {
-        if (!loadedComboBoxes) {
-            ObservableList<Integer> hours = IntStream.rangeClosed(1, 24).boxed().collect(collectingAndThen(toList(), FXCollections::observableArrayList));
-            ObservableList<Integer> minutes = IntStream.rangeClosed(0, 60).boxed().collect(collectingAndThen(toList(), FXCollections::observableArrayList));
-            pickupHour.setItems(hours);
-            pickupMinute.setItems(minutes);
-            actualPickupHour.setItems(hours);
-            actualPickupMinute.setItems(minutes);
-            actualDeliveryHour.setItems(hours);
-            actualDeliveryMinute.setItems(minutes);
-
-            pickupClient.setCellFactory(Main.clientCallback);
-            pickupClient.setButtonCell(Main.clientCallback.call(null));
-            deliveryClient.setCellFactory(Main.clientCallback);
-            deliveryClient.setButtonCell(Main.clientCallback.call(null));
-            courier.setCellFactory(Main.courierCallback);
-            courier.setButtonCell(Main.courierCallback.call(null));
-
-            List<Client> clients = Client.table.getAll().collect(toList());
-            pickupClient.getItems().addAll(clients);
-            deliveryClient.getItems().addAll(clients);
-
-            List<Courier> couriers = Courier.table.getAll().collect(toList());
-            courier.getItems().addAll(couriers);
-
-            loadedComboBoxes = true;
-        }
-
-        pickupClient.getSelectionModel().select(ticket.getPickupClient());
-        deliveryClient.getSelectionModel().select(ticket.getDeliveryClient());
+        pickupClient.setValue(ticket.getPickupClient());
+        deliveryClient.setValue(ticket.getDeliveryClient());
 
         setUITime(ticket.getPickupTime(), pickupHour, pickupMinute, pickupDate);
         try {
             estDeliveryTime.setText(ticket.getEstDeliveryTime().atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.MEDIUM)));
         } catch (NullPointerException ignored) {
-
         }
         estDistance.setText(String.format("%.2f blocks", ticket.getEstDistance()));
 
@@ -124,24 +122,22 @@ public class TicketController extends GridPane implements Initializable {
         try {
             quote.setText(NumberFormat.getCurrencyInstance().format(ticket.getQuote()));
         } catch (IllegalArgumentException ignored) {
-
         }
-        courier.getSelectionModel().select(ticket.getCourier());
+        courier.setValue(ticket.getCourier());
         ticketNumber.setText(String.valueOf(ticket.getId()));
         try {
             leaveTime.setText(ticket.getLeaveTime().atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.MEDIUM)));
         } catch (NullPointerException ignored) {
-
         }
         setUITime(ticket.getActualPickupTime(), actualPickupHour, actualPickupMinute, actualPickupDate);
         setUITime(ticket.getActualDeliveryTime(), actualDeliveryHour, actualDeliveryMinute, actualDeliveryDate);
     }
 
-    private void setUITime(Instant instant, ComboBox hourBox, ComboBox minuteBox, DatePicker datePicker) {
+    private void setUITime(final Instant instant, final ComboBox<Integer> hourBox, final ComboBox<Integer> minuteBox, final DatePicker datePicker) {
         try {
-            LocalDateTime dateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
-            hourBox.getSelectionModel().select(dateTime.getHour());
-            minuteBox.getSelectionModel().select(dateTime.getMinute());
+            final LocalDateTime dateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+            hourBox.setValue(dateTime.getHour());
+            minuteBox.setValue(dateTime.getMinute());
             datePicker.setValue(dateTime.toLocalDate());
         } catch (NullPointerException ignored) {
 
@@ -150,11 +146,11 @@ public class TicketController extends GridPane implements Initializable {
 
     @FXML
     private void generateDirections() {
-        RoadMap roadMap = RoadMap.get();
-        SystemInfo info = SystemInfo.get().get();
+        final RoadMap roadMap = RoadMap.get();
+        final SystemInfo info = SystemInfo.get().get();
 
-        Route routeToPickup = roadMap.getRoute(info.getAddress(), pickupClient.getValue().getAddress());
-        Route routeToDeliver = roadMap.getRoute(pickupClient.getValue().getAddress(), deliveryClient.getValue().getAddress());
+        final Route routeToPickup = roadMap.getRoute(info.getAddress(), pickupClient.getValue().getAddress());
+        final Route routeToDeliver = roadMap.getRoute(pickupClient.getValue().getAddress(), deliveryClient.getValue().getAddress());
         output.setTextFill(BLACK);
         output.setText(String.format("Pickup: %s\nDeliver: %s", routeToPickup.toString(), routeToDeliver.toString()));
     }
@@ -162,34 +158,32 @@ public class TicketController extends GridPane implements Initializable {
     @FXML
     private void update() {
         try {
+            ticket.setOrderTaker(User.getCurrentUser());
+
             ticket.setPickupClient(pickupClient.getValue());
             try {
                 ticket.setPickupTime(pickupDate.getValue().atTime(pickupHour.getValue(), pickupMinute.getValue()).atZone(ZoneId.systemDefault()).toInstant());
             } catch (NullPointerException ignored) {
-
             }
             ticket.setDeliveryClient(deliveryClient.getValue());
             ticket.setChargeToDestination(charge.isSelected());
             ticket.setCourier(courier.getValue());
-            ticket.setChargeToDestination(charge.isSelected());
             try {
                 ticket.setActualPickupTime(actualPickupDate.getValue().atTime(actualPickupHour.getValue(), actualPickupMinute.getValue()).atZone(ZoneId.systemDefault()).toInstant());
             } catch (NullPointerException ignored) {
-
             }
             try {
                 ticket.setActualDeliveryTime(actualDeliveryDate.getValue().atTime(actualDeliveryHour.getValue(), actualDeliveryMinute.getValue()).atZone(ZoneId.systemDefault()).toInstant());
             } catch (NullPointerException ignored) {
-
             }
-            RoadMap roadMap = RoadMap.get();
-            SystemInfo info = SystemInfo.get().get();
+            final RoadMap roadMap = RoadMap.get();
+            final SystemInfo info = SystemInfo.get().get();
 
-            Route routeToPickup = roadMap.getRoute(info.getAddress(), pickupClient.getValue().getAddress());
-            Route routeToDeliver = roadMap.getRoute(pickupClient.getValue().getAddress(), deliveryClient.getValue().getAddress());
-            double estDistance = routeToPickup.cost + routeToDeliver.cost;
+            final Route routeToPickup = roadMap.getRoute(info.getAddress(), pickupClient.getValue().getAddress());
+            final Route routeToDeliver = roadMap.getRoute(pickupClient.getValue().getAddress(), deliveryClient.getValue().getAddress());
+            final double estDistance = routeToPickup.cost + routeToDeliver.cost;
             ticket.setEstDistance(estDistance);
-            BigDecimal tripCost = info.getPrice().multiply(new BigDecimal(estDistance));
+            final BigDecimal tripCost = info.getPrice().multiply(new BigDecimal(estDistance));
             ticket.setQuote(tripCost.add(info.getBase()));
 
             Ticket.table.set(ticket);
@@ -197,7 +191,7 @@ public class TicketController extends GridPane implements Initializable {
             setUIFields();
             output.setTextFill(GREEN);
             output.setText("Updated successfully");
-            ContainerController.fade(3, output);
+            ContainerController.fade(output);
         } catch (Exception e) {
             output.setTextFill(RED);
             output.setText(e.getClass() + " " + e.getLocalizedMessage());

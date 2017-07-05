@@ -25,6 +25,7 @@
             <Menu disable="true" text="System">
                 <MenuItem id="map" onAction="#switchScreen" text="Map"/>
                 <MenuItem id="admin,system" onAction="#switchScreen" text="System"/>
+                <MenuItem id="admin,clients" onAction="#switchScreen" text="Clients"/>
                 <MenuItem id="admin,users" onAction="#switchScreen" text="Users"/>
                 <MenuItem id="admin,couriers" onAction="#switchScreen" text="Couriers"/>
             </Menu>
