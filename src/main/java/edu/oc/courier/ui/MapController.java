@@ -1,10 +1,15 @@
 package edu.oc.courier.ui;
 
+import edu.oc.courier.Triple;
 import edu.oc.courier.Tuple;
+import edu.oc.courier.data.Node;
 import edu.oc.courier.data.RoadMap;
+import edu.oc.courier.data.RouteCondition;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -23,30 +28,33 @@ public class MapController implements Initializable {
     public void initialize(final URL location, final ResourceBundle resources) {
         map = RoadMap.get();
 
-        map.nodeList.forEach(node -> {
+        for(Node node : map.values()){
             Tuple<Integer, Integer> position = getPosition(node.getName());
             Label address = new Label(node.getName());
             address.setTextAlignment(TextAlignment.CENTER);
             address.setFont(Font.font(20));
             //Double position to have room for connections
             mapGrid.add(address, position.x * 2, position.y * 2);
-        });
+        }
 
-        map.getLinks().forEach(link -> {
-            Tuple<Integer, Integer> firstPosition = getPosition(link.x);
-            Tuple<Integer, Integer> lastPosition = getPosition(link.y);
+        for(Triple<Node, Node, RouteCondition> link : map.links()){
+            //ensure the links are sorted
+            if(link.x.getName().compareTo(link.y.getName()) > 0){
+                Node tempN = link.x;
+                link.x = link.y;
+                link.y = tempN;
+            }
+            Tuple<Integer, Integer> firstPosition = getPosition(link.x.getName());
+            Tuple<Integer, Integer> lastPosition = getPosition(link.y.getName());
             VBox routeContainer = new VBox();
             routeContainer.getChildren().addAll(makeConditionComboBox(link), makeDirectionComboBox(link));
             mapGrid.add(routeContainer, firstPosition.x + lastPosition.x, firstPosition.y + lastPosition.y);
-        });
+        }
     }
 
     @FXML
     private void update() {
-        try (DBTransaction transaction = DB.getTransaction()) {
-            transaction.save(map);
-            transaction.commit();
-        }
+        map.save();
     }
 
     public static Tuple<Integer, Integer> getPosition(String address) {
@@ -58,9 +66,9 @@ public class MapController implements Initializable {
         return new Tuple<>(row, col);
     }
 
-    private ComboBox<RouteCondition> makeConditionComboBox(Triple<String, String, Double> link) {
+    private ComboBox<RouteCondition> makeConditionComboBox(Triple<Node, Node, RouteCondition> link) {
         ComboBox<RouteCondition> conditionComboBox = new ComboBox<>();
-        conditionComboBox.getItems().addAll(RouteCondition.OPEN, RouteCondition.BUSY, RouteCondition.CLOSED);
+        conditionComboBox.getItems().addAll(RouteCondition.values());
 
         conditionComboBox.setCellFactory(param -> new ListCell<RouteCondition>() {
             @Override
@@ -72,19 +80,14 @@ public class MapController implements Initializable {
         });
         conditionComboBox.setButtonCell(conditionComboBox.getCellFactory().call(null));
 
-        conditionComboBox.setOnAction(event -> map.setLink(link.x, link.y, conditionComboBox.getValue().getValue()));
+        conditionComboBox.setOnAction(event -> map.setLink(link.x, link.y, conditionComboBox.getValue()));
 
-        if (link.z > 0)
-            conditionComboBox.setValue(RouteCondition.OPEN);
-        if (link.z > 1)
-            conditionComboBox.setValue(RouteCondition.BUSY);
-        if (link.z > 10)
-            conditionComboBox.setValue(RouteCondition.CLOSED);
+        conditionComboBox.setValue(link.z);
 
         return conditionComboBox;
     }
 
-    private ComboBox<String> makeDirectionComboBox(Triple<String, String, Double> link) {
+    private ComboBox<String> makeDirectionComboBox(Triple<Node, Node, RouteCondition> link) {
         ComboBox<String> directionComboBox = new ComboBox<>();
         final String both = "<--->";
         final String right = "---->";
@@ -108,13 +111,14 @@ public class MapController implements Initializable {
             }
         });
 
-        if(map.hasLink(link.x, link.y))
+        if(map.hasLink(link.x, link.y)){
             if(map.hasLink(link.y, link.x))
                 directionComboBox.setValue(both);
             else
                 directionComboBox.setValue(right);
-        else
+        }else{
             directionComboBox.setValue(left);
+        }
 
         return directionComboBox;
     }

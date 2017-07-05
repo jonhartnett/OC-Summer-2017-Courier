@@ -84,6 +84,14 @@ public class SystemInfo {
 
     public Node getAddress(){ return address; }
 
+    public void setAddress(final String address){
+        final RoadMap map = RoadMap.get();
+        if(map.containsKey(address))
+            setAddress(map.get(address));
+        else
+            throw new RuntimeException("Invalid address " + address);
+    }
+
     public void setAddress(final Node address){
         this.address = address;
     }

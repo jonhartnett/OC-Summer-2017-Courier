@@ -1,6 +1,7 @@
 package edu.oc.courier.ui;
 
 import edu.oc.courier.Tuple;
+import edu.oc.courier.data.Node;
 import edu.oc.courier.data.RoadMap;
 import edu.oc.courier.data.Route;
 import javafx.scene.control.ButtonType;
@@ -27,11 +28,11 @@ public class DirectionDisplay extends Dialog {
         map.setVgap(10);
         map.setHgap(10);
 
-        roadMap.nodeList.forEach(node -> {
+        for(Node node : roadMap.values()){
             final String address = node.getName();
-            Tuple<Integer, Integer> position = MapController.getPosition(address);
+            final Tuple<Integer, Integer> position = MapController.getPosition(address);
             map.add(new Label(address), position.x * 2, position.y * 2);
-        });
+        }
         String lastAddress = null;
         List<String> pickupAddresses = toPickup.path.collect(Collectors.toList());
         for (String address : pickupAddresses) {

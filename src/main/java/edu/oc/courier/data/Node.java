@@ -83,9 +83,10 @@ public class Node{
 
     public Route getRoute(final Node dest){
         try{
-            System.out.println("New Route");
             final Stream.Builder<String> builder = Stream.builder();
             final double cost = this.constructRoute(this, dest, builder);
+            if(Double.isInfinite(cost))
+                return null;
             return new Route(builder.build(), cost);
         }catch(RouteException ex){
             return null;
@@ -95,13 +96,13 @@ public class Node{
     private double constructRoute(final Node prev, final Node dest, final Stream.Builder<String> builder){
         builder.add(this.name);
         if(dest == this)
-            return inverseLinks.get(prev).cost();
+            return inverseLinks.get(prev).cost;
 
         final RoutingEntry entry = routingTable.get(dest);
         if(entry == null)
             throw new RouteException();
         final Node next = entry.next;
-        return inverseLinks.get(prev).cost()
+        return inverseLinks.get(prev).cost
             + next.constructRoute(this, dest, builder);
     }
 
@@ -116,7 +117,7 @@ public class Node{
 
         final Set<Entry<Node, RoutingEntry>> entries = new HashSet<>(next.routingTable.entrySet());
         for(Entry<Node, RoutingEntry> entry : entries)
-            this.update(entry.getKey(), next, entry.getValue().cost + cost.cost());
+            this.update(entry.getKey(), next, cost != null ? entry.getValue().cost + cost.cost : null);
     }
     public void unlink(final Node next){
         this.link(next, null);
@@ -126,7 +127,7 @@ public class Node{
         propagate(this, 0);
     }
 
-    private void update(final Node dest, final Node next, final double cost){
+    private void update(final Node dest, final Node next, final Double cost){
         if(this.dirty){
             this.dirty = false;
             this.dirtyUpdate(dest);
@@ -134,17 +135,16 @@ public class Node{
         }
         RoutingEntry entry = routingTable.get(dest);
         if(entry != null){
-            if(cost < entry.cost){
+            if(cost != null && cost < entry.cost){
                 entry.next = next;
                 entry.cost = cost;
                 this.propagate(dest, entry.cost);
             }else
-            if(entry.next == next && cost > entry.cost){
+            if(entry.next == next && (cost == null || cost > entry.cost)){
                 this.purge(dest, next);
                 this.update(dest, next, cost);
             }
-        }else
-        if(!Double.isInfinite(cost)){
+        }else if(cost != null){
             entry = new RoutingEntry(next, cost);
             routingTable.put(dest, entry);
             this.propagate(dest, entry.cost);
@@ -171,7 +171,7 @@ public class Node{
     private void propagate(final Node dest, final double cost){
         for(Entry<Node, RouteCondition> link : inverseLinks.entrySet()){
             final Node node = link.getKey();
-            final double linkCost = link.getValue().cost();
+            final double linkCost = link.getValue().cost;
             node.update(dest, this, cost + linkCost);
         }
     }
@@ -179,7 +179,7 @@ public class Node{
         final RoutingEntry entry = new RoutingEntry(null, Double.POSITIVE_INFINITY);
         for(Entry<Node, RouteCondition> link : inverseLinks.entrySet()){
             final Node node = link.getKey();
-            final double linkCost = link.getValue().cost();
+            final double linkCost = link.getValue().cost;
             final RoutingEntry linkEntry = node.routingTable.get(dest);
             if(linkEntry != null){
                 if(linkEntry.cost + linkCost < entry.cost){

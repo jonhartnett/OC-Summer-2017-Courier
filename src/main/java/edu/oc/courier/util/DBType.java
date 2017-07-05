@@ -36,7 +36,11 @@ public class DBType<T> {
             final Table<T> table = Table.from(clazz);
             type = new DBType<>("INT",
                 table::resultSetToSingle,
-                (statement, i, value) -> {
+                (statement, i, dryRun, value) -> {
+                    if(dryRun){
+                        i.x++;
+                        return;
+                    }
                     try {
                         statement.setInt(i.x++, (int)table.meta.id.field.get(value));
                     } catch (IllegalAccessException ex) {
@@ -75,10 +79,10 @@ public class DBType<T> {
         void set(PreparedStatement statement, int i, T value) throws SQLException;
     }
     public interface ExtTypeGetter<T>{
-        T get(ResultSet result, Index i, TupleMap<Class, Integer, Object> cache, Queue<Object> subqueryQueue) throws SQLException;
+        T get(ResultSet result, Index i, boolean dryRun, TupleMap<Class, Integer, Object> cache, Queue<Object> subqueryQueue) throws SQLException;
     }
     public interface ExtTypeSetter<T>{
-        void set(PreparedStatement statement, Index i, T value) throws SQLException;
+        void set(PreparedStatement statement, Index i, boolean dryRun, T value) throws SQLException;
     }
 
     public String name;
@@ -94,8 +98,21 @@ public class DBType<T> {
     public static <T> void addType(Class<T> clazz, String name, TypeGetter<T> getter, TypeSetter<T> setter){
         lookup.put(clazz,
             new DBType<>(name,
-                (result, i, cache, queue) -> getter.get(result, i.x++),
-                (statement, i, value) -> setter.set(statement, i.x++, (T)value)
+                (result, i, dryRun, cache, queue) -> {
+                    if(!dryRun){
+                        return getter.get(result, i.x++);
+                    }else{
+                        i.x++;
+                        return null;
+                    }
+                },
+                (statement, i, dryRun, value) -> {
+                    if(!dryRun){
+                        setter.set(statement, i.x++, (T)value);
+                    }else{
+                        i.x++;
+                    }
+                }
             )
         );
     }

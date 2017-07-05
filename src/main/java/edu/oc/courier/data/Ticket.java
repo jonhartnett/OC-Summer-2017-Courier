@@ -2,7 +2,6 @@ package edu.oc.courier.data;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import edu.oc.courier.ui.LoginController;
 import edu.oc.courier.util.Column;
 import edu.oc.courier.util.Id;
 import edu.oc.courier.util.Savable;

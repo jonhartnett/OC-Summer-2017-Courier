@@ -1,7 +1,5 @@
 package edu.oc.courier.ui;
 
-import edu.oc.courier.DB;
-import edu.oc.courier.DBTransaction;
 import edu.oc.courier.data.Client;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,12 +15,9 @@ public class ClientsController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        try(DBTransaction transaction = DB.getTransaction()) {
-            transaction.getAll(transaction.query("SELECT c FROM Client c", Client.class))
-                    .forEach(client ->
-                        clientList.getChildren().add(new ClientController(client, this))
-                    );
-        }
+        Client.table.getAll().forEachOrdered(client ->
+            clientList.getChildren().add(new ClientController(client, this))
+        );
     }
 
     public void addClient(ActionEvent actionEvent) {

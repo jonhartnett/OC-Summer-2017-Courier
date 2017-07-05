@@ -88,9 +88,9 @@ public class Table<T> {
             this.clazz = clazz;
             this.tableName = "`" + toSnake(clazz.getSimpleName()) + "`";
             this.all = Arrays.stream(clazz.getDeclaredFields())
-                .filter(field -> field.isAnnotationPresent(Column.class))
-                .map(FieldMeta::new)
-                .collect(Collectors.toList());
+                    .filter(field -> field.isAnnotationPresent(Column.class))
+                    .map(FieldMeta::new)
+                    .collect(Collectors.toList());
             List<FieldMeta> ids = this.all.stream().filter(meta -> meta.isID).collect(Collectors.toList());
             if(ids.size() == 0)
                 throw new RuntimeException("Class " + clazz.getName() + " does not have an id.");
@@ -140,58 +140,58 @@ public class Table<T> {
         List<PreparedStatement> createCreate() throws SQLException {
             List<String> sqls = new ArrayList<>();
             String fields = all.stream()
-                .map(meta -> {
-                    if(meta.isForeignMulti){
-                        String joinTableName = meta.getJoinName(tableName);
-                        Class joinType = meta.getType();
-                        Class[] subTypes = meta.getSubTypes();
-                        String sql;
-                        if(joinType == Set.class){
-                            Class valueClass = subTypes[0];
-                            sql = "CREATE TABLE IF NOT EXISTS "+joinTableName+" (" +
-                                "`parent` INT, " +
-                                "FOREIGN KEY (`parent`) REFERENCES "+tableName+"("+id.fieldName+"), " +
-                                getSqlForJoinPart(valueClass, "`value`") +
-                                "CONSTRAINT PRIMARY KEY (`parent`, `value`)" +
-                            ")";
+                    .map(meta -> {
+                        if(meta.isForeignMulti){
+                            String joinTableName = meta.getJoinName(tableName);
+                            Class joinType = meta.getType();
+                            Class[] subTypes = meta.getSubTypes();
+                            String sql;
+                            if(joinType == Set.class){
+                                Class valueClass = subTypes[0];
+                                sql = "CREATE TABLE IF NOT EXISTS "+joinTableName+" (" +
+                                        "`parent` INT, " +
+                                        "FOREIGN KEY (`parent`) REFERENCES "+tableName+"("+id.fieldName+"), " +
+                                        getSqlForJoinPart(valueClass, "`value`") +
+                                        "CONSTRAINT PRIMARY KEY (`parent`, `value`)" +
+                                        ")";
 
+                            }else{
+                                Class keyClass = subTypes.length == 1 ? int.class : subTypes[0];
+                                Class valueClass = subTypes.length == 1 ? subTypes[0] : subTypes[1];
+                                sql = "CREATE TABLE IF NOT EXISTS "+joinTableName+" (" +
+                                        "`parent` INT, " +
+                                        "FOREIGN KEY (`parent`) REFERENCES "+tableName+"("+id.fieldName+"), " +
+                                        getSqlForJoinPart(keyClass, "`key`") +
+                                        getSqlForJoinPart(valueClass, "`value`") +
+                                        "CONSTRAINT PRIMARY KEY (`parent`, `key`)" +
+                                        ")";
+                            }
+                            sqls.add(sql);
+                            return null;
                         }else{
-                            Class keyClass = subTypes.length == 1 ? int.class : subTypes[0];
-                            Class valueClass = subTypes.length == 1 ? subTypes[0] : subTypes[1];
-                            sql = "CREATE TABLE IF NOT EXISTS "+joinTableName+" (" +
-                                "`parent` INT, " +
-                                "FOREIGN KEY (`parent`) REFERENCES "+tableName+"("+id.fieldName+"), " +
-                                getSqlForJoinPart(keyClass, "`key`") +
-                                getSqlForJoinPart(valueClass, "`value`") +
-                                "CONSTRAINT PRIMARY KEY (`parent`, `key`)" +
-                            ")";
+                            DBType type = DBType.from(meta.field.getType());
+                            if(type == null)
+                                throw new RuntimeException("Unsupported column type " + meta.field.getType().getName());
+                            if(meta.isForeign){
+                                Table foreignTable = Table.from(meta.field.getType());
+                                return meta.fieldName + " INT NULL, " +
+                                        "FOREIGN KEY (" + meta.fieldName + ") " +
+                                        "REFERENCES " + foreignTable.meta.tableName + "(" + foreignTable.meta.id.fieldName + ")";
+                            }else{
+                                String constraints;
+                                if(meta.isID)
+                                    constraints = "AUTO_INCREMENT PRIMARY KEY";
+                                else
+                                    constraints = "NULL";
+                                String line = meta.fieldName + " " + type.name + " " + constraints;
+                                if(meta.isUnique)
+                                    line += ", CONSTRAINT UNIQUE ("+meta.fieldName+")";
+                                return line;
+                            }
                         }
-                        sqls.add(sql);
-                        return null;
-                    }else{
-                        DBType type = DBType.from(meta.field.getType());
-                        if(type == null)
-                            throw new RuntimeException("Unsupported column type " + meta.field.getType().getName());
-                        if(meta.isForeign){
-                            Table foreignTable = Table.from(meta.field.getType());
-                            return meta.fieldName + " INT NULL, " +
-                                    "FOREIGN KEY (" + meta.fieldName + ") " +
-                                    "REFERENCES " + foreignTable.meta.tableName + "(" + foreignTable.meta.id.fieldName + ")";
-                        }else{
-                            String constraints;
-                            if(meta.isID)
-                                constraints = "AUTO_INCREMENT PRIMARY KEY";
-                            else
-                                constraints = "NULL";
-                            String line = meta.fieldName + " " + type.name + " " + constraints;
-                            if(meta.isUnique)
-                                line += ", CONSTRAINT UNIQUE ("+meta.fieldName+")";
-                            return line;
-                        }
-                    }
-                })
-                .filter(Objects::nonNull)
-                .collect(comma);
+                    })
+                    .filter(Objects::nonNull)
+                    .collect(comma);
             String sql = "CREATE TABLE IF NOT EXISTS "+tableName+" ("+fields+")";
             sqls.add(0, sql);
             List<PreparedStatement> statements = new ArrayList<>();
@@ -282,8 +282,8 @@ public class Table<T> {
         }
         PreparedStatement createUpdate() throws SQLException{
             String updates = join(simple.stream(), foreign.stream())
-                .map(meta -> meta.fieldName + "=?")
-                .collect(Collectors.joining(", "));
+                    .map(meta -> meta.fieldName + "=?")
+                    .collect(Collectors.joining(", "));
             String sql = "UPDATE "+tableName+" SET " + updates + " WHERE "+id.fieldName+"=?";
             System.out.println(sql);
             return DB.connection().prepareStatement(sql);
@@ -409,7 +409,7 @@ public class Table<T> {
                 Index i = new Index();
                 for(Object arg : args){
                     DBType type = DBType.from(arg.getClass());
-                    type.setter.set(statement, i, arg);
+                    type.setter.set(statement, i, false, arg);
                 }
                 if(paginated){
                     statement.setLong(i.x++, page * pageSize);
@@ -548,7 +548,7 @@ public class Table<T> {
             for(FieldMeta fmeta : meta.simple){
                 DBType type = DBType.from(fmeta.field.getType());
                 Object value = fmeta.field.get(obj);
-                type.setter.set(statement, i, value);
+                type.setter.set(statement, i, false, value);
             }
             for(FieldMeta fmeta : meta.foreign){
                 Table table = Table.from(fmeta.field.getType());
@@ -594,7 +594,7 @@ public class Table<T> {
                     for(Object subObj : set){
                         i.reset();
                         setter.setInt(i.x++, id);
-                        valueType.setter.set(setter, i, subObj);
+                        valueType.setter.set(setter, i, false, subObj);
                         System.out.println(setter);
                         setter.executeUpdate();
                     }
@@ -615,7 +615,7 @@ public class Table<T> {
                         i.reset();
                         setter.setInt(i.x++, id);
                         setter.setInt(i.x++, index);
-                        valueType.setter.set(setter, i, subObj);
+                        valueType.setter.set(setter, i, false, subObj);
                         setter.executeUpdate();
                     }
                 }else{
@@ -640,8 +640,8 @@ public class Table<T> {
                     for(Map.Entry entry : (Set<Map.Entry<Object, Object>>)map.entrySet()){
                         i.reset();
                         setter.setInt(i.x++, id);
-                        keyType.setter.set(setter, i, entry.getKey());
-                        valueType.setter.set(setter, i, entry.getValue());
+                        keyType.setter.set(setter, i, false, entry.getKey());
+                        valueType.setter.set(setter, i, false, entry.getValue());
                         setter.executeUpdate();
                     }
                 }
@@ -665,28 +665,42 @@ public class Table<T> {
         }
     }
 
-    private void getAndSet(FieldMeta meta, ResultSet results, Index i, TupleMap<Class, Integer, Object> cache, Queue<Object> subqueryQueue, T obj) throws SQLException, IllegalAccessException {
+    private void getAndSet(FieldMeta meta, ResultSet results, Index i, boolean dryRun, TupleMap<Class, Integer, Object> cache, Queue<Object> subqueryQueue, T obj) throws SQLException, IllegalAccessException {
         DBType type = DBType.from(meta.field.getType());
-        Object value = type.getter.get(results, i, cache, subqueryQueue);
-        meta.field.set(obj, value);
+        Object value = type.getter.get(results, i, dryRun, cache, subqueryQueue);
+        if(!dryRun)
+            meta.field.set(obj, value);
     }
 
     private T resultSetToSingle(ResultSet results, TupleMap<Class, Integer, Object> cache, Queue<Object> subqueryQueue) throws SQLException {
-        return resultSetToSingle(results, new Index(), cache, subqueryQueue);
+        return resultSetToSingle(results, new Index(), false, cache, subqueryQueue);
     }
-    T resultSetToSingle(ResultSet results, Index i, TupleMap<Class, Integer, Object> cache, Queue<Object> subqueryQueue){
+    T resultSetToSingle(ResultSet results, Index i, boolean dryRun, TupleMap<Class, Integer, Object> cache, Queue<Object> subqueryQueue){
         try{
+            if(dryRun){
+                i.x++;
+                for(FieldMeta fmeta : meta.simple)
+                    getAndSet(fmeta, results, i, true, cache, subqueryQueue, null);
+                for(FieldMeta fmeta : meta.foreign)
+                    getAndSet(fmeta, results, i, true, cache, subqueryQueue, null);
+                return null;
+            }
             int id = results.getInt(i.x++);
             T obj = (T)cache.getOrDefault(meta.clazz, id, null);
-            if(obj != null)
+            if(obj != null){
+                for(FieldMeta fmeta : meta.simple)
+                    getAndSet(fmeta, results, i, true, cache, subqueryQueue, obj);
+                for(FieldMeta fmeta : meta.foreign)
+                    getAndSet(fmeta, results, i, true, cache, subqueryQueue, obj);
                 return obj;
+            }
             obj = meta.clazz.newInstance();
             cache.put(meta.clazz, id, obj);
             meta.id.field.set(obj, id);
             for(FieldMeta fmeta : meta.simple)
-                getAndSet(fmeta, results, i, cache, subqueryQueue, obj);
+                getAndSet(fmeta, results, i, false, cache, subqueryQueue, obj);
             for(FieldMeta fmeta : meta.foreign)
-                getAndSet(fmeta, results, i, cache, subqueryQueue, obj);
+                getAndSet(fmeta, results, i, false, cache, subqueryQueue, obj);
 
             if(subqueryQueue == null){
                 subqueryQueue = new LinkedList<>();
@@ -730,7 +744,7 @@ public class Table<T> {
                 Set set = new HashSet();
                 while(subResults.next()){
                     index.reset();
-                    set.add(valueDBType.getter.get(subResults, index, cache, subqueryQueue));
+                    set.add(valueDBType.getter.get(subResults, index, false, cache, subqueryQueue));
                 }
                 fmeta.field.set(obj, set);
             }else{
@@ -745,8 +759,8 @@ public class Table<T> {
                     Map map = new HashMap();
                     while(subResults.next()){
                         index.reset();
-                        Object key = keyDBType.getter.get(subResults, index, cache, subqueryQueue);
-                        Object value = valueDBType.getter.get(subResults, index, cache, subqueryQueue);
+                        Object key = keyDBType.getter.get(subResults, index, false, cache, subqueryQueue);
+                        Object value = valueDBType.getter.get(subResults, index, false, cache, subqueryQueue);
                         map.put(key, value);
                     }
                     fmeta.field.set(obj, map);
@@ -754,8 +768,8 @@ public class Table<T> {
                     List list = new ArrayList();
                     while(subResults.next()){
                         index.reset();
-                        int key = (int)keyDBType.getter.get(subResults, index, cache, subqueryQueue);
-                        Object value = valueDBType.getter.get(subResults, index, cache, subqueryQueue);
+                        int key = (int)keyDBType.getter.get(subResults, index, false, cache, subqueryQueue);
+                        Object value = valueDBType.getter.get(subResults, index, false, cache, subqueryQueue);
                         list.add(key, value);
                     }
                     fmeta.field.set(obj, list);

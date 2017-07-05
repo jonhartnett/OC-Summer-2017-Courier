@@ -49,14 +49,14 @@ public class DB {
             Index i = new Index();
             for(Object arg : args){
                 DBType type = DBType.from(arg.getClass());
-                type.setter.set(state, i, arg);
+                type.setter.set(state, i, false, arg);
             }
             ResultSet results = state.executeQuery();
             Stream.Builder<T> builder = Stream.builder();
             DBType resultType = DBType.from(resultClass);
             while(results.next()){
                 i.reset();
-                builder.add((T)resultType.getter.get(results, i, null, null));
+                builder.add((T)resultType.getter.get(results, i, false, null, null));
             }
             return builder.build();
         }catch(SQLException ex){

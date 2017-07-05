@@ -94,37 +94,30 @@ public final class Main extends Application {
             }
             for(int y = 0; y < aves.length; y++){
                 for(int x = 0; x < sts.length; x++){
-                    if(x > 0){
-                        boolean added = false;
-                        if(x == 1 || x == 6){
-                            added = true;
-                            if(y % 2 == 0)
-                                map.setOneWayLink(aves[y] + " and " + sts[x], aves[y] + " and " + sts[x - 1], RouteCondition.OPEN);
-                            else if(y == 3)
-                                map.setOneWayLink(aves[y] + " and " + sts[x - 1], aves[y] + " and " + sts[x], RouteCondition.OPEN);
-                            else
-                                added = false;
-                        }
-                        if(!added)
-                            map.setLink(aves[y] + " and " + sts[x], aves[y] + " and " + sts[x - 1], RouteCondition.OPEN);
-                    }
-                    if(y > 0){
-                        boolean added = false;
-                        if(y == 1 || y == 6){
-                            added = true;
-                            if(y == 1 || y == 5)
-                                map.setOneWayLink(aves[y] + " and " + sts[x], aves[y - 1] + " and " + sts[x], RouteCondition.OPEN);
-                            else if(y % 2 == 0)
-                                map.setOneWayLink(aves[y - 1] + " and " + sts[x], aves[y] + " and " + sts[x], RouteCondition.OPEN);
-                            else
-                                added = false;
-                        }
-                        if(!added)
-                            map.setLink(aves[y] + " and " + sts[x], aves[y - 1] + " and " + sts[x], RouteCondition.OPEN);
-                    }
+                    if(x > 0)
+                        map.setLink(aves[y] + " and " + sts[x], aves[y] + " and " + sts[x - 1], RouteCondition.OPEN);
+                    if(y > 0)
+                        map.setLink(aves[y] + " and " + sts[x], aves[y - 1] + " and " + sts[x], RouteCondition.OPEN);
                 }
             }
+            for(String st : new String[]{"A", "C", "E", "G"}){
+                map.setOneWayLink("1st and " + st, "2nd and " + st, RouteCondition.OPEN);
+                map.setOneWayLink("6th and " + st, "7th and " + st, RouteCondition.OPEN);
+            }
+            for(String st : new String[]{"B", "F"}){
+                map.setOneWayLink("2nd and " + st, "1st and " + st, RouteCondition.OPEN);
+                map.setOneWayLink("7th and " + st, "6th and " + st, RouteCondition.OPEN);
+            }
+            for(String ave : new String[]{"1st", "3rd", "5th", "7th"}){
+                map.setOneWayLink(ave + " and B", ave + " and A", RouteCondition.OPEN);
+                map.setOneWayLink(ave + " and G", ave + " and F", RouteCondition.OPEN);
+            }
+            for(String ave : new String[]{"4th"}){
+                map.setOneWayLink(ave + " and A", ave + " and B", RouteCondition.OPEN);
+                map.setOneWayLink(ave + " and F", ave + " and G", RouteCondition.OPEN);
+            }
         }
+        map.save();
     }
 
     private void testDB() {

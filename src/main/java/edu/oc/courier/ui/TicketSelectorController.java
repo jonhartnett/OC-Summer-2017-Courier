@@ -2,13 +2,9 @@ package edu.oc.courier.ui;
 
 import edu.oc.courier.Tuple;
 import edu.oc.courier.data.Ticket;
-import edu.oc.courier.util.Table;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.util.Callback;
 
@@ -17,13 +13,17 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class TicketSelectorController implements Initializable {
-    private static Table<Ticket>.CustomQuery getTicketPage = Ticket.table.getCustom().paginated().build();
 
+    private static final int pageSize = 100;
+
+    @FXML private ScrollPane scroll;
     @FXML private ComboBox<Tuple<String, String>> sortOrder;
     @FXML private ToggleGroup order;
-    @FXML private FlowPane tickets;
+    @FXML private FlowPane ticketsDisplay;
 
     private ContainerController controller;
+    private int page;
+    private boolean loadLock;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -68,14 +68,32 @@ public class TicketSelectorController implements Initializable {
 
     @FXML
     private void updateTickets() {
-        String query = "SELECT t FROM Ticket t";
-        Tuple<String, String> field = sortOrder.getValue();
-        if (field != null && !field.y.equals("")) {
-            query += " ORDER BY t." + field.y + " " + order.getSelectedToggle().getUserData();
+        page = 0;
+        this.ticketsDisplay.getChildren().clear();
+        loadPage();
+    }
+
+    @FXML
+    private void addTickets(){
+        if(!loadLock){
+            page++;
+            loadPage();
+            int ticketsPerRow = (int)(scroll.getViewportBounds().getWidth() / 422.0);
+            int startRow = page * pageSize / ticketsPerRow;
+            scroll.setVvalue(scroll.getViewportBounds().getHeight() / startRow * 162);
         }
-        this.tickets.getChildren().clear();
-        getTicketPage.executePage(0, 100).forEachOrdered(ticket ->
-            this.tickets.getChildren().add(new TicketSelectionController(ticket, this))
-        );
+    }
+
+    private void loadPage(){
+        loadLock = true;
+        Tuple<String, String> field = sortOrder.getValue();
+        Ticket.table.getCustom()
+            .orderBy(field.y + " " + order.getSelectedToggle().getUserData())
+            .paginated()
+            .executePage(page, pageSize)
+            .forEachOrdered(ticket ->
+                ticketsDisplay.getChildren().add(new TicketSelectionController(ticket, this))
+            );
+        loadLock = false;
     }
 }

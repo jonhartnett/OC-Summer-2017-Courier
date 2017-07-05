@@ -1,9 +1,8 @@
 package edu.oc.courier.data;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import edu.oc.courier.Triple;
+
+import java.util.*;
 
 public class RoadMap {
     public static RoadMap get(){
@@ -59,23 +58,50 @@ public class RoadMap {
     public Set<String> keySet() { return nodes.keySet(); }
     public Collection<Node> values() { return nodes.values(); }
 
-    public void setLink(final String key, final String key2, final RouteCondition cost){
-        final Node n1 = nodes.get(key);
-        final Node n2 = nodes.get(key2);
-        n1.link(n2, cost);
-        n2.link(n1, cost);
+    public void setLink(final String src, final String dest, final RouteCondition cost){
+        setLink(get(src), get(dest), cost);
+    }
+    public void setLink(final Node src, final Node dest, final RouteCondition cost){
+        src.link(dest, cost);
+        dest.link(src, cost);
     }
     public void setOneWayLink(final String src, final String dest, final RouteCondition cost){
-        nodes.get(src).link(nodes.get(dest), cost);
+        System.out.println(src + "->" + dest + " " + cost);
+        setOneWayLink(get(src), get(dest), cost);
+    }
+    public void setOneWayLink(final Node src, final Node dest, final RouteCondition cost){
+        src.link(dest, cost);
+        dest.link(src, null);
     }
     public void removeLink(final String key, final String key2){
         this.setLink(key, key2, null);
     }
+    public void removeLink(final Node node, final Node node2){
+        this.setLink(node, node2, null);
+    }
 
+    public boolean hasLink(final String key, final String key2){
+        return getLink(key, key2) != null;
+    }
+    public boolean hasLink(final Node node, final Node node2){
+        return getLink(node, node2) != null;
+    }
     public RouteCondition getLink(final String key, final String key2){
-        final Node node = get(key);
-        final Node node2 = get(key2);
+        return getLink(get(key), get(key2));
+    }
+    public RouteCondition getLink(final Node node, final Node node2){
         return node2.inverseLinks.getOrDefault(node, null);
+    }
+
+    public Collection<Triple<Node, Node, RouteCondition>> links(){
+        List<Triple<Node, Node, RouteCondition>> list = new ArrayList<>();
+        for(Node node : values()){
+            for(Map.Entry<Node, RouteCondition> entry : node.inverseLinks.entrySet()){
+                if(node.getId() < entry.getKey().getId() || !entry.getKey().inverseLinks.containsKey(node)) //avoid duplicates
+                    list.add(new Triple<>(node, entry.getKey(), entry.getValue()));
+            }
+        }
+        return list;
     }
 
     public Route getRoute(final String start, final String end){

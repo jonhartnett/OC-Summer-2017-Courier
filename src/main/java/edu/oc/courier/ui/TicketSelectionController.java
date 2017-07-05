@@ -1,9 +1,6 @@
 package edu.oc.courier.ui;
 
 import edu.oc.courier.data.Ticket;
-import java.sql.Date;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -13,6 +10,9 @@ import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ResourceBundle;
 
 public class TicketSelectionController extends GridPane implements Initializable {

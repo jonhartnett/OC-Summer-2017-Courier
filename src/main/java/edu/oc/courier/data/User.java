@@ -16,7 +16,7 @@ import java.util.Random;
 @Savable
 public final class User {
     public static Table<User> table = Table.from(User.class);
-    private static Table<User>.CustomQuery getByUser = table.getCustom().where("username=?");
+    private static Table<User>.CustomQuery getByUser = table.getCustom().where("username=?").build();
     public static Optional<User> getByUsername(String username){
         return getByUser.execute(username).findFirst();
     }

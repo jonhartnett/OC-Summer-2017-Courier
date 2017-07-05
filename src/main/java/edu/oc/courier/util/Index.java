@@ -1,7 +1,13 @@
 package edu.oc.courier.util;
 
-/**
- * Created by jonathan on 7/5/17.
- */
 public class Index {
+    public int x;
+
+    public Index(){
+        reset();
+    }
+
+    public void reset(){
+        x = 1;
+    }
 }

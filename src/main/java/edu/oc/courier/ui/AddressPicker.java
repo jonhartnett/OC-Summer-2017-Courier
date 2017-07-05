@@ -1,8 +1,7 @@
 package edu.oc.courier.ui;
 
-import edu.oc.courier.DB;
-import edu.oc.courier.DBTransaction;
 import edu.oc.courier.Tuple;
+import edu.oc.courier.data.Node;
 import edu.oc.courier.data.RoadMap;
 import javafx.scene.control.*;
 import javafx.scene.control.ButtonBar.ButtonData;
@@ -26,14 +25,13 @@ public class AddressPicker extends Dialog<String> {
         this.map = new GridPane();
         map.setVgap(10);
         map.setHgap(10);
-        try (DBTransaction transaction = DB.getTransaction()){
-            RoadMap.getMap(transaction).nodeList.forEach(node -> {
-                final String address = node.getName();
-                Button select = new Button(address);
-                select.setOnAction(event -> this.address.setText(selectedAddress = address));
-                Tuple<Integer, Integer> position = MapController.getPosition(address);
-                map.add(select, position.x, position.y);
-            });
+        final RoadMap roadMap = RoadMap.get();
+        for(Node node : roadMap.values()){
+            final String address = node.getName();
+            final Button select = new Button(address);
+            select.setOnAction(event -> this.address.setText(selectedAddress = address));
+            final Tuple<Integer, Integer> position = MapController.getPosition(address);
+            map.add(select, position.x, position.y);
         }
         dialogPane.setContent(map);
 
