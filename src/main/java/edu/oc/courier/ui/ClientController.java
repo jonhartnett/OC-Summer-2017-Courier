@@ -47,6 +47,7 @@ public class ClientController extends HBox implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         name.setText(client.getName());
+        address.setText(client.getAddress());
     }
 
     @FXML
