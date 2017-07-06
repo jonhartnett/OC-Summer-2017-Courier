@@ -16,11 +16,9 @@ public class CourierController extends HBox implements Initializable {
     @FXML private TextField name;
 
     private final Courier courier;
-    private final CouriersController parent;
 
-    public CourierController(final Courier courier, final CouriersController parent) {
+    public CourierController(final Courier courier) {
         this.courier = courier;
-        this.parent = parent;
 
         final FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/courier.fxml"));
         loader.setRoot(this);
@@ -42,11 +40,5 @@ public class CourierController extends HBox implements Initializable {
     private void setName() {
         courier.setName(name.getText());
         Courier.table.set(courier);
-    }
-
-    @FXML
-    private void removeCourier() {
-        Courier.table.delete(courier);
-        parent.removeCourier(this);
     }
 }

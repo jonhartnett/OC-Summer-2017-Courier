@@ -14,15 +14,12 @@ public class CouriersController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Courier.table.getAll().forEachOrdered(courier -> courierList.getChildren().add(new CourierController(courier, this)));
+        Courier.table.getAll().forEachOrdered(courier -> courierList.getChildren().add(new CourierController(courier)));
     }
 
     @FXML
     private void addCourier() {
-        courierList.getChildren().add(new CourierController(new Courier(), this));
+        courierList.getChildren().add(new CourierController(new Courier()));
     }
 
-    public void removeCourier(final CourierController child) {
-        courierList.getChildren().remove(child);
-    }
 }

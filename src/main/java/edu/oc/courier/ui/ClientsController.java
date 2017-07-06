@@ -16,15 +16,12 @@ public class ClientsController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Client.table.getAll().forEachOrdered(client ->
-            clientList.getChildren().add(new ClientController(client, this))
+            clientList.getChildren().add(new ClientController(client))
         );
     }
 
     public void addClient(ActionEvent actionEvent) {
-        clientList.getChildren().add(new ClientController(new Client(), this));
+        clientList.getChildren().add(new ClientController(new Client()));
     }
 
-    public void removeClient(final ClientController child) {
-        clientList.getChildren().remove(child);
-    }
 }

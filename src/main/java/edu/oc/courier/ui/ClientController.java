@@ -19,11 +19,9 @@ public class ClientController extends HBox implements Initializable {
     @FXML private Button address;
 
     private final Client client;
-    private final ClientsController parent;
 
-    public ClientController(Client client, ClientsController parent) {
+    public ClientController(Client client) {
         this.client = client;
-        this.parent = parent;
 
         final FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/client.fxml"));
         loader.setRoot(this);
@@ -57,11 +55,5 @@ public class ClientController extends HBox implements Initializable {
     private void update() {
         client.setName(name.getText());
         Client.table.set(client);
-    }
-
-    @FXML
-    private void remove() {
-        Client.table.delete(client);
-        parent.removeClient(this);
     }
 }

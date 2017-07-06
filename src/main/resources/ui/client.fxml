@@ -17,8 +17,7 @@
     </Button>
     <Button mnemonicParsing="false" onAction="#update" text="Update">
         <HBox.margin>
-          <Insets right="15.0" />
+          <Insets />
         </HBox.margin>
     </Button>
-    <Button mnemonicParsing="false" onAction="#remove" text="Remove" />
 </fx:root>
