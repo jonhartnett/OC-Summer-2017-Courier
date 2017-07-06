@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.IntStream;
@@ -164,8 +165,22 @@ public class TicketController extends GridPane implements Initializable {
             } catch (NullPointerException ignored) {
             }
             ticket.setDeliveryClient(deliveryClient.getValue());
+
             ticket.setChargeToDestination(charge.isSelected());
+
+            final RoadMap roadMap = RoadMap.get();
+            final SystemInfo info = SystemInfo.get().get();
+
+            final Route routeToPickup = roadMap.getRoute(info.getAddress(), pickupClient.getValue().getAddress());
+            final Route routeToDeliver = roadMap.getRoute(pickupClient.getValue().getAddress(), deliveryClient.getValue().getAddress());
+            final double estDistance = routeToPickup.cost + routeToDeliver.cost;
+            ticket.setEstDistance(estDistance);
+            ticket.setEstDeliveryTime(ticket.getPickupTime().plus(Math.round(estDistance / info.getSpeed() * 60), ChronoUnit.SECONDS));
+            final BigDecimal tripCost = info.getPrice().multiply(new BigDecimal(estDistance));
+            ticket.setQuote(tripCost.add(info.getBase()));
+
             ticket.setCourier(courier.getValue());
+            ticket.setLeaveTime(ticket.getPickupTime().minus(Math.round(estDistance / info.getSpeed() * 60), ChronoUnit.SECONDS));
             try {
                 ticket.setActualPickupTime(actualPickupDate.getValue().atTime(actualPickupHour.getValue(), actualPickupMinute.getValue()).atZone(ZoneId.systemDefault()).toInstant());
             } catch (NullPointerException ignored) {
@@ -174,15 +189,7 @@ public class TicketController extends GridPane implements Initializable {
                 ticket.setActualDeliveryTime(actualDeliveryDate.getValue().atTime(actualDeliveryHour.getValue(), actualDeliveryMinute.getValue()).atZone(ZoneId.systemDefault()).toInstant());
             } catch (NullPointerException ignored) {
             }
-            final RoadMap roadMap = RoadMap.get();
-            final SystemInfo info = SystemInfo.get().get();
 
-            final Route routeToPickup = roadMap.getRoute(info.getAddress(), pickupClient.getValue().getAddress());
-            final Route routeToDeliver = roadMap.getRoute(pickupClient.getValue().getAddress(), deliveryClient.getValue().getAddress());
-            final double estDistance = routeToPickup.cost + routeToDeliver.cost;
-            ticket.setEstDistance(estDistance);
-            final BigDecimal tripCost = info.getPrice().multiply(new BigDecimal(estDistance));
-            ticket.setQuote(tripCost.add(info.getBase()));
 
             Ticket.table.set(ticket);
 
