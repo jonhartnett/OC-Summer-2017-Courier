@@ -2,6 +2,7 @@ package edu.oc.courier.ui;
 
 import edu.oc.courier.Tuple;
 import edu.oc.courier.data.Ticket;
+import edu.oc.courier.util.Table;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -87,8 +88,10 @@ public class TicketSelectorController implements Initializable {
     private void loadPage(){
         loadLock = true;
         Tuple<String, String> field = sortOrder.getValue();
-        Ticket.table.getCustom()
-            .orderBy(field.y + " " + order.getSelectedToggle().getUserData())
+        Table<Ticket>.CustomQuery query = Ticket.table.getCustom();
+        if(field != null && !field.y.isEmpty())
+            query = query.orderBy(field.y + " " + order.getSelectedToggle().getUserData());
+        query
             .paginated()
             .executePage(page, pageSize)
             .forEachOrdered(ticket ->
