@@ -43,7 +43,7 @@ public class TicketSelectorController implements Initializable {
         });
         sortOrder.setButtonCell(sortOrder.getCellFactory().call(null));
         sortOrder.getItems().addAll(
-                new Tuple<>("Ticket number", "id"),
+                new Tuple<>("Ticket number", "T0.id"),
                 new Tuple<>("Order time", "order_time"),
                 new Tuple<>("Order taker", "order_taker"),
                 new Tuple<>("Pickup client", "pickup_client"),
