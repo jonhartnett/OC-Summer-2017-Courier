@@ -8,6 +8,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.text.Font;
+import javafx.stage.Screen;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -67,6 +68,7 @@ public class DirectionDisplayDialog extends Dialog {
             directions.setWrapText(true);
             directions.setText("To pickup: \n" + toPickup.toString() + "\n\nPickup at " + deliveryAddresses.get(0) + "\n\n" + "To delivery:\n" + toDeliver.toString());
             dialogPane.setHeader(new ScrollPane(directions));
+            dialogPane.setMaxHeight(Screen.getPrimary().getVisualBounds().getHeight());
         } catch (NullPointerException e) {
             dialogPane.setContent(new Label("No route can be found"));
         }
