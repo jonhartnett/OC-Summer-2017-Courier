@@ -4,7 +4,6 @@ import edu.oc.courier.Tuple;
 import edu.oc.courier.data.*;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
@@ -14,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static javafx.scene.paint.Color.*;
 
@@ -31,8 +29,8 @@ public class DirectionDisplayDialog extends Dialog {
         map.setHgap(10);
 
         try {
-            List<String> pickupAddresses = toPickup.path.collect(Collectors.toList());
-            List<String> deliveryAddresses = toDeliver.path.collect(Collectors.toList());
+            List<String> pickupAddresses = toPickup.path;
+            List<String> deliveryAddresses = toDeliver.path;
 
             List<Tuple<ColumnConstraints, RowConstraints>> constraints = new ArrayList<>();
             for (Node node : roadMap.values()) {
@@ -63,14 +61,12 @@ public class DirectionDisplayDialog extends Dialog {
             addArrows(pickupAddresses);
             addArrows(deliveryAddresses);
 
-            BorderPane pane = new BorderPane();
-            pane.setCenter(new ScrollPane(map));
-            dialogPane.setContent(pane);
+            dialogPane.setContent(new ScrollPane(map));
 
             Label directions = new Label();
             directions.setWrapText(true);
             directions.setText("To pickup: \n" + toPickup.toString() + "\n\nPickup at " + deliveryAddresses.get(0) + "\n\n" + "To delivery:\n" + toDeliver.toString());
-            dialogPane.setHeader(directions);
+            dialogPane.setHeader(new ScrollPane(directions));
         } catch (NullPointerException e) {
             dialogPane.setContent(new Label("No route can be found"));
         }
@@ -85,11 +81,11 @@ public class DirectionDisplayDialog extends Dialog {
                 Tuple<Integer, Integer> startPos = MapController.getPosition(lastAddress);
                 Tuple<Integer, Integer> endPos = MapController.getPosition(address);
                 ImageView arrow;
-                if(startPos.x < endPos.x)
+                if (startPos.x < endPos.x)
                     arrow = MapController.getImage(false, RouteCondition.CLOSED, Direction.LAST_TO_FIRST);
-                else if(startPos.x > endPos.x)
+                else if (startPos.x > endPos.x)
                     arrow = MapController.getImage(false, RouteCondition.CLOSED, Direction.FIRST_TO_LAST);
-                else if(startPos.y < endPos.y)
+                else if (startPos.y < endPos.y)
                     arrow = MapController.getImage(true, RouteCondition.CLOSED, Direction.LAST_TO_FIRST);
                 else
                     arrow = MapController.getImage(true, RouteCondition.CLOSED, Direction.FIRST_TO_LAST);
