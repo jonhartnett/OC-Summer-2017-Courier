@@ -44,7 +44,7 @@ public class ClientReportController implements Initializable {
         final Instant end = (endDate.getValue() != null) ? endDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now();
 
         Collection<Ticket> tickets = Ticket.table.getCustom()
-            .where("pickupClient = ? OR deliveryClient = ? AND orderTime > ? AND orderTime < ?")
+            .where("pickup_client = ? OR delivery_client = ? AND order_time > ? AND order_time < ?")
             .execute(clients.getValue(), clients.getValue(), start, end)
             .collect(Collectors.toList());
         final int numTickets = tickets.size();

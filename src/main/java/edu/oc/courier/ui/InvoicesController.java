@@ -40,11 +40,11 @@ public class InvoicesController implements Initializable {
 
         final BigDecimal quote = DB.query(BigDecimal.class,
             "SELECT SUM(quote) FROM Ticket " +
-            "WHERE orderTime > ? " +
-            "AND orderTime < ? " +
+            "WHERE order_time > ? " +
+            "AND order_time < ? " +
             "AND (" +
-                "(chargeToDestination = true AND deliveryClient = ?) " +
-                "OR (chargeToDestination = false AND pickupClient = ?)" +
+                "(charge_to_destination = true AND delivery_client = ?) " +
+                "OR (charge_to_destination = false AND pickup_client = ?)" +
             ")",
             start,
             end,

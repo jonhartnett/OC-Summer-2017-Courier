@@ -41,7 +41,7 @@ public class CourierReportController implements Initializable {
         final Instant start = (startDate.getValue() != null) ? startDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now().minus(365, ChronoUnit.DAYS);
         final Instant end = (endDate.getValue() != null) ? endDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now();
         final Collection<Ticket> tickets = Ticket.table.getCustom()
-            .where("courier = ? AND orderTime > ? AND orderTime < ?")
+            .where("courier = ? AND order_time > ? AND order_time < ?")
             .execute(couriers.getValue().getId(), start, end)
             .collect(Collectors.toList());
         final int numTickets = tickets.size();

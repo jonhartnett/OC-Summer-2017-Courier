@@ -60,7 +60,7 @@ public class CompanyReportController implements Initializable {
                 final Instant start = (startDate.getValue() != null) ? startDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now().minus(365, ChronoUnit.DAYS);
                 final Instant end = (endDate.getValue() != null) ? endDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now();
                 final Collection<Ticket> tickets = Ticket.table.getCustom()
-                    .where("orderTime > ? AND orderTime < ?")
+                    .where("order_time > ? AND order_time < ?")
                     .execute(start, end)
                     .collect(Collectors.toList());
                 numTickets = tickets.size();

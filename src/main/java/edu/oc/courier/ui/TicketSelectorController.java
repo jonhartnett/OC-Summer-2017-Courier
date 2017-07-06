@@ -44,17 +44,17 @@ public class TicketSelectorController implements Initializable {
         sortOrder.setButtonCell(sortOrder.getCellFactory().call(null));
         sortOrder.getItems().addAll(
                 new Tuple<>("Ticket number", "id"),
-                new Tuple<>("Order time", "orderTime"),
-                new Tuple<>("Order taker", "orderTaker"),
-                new Tuple<>("Pickup client", "pickupClient"),
-                new Tuple<>("Requested pickup time", "pickupTime"),
-                new Tuple<>("Delivery client", "deliveryClient"),
-                new Tuple<>("Estimated delivery time", "estDeliveryTime"),
-                new Tuple<>("Estimated distance", "estDistance"),
+                new Tuple<>("Order time", "order_time"),
+                new Tuple<>("Order taker", "order_taker"),
+                new Tuple<>("Pickup client", "pickup_client"),
+                new Tuple<>("Requested pickup time", "pickup_time"),
+                new Tuple<>("Delivery client", "delivery_client"),
+                new Tuple<>("Estimated delivery time", "est_delivery_time"),
+                new Tuple<>("Estimated distance", "est_distance"),
                 new Tuple<>("Courier", "courier"),
-                new Tuple<>("Assigned leave time", "leaveTime"),
-                new Tuple<>("Actual pickup time", "actualPickupTime"),
-                new Tuple<>("Actual delivery time", "actualDeliveryTime")
+                new Tuple<>("Assigned leave time", "leave_time"),
+                new Tuple<>("Actual pickup time", "actual_pickup_time"),
+                new Tuple<>("Actual delivery time", "actual_delivery_time")
         );
         updateTickets();
     }

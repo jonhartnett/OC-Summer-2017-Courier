@@ -39,11 +39,11 @@ public class BonusesController implements Initializable {
         final Instant end = (endDate.getValue() != null) ? endDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now();
 
         final BigDecimal quote = DB.query(BigDecimal.class,
-            "SELECT SUM(t.quote) * s.bonus FROM Ticket t, SystemInfo s " +
-            "WHERE t.courier = ? " +
-            "AND t.orderTime > ? " +
-            "AND t.orderTime < ? " +
-            "AND t.estDeliveryTime < t.actualDeliveryTime",
+            "SELECT SUM(quote) * bonus FROM Ticket, SystemInfo" +
+            "WHERE courier = ? " +
+            "AND order_time > ? " +
+            "AND order_time < ? " +
+            "AND est_delivery_time < actual_delivery_time",
             couriers.getValue().getId(),
             start,
             end
