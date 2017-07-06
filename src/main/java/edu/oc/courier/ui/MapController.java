@@ -2,25 +2,28 @@ package edu.oc.courier.ui;
 
 import edu.oc.courier.Triple;
 import edu.oc.courier.Tuple;
+import edu.oc.courier.data.Direction;
 import edu.oc.courier.data.Node;
 import edu.oc.courier.data.RoadMap;
 import edu.oc.courier.data.RouteCondition;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ComboBox;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class MapController implements Initializable {
 
-    @FXML private GridPane mapGrid;
+    @FXML
+    private GridPane mapGrid;
 
     private RoadMap map;
 
@@ -28,7 +31,7 @@ public class MapController implements Initializable {
     public void initialize(final URL location, final ResourceBundle resources) {
         map = RoadMap.get();
 
-        for(Node node : map.values()){
+        for (Node node : map.values()) {
             Tuple<Integer, Integer> position = getPosition(node.getName());
             Label address = new Label(node.getName());
             address.setTextAlignment(TextAlignment.CENTER);
@@ -37,18 +40,43 @@ public class MapController implements Initializable {
             mapGrid.add(address, position.x * 2, position.y * 2);
         }
 
-        for(Triple<Node, Node, RouteCondition> link : map.links()){
+        for (Triple<Node, Node, RouteCondition> link : map.links()) {
             //ensure the links are sorted
-            if(link.x.getName().compareTo(link.y.getName()) > 0){
+            if (link.x.getName().compareTo(link.y.getName()) > 0) {
                 Node tempN = link.x;
                 link.x = link.y;
                 link.y = tempN;
             }
             Tuple<Integer, Integer> firstPosition = getPosition(link.x.getName());
             Tuple<Integer, Integer> lastPosition = getPosition(link.y.getName());
-            VBox routeContainer = new VBox();
-            routeContainer.getChildren().addAll(makeConditionComboBox(link), makeDirectionComboBox(link));
-            mapGrid.add(routeContainer, firstPosition.x + lastPosition.x, firstPosition.y + lastPosition.y);
+            boolean vertical = Objects.equals(firstPosition.x, lastPosition.x);
+            Direction direction = getDirection(link.x, link.y);
+
+            Button setCondition = new Button();
+            setCondition.setUserData(new Tuple<>(link.z, direction));
+            ImageView view = getImage(vertical, link.z, direction);
+            setCondition.setGraphic(view);
+            setCondition.setOnAction(event -> {
+                Tuple<RouteCondition, Direction> data = (Tuple<RouteCondition, Direction>) setCondition.getUserData();
+                RouteDialog dialog = new RouteDialog(vertical, link.x, link.y, data.x, data.y);
+                dialog.showAndWait().ifPresent(result -> {
+                    map.removeLink(link.x, link.y);
+                    switch (result.y) {
+                        case BOTH:
+                            map.setLink(link.x, link.y, result.x);
+                            break;
+                        case FIRST_TO_LAST:
+                            map.setOneWayLink(link.x, link.y, result.x);
+                            break;
+                        case LAST_TO_FIRST:
+                            map.setOneWayLink(link.y, link.x, result.x);
+                            break;
+                    }
+                    setCondition.setGraphic(getImage(vertical, result.x, result.y));
+                    setCondition.setUserData(result);
+                });
+            });
+            mapGrid.add(setCondition, firstPosition.x + lastPosition.x, firstPosition.y + lastPosition.y);
         }
     }
 
@@ -66,60 +94,40 @@ public class MapController implements Initializable {
         return new Tuple<>(row, col);
     }
 
-    private ComboBox<RouteCondition> makeConditionComboBox(Triple<Node, Node, RouteCondition> link) {
-        ComboBox<RouteCondition> conditionComboBox = new ComboBox<>();
-        conditionComboBox.getItems().addAll(RouteCondition.values());
+    public static ImageView getImage(boolean vertical, RouteCondition condition, Direction direction) {
+        String conditionString = "";
+        switch (condition) {
+            case OPEN:
+                conditionString = "open";
+                break;
+            case LIGHT_TRAFFIC:
+                conditionString = "light";
+                break;
+            case TRAFFIC:
+                conditionString = "traffic";
+                break;
+            case HEAVY_TRAFFIC:
+                conditionString = "heavy";
+                break;
+            case CLOSED:
+                conditionString = "closed";
+        }
+        String file = "/arrows/" + (direction == Direction.BOTH ? "double" : "single") + "_" + conditionString + ((vertical) ? "_vert" : "") + ".png";
 
-        conditionComboBox.setCellFactory(param -> new ListCell<RouteCondition>() {
-            @Override
-            public void updateItem(RouteCondition condition, boolean isEmpty) {
-                super.updateItem(condition, isEmpty);
-                if (condition != null)
-                    setText(condition.name());
-            }
-        });
-        conditionComboBox.setButtonCell(conditionComboBox.getCellFactory().call(null));
+        ImageView view = new javafx.scene.image.ImageView(new Image(MapController.class.getResourceAsStream(file)));
+        if(direction == Direction.LAST_TO_FIRST)
+            view.setRotate(180);
 
-        conditionComboBox.setOnAction(event -> map.setLink(link.x, link.y, conditionComboBox.getValue()));
-
-        conditionComboBox.setValue(link.z);
-
-        return conditionComboBox;
+        return view;
     }
 
-    private ComboBox<String> makeDirectionComboBox(Triple<Node, Node, RouteCondition> link) {
-        ComboBox<String> directionComboBox = new ComboBox<>();
-        final String both = "<--->";
-        final String right = "---->";
-        final String left = "<----";
-        directionComboBox.getItems().addAll(both, right, left);
-
-        directionComboBox.setOnAction(event -> {
-            map.removeLink(link.x, link.y);
-
-            final String direction = directionComboBox.getValue();
-            switch (direction) {
-                case right:
-                    map.setOneWayLink(link.x, link.y, link.z);
-                    break;
-                case left:
-                    map.setOneWayLink(link.y, link.x, link.z);
-                    break;
-                default:
-                    map.setLink(link.x, link.y, link.z);
-                    break;
-            }
-        });
-
-        if(map.hasLink(link.x, link.y)){
-            if(map.hasLink(link.y, link.x))
-                directionComboBox.setValue(both);
+    private Direction getDirection(Node start, Node end) {
+        if (map.hasLink(start, end))
+            if (map.hasLink(end, start))
+                return Direction.BOTH;
             else
-                directionComboBox.setValue(right);
-        }else{
-            directionComboBox.setValue(left);
-        }
+                return Direction.FIRST_TO_LAST;
 
-        return directionComboBox;
+        return Direction.LAST_TO_FIRST;
     }
 }

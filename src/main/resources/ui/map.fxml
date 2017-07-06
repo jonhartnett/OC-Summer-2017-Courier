@@ -8,7 +8,7 @@
         <Button mnemonicParsing="false" onAction="#update" text="Update" BorderPane.alignment="CENTER" />
     </top>
    <center>
-      <GridPane fx:id="mapGrid" alignment="CENTER" gridLinesVisible="true" hgap="10.0" vgap="10.0" BorderPane.alignment="CENTER">
+      <GridPane fx:id="mapGrid" alignment="CENTER" hgap="10.0" vgap="10.0" BorderPane.alignment="CENTER">
       </GridPane>
    </center>
 </BorderPane>
