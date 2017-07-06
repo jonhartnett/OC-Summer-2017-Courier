@@ -42,9 +42,9 @@ public class CompanyReportController implements Initializable {
     private int pickupOnTime = 0;
     private int deliverOnTime = 0;
     private int totalOnTime = 0;
-    private final Map<String, Integer> packages = new HashMap<>();
-    private final Map<LocalDate, Integer> onTimePerDay = new HashMap<>();
-    private final Map<LocalDate, Integer> packagesPerDay = new HashMap<>();
+    private Map<String, Integer> packages = new HashMap<>();
+    private Map<LocalDate, Integer> onTimePerDay = new HashMap<>();
+    private Map<LocalDate, Integer> packagesPerDay = new HashMap<>();
 
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
@@ -53,6 +53,7 @@ public class CompanyReportController implements Initializable {
 
     @FXML
     private void updateReports() {
+        progress.setVisible(true);
         final Task task = new Task<Void>() {
             @Override
             public Void call() {
@@ -63,9 +64,18 @@ public class CompanyReportController implements Initializable {
                     .where("order_time > ? AND order_time < ?")
                     .execute(start, end)
                     .collect(Collectors.toList());
+
                 numTickets = tickets.size();
+                pickupOnTime = 0;
+                deliverOnTime = 0;
+                totalOnTime = 0;
+                packages = new HashMap<>();
+                onTimePerDay = new HashMap<>();
+                packagesPerDay = new HashMap<>();
+
                 int count = 0;
                 final int currentYear = LocalDate.from(Instant.now().atZone(ZoneId.systemDefault())).getYear();
+
                 for (Ticket t : tickets) {
                     boolean onTime = true;
                     if (t.getActualPickupTime() != null && t.getPickupTime() != null) {
@@ -102,6 +112,7 @@ public class CompanyReportController implements Initializable {
             @Override
             public void succeeded() {
                 super.succeeded();
+                progress.setVisible(false);
                 drawReports();
             }
         };
