@@ -8,13 +8,12 @@ import edu.oc.courier.util.Table;
 
 import java.math.BigDecimal;
 import java.util.Objects;
-import java.util.Optional;
 
 @Savable
 public class SystemInfo {
     public static Table<SystemInfo> table = Table.from(SystemInfo.class);
-    public static Optional<SystemInfo> get(){
-        return table.getAll().findFirst();
+    public static SystemInfo get(){
+        return table.getAll().findFirst().orElse(null);
     }
 
     @Id

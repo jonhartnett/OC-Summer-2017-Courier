@@ -10,7 +10,6 @@ import javafx.scene.control.TextField;
 
 import java.math.BigDecimal;
 import java.net.URL;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static javafx.scene.paint.Color.GREEN;
@@ -30,11 +29,9 @@ public class SystemController implements Initializable {
 
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
-        final Optional<SystemInfo> system = SystemInfo.get();
-        if(!system.isPresent())
+        this.systemInfo = SystemInfo.get();
+        if(this.systemInfo == null)
             throw new RuntimeException("No system info found");
-        else
-            this.systemInfo = system.get();
 
         avgSpeed.setText(String.valueOf(systemInfo.getSpeed()));
         basePrice.setText(systemInfo.getBase().toPlainString());

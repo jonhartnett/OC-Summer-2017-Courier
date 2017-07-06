@@ -2,6 +2,7 @@ package edu.oc.courier.ui;
 
 import edu.oc.courier.Main;
 import edu.oc.courier.data.Courier;
+import edu.oc.courier.data.SystemInfo;
 import edu.oc.courier.util.DB;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -9,6 +10,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 
+import java.math.BigDecimal;
 import java.net.URL;
 import java.text.NumberFormat;
 import java.time.Instant;
@@ -37,8 +39,8 @@ public class BonusesController implements Initializable {
         final Instant start = (startDate.getValue() != null) ? startDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now().minus(7, ChronoUnit.DAYS);
         final Instant end = (endDate.getValue() != null) ? endDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now();
 
-        final double quote = DB.query(double.class,
-            "SELECT SUM(quote) * bonus FROM ticket, system_info " +
+        BigDecimal quote = DB.query(BigDecimal.class,
+            "SELECT SUM(quote) FROM ticket, system_info " +
             "WHERE courier = ? " +
             "AND order_time > ? " +
             "AND order_time < ? " +
@@ -46,7 +48,8 @@ public class BonusesController implements Initializable {
             couriers.getValue().getId(),
             start,
             end
-        ).findFirst().orElse(0.0);
+        ).findFirst().orElse(BigDecimal.ZERO);
+        quote = quote.multiply(SystemInfo.get().getBonus());
 
         amount.setText(String.format("%s earned %s in bonuses for %s to %s",
             couriers.getValue().getName(),

@@ -52,9 +52,12 @@ public final class User {
         User.currentUser = user;
     }
 
-    public User(){}
+    public User(){
+        this.active = true;
+    }
 
     public User(int id, String name, byte[] password, String salt, UserType type, String username){
+        this();
         this.id = id;
         this.name = name;
         this.password = password;
@@ -64,6 +67,7 @@ public final class User {
     }
 
     public User(final String name, final String username, final String password, final UserType type) {
+        this();
         setName(name);
         setUsername(username);
         setPassword(password);
@@ -71,6 +75,8 @@ public final class User {
     }
 
     public boolean isPasswordValid(final String password) {
+        if(this.password == null)
+            return true;
         Preconditions.checkNotNull(password, "password must not be null");
 
         final byte[] bytes;

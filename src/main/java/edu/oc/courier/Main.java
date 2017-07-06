@@ -65,10 +65,9 @@ public final class Main extends Application {
     }
 
     private void setSystem() {
-        final SystemInfo info = SystemInfo.get()
-            .orElseGet(() ->
-                new SystemInfo(5.0f, new BigDecimal(10), new BigDecimal(2), new BigDecimal(5), RoadMap.get().get("4th and D"))
-            );
+        SystemInfo info = SystemInfo.get();
+        if(info == null)
+            info = new SystemInfo(5.0f, new BigDecimal(10), new BigDecimal(2), new BigDecimal(5), RoadMap.get().get("4th and D"));
         SystemInfo.table.set(info);
     }
 

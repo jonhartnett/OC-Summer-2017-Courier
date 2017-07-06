@@ -146,7 +146,9 @@ public class TicketController extends GridPane implements Initializable {
     @FXML
     private void generateDirections() {
         final RoadMap roadMap = RoadMap.get();
-        final SystemInfo info = SystemInfo.get().get();
+        final SystemInfo info = SystemInfo.get();
+        if(info == null)
+            throw new RuntimeException("No system info found");
 
         final Route routeToPickup = roadMap.getRoute(info.getAddress(), pickupClient.getValue().getAddress());
         final Route routeToDeliver = roadMap.getRoute(pickupClient.getValue().getAddress(), deliveryClient.getValue().getAddress());
@@ -169,7 +171,9 @@ public class TicketController extends GridPane implements Initializable {
             ticket.setChargeToDestination(charge.isSelected());
 
             final RoadMap roadMap = RoadMap.get();
-            final SystemInfo info = SystemInfo.get().get();
+            final SystemInfo info = SystemInfo.get();
+            if(info == null)
+                throw new RuntimeException("No system info found");
 
             final Route routeToPickup = roadMap.getRoute(info.getAddress(), pickupClient.getValue().getAddress());
             final Route routeToDeliver = roadMap.getRoute(pickupClient.getValue().getAddress(), deliveryClient.getValue().getAddress());

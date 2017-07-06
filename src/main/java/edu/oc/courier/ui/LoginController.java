@@ -67,11 +67,9 @@ public class LoginController implements Initializable {
                     User.setCurrentUser(user);
                     container.loadScreen("ticket");
                 } else {
-                    reset();
                     output.setText("This user is currently inactive. Contact your administrator.");
                 }
             } else {
-                reset();
                 output.setText("Invalid login. Please check the password.");
             }
         }
