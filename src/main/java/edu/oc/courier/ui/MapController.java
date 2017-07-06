@@ -74,15 +74,11 @@ public class MapController implements Initializable {
                     }
                     setCondition.setGraphic(getImage(vertical, result.x, result.y));
                     setCondition.setUserData(result);
+                    map.save();
                 });
             });
             mapGrid.add(setCondition, firstPosition.x + lastPosition.x, firstPosition.y + lastPosition.y);
         }
-    }
-
-    @FXML
-    private void update() {
-        map.save();
     }
 
     public static Tuple<Integer, Integer> getPosition(String address) {
