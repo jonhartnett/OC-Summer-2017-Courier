@@ -9,7 +9,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 
-import java.math.BigDecimal;
 import java.net.URL;
 import java.text.NumberFormat;
 import java.time.Instant;
@@ -38,8 +37,8 @@ public class InvoicesController implements Initializable {
         final Instant start = (startDate.getValue() != null) ? startDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now().minus(7, ChronoUnit.DAYS);
         final Instant end = (endDate.getValue() != null) ? endDate.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant() : Instant.now();
 
-        final BigDecimal quote = DB.query(BigDecimal.class,
-            "SELECT SUM(quote) FROM Ticket " +
+        final double quote = DB.query(double.class,
+            "SELECT SUM(quote) FROM ticket " +
             "WHERE order_time > ? " +
             "AND order_time < ? " +
             "AND (" +
@@ -50,7 +49,7 @@ public class InvoicesController implements Initializable {
             end,
             clients.getValue().getId(),
             clients.getValue().getId()
-        ).findFirst().orElse(BigDecimal.ZERO);
+        ).findFirst().orElse(0.0);
 
         amount.setText(String.format("%s owes %s for %s to %s",
             clients.getValue().getName(),
