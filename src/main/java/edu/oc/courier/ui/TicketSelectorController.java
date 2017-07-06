@@ -76,7 +76,7 @@ public class TicketSelectorController implements Initializable {
 
     @FXML
     private void addTickets(){
-        if(!loadLock){
+        if(!loadLock && scroll.getVvalue() > 0){
             page++;
             loadPage();
             int ticketsPerRow = (int)(scroll.getViewportBounds().getWidth() / 422.0);
