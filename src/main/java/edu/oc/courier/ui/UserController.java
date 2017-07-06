@@ -54,6 +54,9 @@ public class UserController extends HBox implements Initializable {
                     break;
             }
         }
+        active.setSelected(user.isActive());
+        if(user.getUsername().equalsIgnoreCase("admin"))
+            active.setDisable(true);
     }
 
     @FXML
