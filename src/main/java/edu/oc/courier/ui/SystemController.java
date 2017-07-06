@@ -72,7 +72,7 @@ public class SystemController implements Initializable {
 
     @FXML
     private void selectAddress() {
-        AddressPicker dialog = new AddressPicker();
+        AddressPickerDialog dialog = new AddressPickerDialog();
         dialog.showAndWait().ifPresent(systemInfo::setAddress);
         courierAddress.setText(systemInfo.getAddress().getName());
     }

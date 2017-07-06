@@ -8,21 +8,20 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 
-public class AddressPicker extends Dialog<String> {
+public class AddressPickerDialog extends Dialog<String> {
 
-    private final GridPane map;
     private final Label address;
 
     private String selectedAddress = "";
 
-    public AddressPicker() {
+    public AddressPickerDialog() {
         final DialogPane dialogPane = getDialogPane();
 
         this.address = new Label();
         address.setFont(Font.font(24));
         dialogPane.setHeader(address);
 
-        this.map = new GridPane();
+        GridPane map = new GridPane();
         map.setVgap(10);
         map.setHgap(10);
         final RoadMap roadMap = RoadMap.get();

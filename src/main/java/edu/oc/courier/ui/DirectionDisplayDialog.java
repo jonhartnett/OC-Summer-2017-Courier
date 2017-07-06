@@ -16,15 +16,12 @@ import java.util.stream.Collectors;
 import static javafx.scene.paint.Color.GREEN;
 import static javafx.scene.paint.Color.RED;
 
-public class DirectionDisplay extends Dialog {
+public class DirectionDisplayDialog extends Dialog {
 
-    private final GridPane map;
-    private final Label directions;
-
-    public DirectionDisplay(RoadMap roadMap, Route toPickup, Route toDeliver) {
+    public DirectionDisplayDialog(RoadMap roadMap, Route toPickup, Route toDeliver) {
         final DialogPane dialogPane = getDialogPane();
 
-        this.map = new GridPane();
+        GridPane map = new GridPane();
         map.setVgap(10);
         map.setHgap(10);
 
@@ -61,7 +58,7 @@ public class DirectionDisplay extends Dialog {
         dialogPane.setContent(map);
 
 
-        this.directions = new Label();
+        Label directions = new Label();
         directions.setWrapText(true);
         directions.setText("To pickup: \n" + pickupAddresses + "\n\nPickup at " + deliveryAddresses.get(0) + "\n\n" + "To delivery:\n" + deliveryAddresses);
         dialogPane.setHeader(directions);

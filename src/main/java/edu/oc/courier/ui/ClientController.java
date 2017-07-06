@@ -46,7 +46,7 @@ public class ClientController extends HBox implements Initializable {
 
     @FXML
     private void selectAddress() {
-        AddressPicker dialog = new AddressPicker();
+        AddressPickerDialog dialog = new AddressPickerDialog();
         dialog.showAndWait().ifPresent(client::setAddress);
         final Node node = client.getAddress();
         if(node != null)
