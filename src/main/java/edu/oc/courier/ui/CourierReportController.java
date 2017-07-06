@@ -74,6 +74,6 @@ public class CourierReportController implements Initializable {
                 new PieChart.Data(numTickets - deliverOnTime + " late", numTickets - deliverOnTime)
         ));
 
-        speed.setText(String.format("Averaged %.2f blocks per hour", totalDistance / (totalTime / (1000 * 60 * 60))));
+        speed.setText(String.format("Averaged %.2f blocks per minute", totalDistance / (totalTime / (1000 * 60))));
     }
 }
