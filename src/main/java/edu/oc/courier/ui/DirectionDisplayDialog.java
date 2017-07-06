@@ -1,69 +1,102 @@
 package edu.oc.courier.ui;
 
 import edu.oc.courier.Tuple;
-import edu.oc.courier.data.Node;
-import edu.oc.courier.data.RoadMap;
-import edu.oc.courier.data.Route;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.DialogPane;
-import javafx.scene.control.Label;
+import edu.oc.courier.data.*;
+import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.RowConstraints;
+import javafx.scene.text.Font;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static javafx.scene.paint.Color.GREEN;
-import static javafx.scene.paint.Color.RED;
+import static javafx.scene.paint.Color.*;
+
 
 public class DirectionDisplayDialog extends Dialog {
+
+    private GridPane map;
 
     public DirectionDisplayDialog(RoadMap roadMap, Route toPickup, Route toDeliver) {
         final DialogPane dialogPane = getDialogPane();
 
-        GridPane map = new GridPane();
+        map = new GridPane();
         map.setVgap(10);
         map.setHgap(10);
 
-        for(Node node : roadMap.values()){
-            final String address = node.getName();
-            final Tuple<Integer, Integer> position = MapController.getPosition(address);
-            map.add(new Label(address), position.x * 2, position.y * 2);
-        }
-        String lastAddress = null;
-        List<String> pickupAddresses = toPickup.path.collect(Collectors.toList());
-        for (String address : pickupAddresses) {
-            if (lastAddress != null) {
-                Label line = new Label("------");
-                line.setTextFill(RED);
-                Tuple<Integer, Integer> startPos = MapController.getPosition(lastAddress);
-                Tuple<Integer, Integer> endPos = MapController.getPosition(address);
-                map.add(line, startPos.x + endPos.x, startPos.y + endPos.y);
+        try {
+            List<String> pickupAddresses = toPickup.path.collect(Collectors.toList());
+            List<String> deliveryAddresses = toDeliver.path.collect(Collectors.toList());
+
+            List<Tuple<ColumnConstraints, RowConstraints>> constraints = new ArrayList<>();
+            for (Node node : roadMap.values()) {
+                final String address = node.getName();
+                final Tuple<Integer, Integer> position = MapController.getPosition(address);
+
+                Label label = new Label(address);
+                if (address.equals(pickupAddresses.get(0)))
+                    label.setTextFill(GREEN);
+                else if (address.equals(deliveryAddresses.get(0)))
+                    label.setTextFill(BLUE);
+                else if (address.equals(deliveryAddresses.get(deliveryAddresses.size() - 1)))
+                    label.setTextFill(RED);
+                label.setFont(Font.font(20));
+                label.setStyle("-fx-font-weight: bold");
+
+                map.add(label, position.x * 2, position.y * 2);
+                if (Objects.equals(position.x, position.y)) {
+                    constraints.add(new Tuple<>(new ColumnConstraints(), new RowConstraints(125)));
+                    constraints.add(new Tuple<>(new ColumnConstraints(125), new RowConstraints(50)));
+                }
             }
-            lastAddress = address;
-        }
-        lastAddress = null;
-        List<String> deliveryAddresses = toDeliver.path.collect(Collectors.toList());
-        for (String address : deliveryAddresses) {
-            if (lastAddress != null) {
-                Label line = new Label("------");
-                line.setTextFill(GREEN);
-                Tuple<Integer, Integer> startPos = MapController.getPosition(lastAddress);
-                Tuple<Integer, Integer> endPos = MapController.getPosition(address);
-                map.add(line, startPos.x + endPos.x, startPos.y + endPos.y);
+            for (Tuple<ColumnConstraints, RowConstraints> constraint : constraints) {
+                map.getColumnConstraints().add(constraint.x);
+                map.getRowConstraints().add(constraint.y);
             }
-            lastAddress = address;
+
+            addArrows(pickupAddresses);
+            addArrows(deliveryAddresses);
+
+            BorderPane pane = new BorderPane();
+            pane.setCenter(new ScrollPane(map));
+            dialogPane.setContent(pane);
+
+            Label directions = new Label();
+            directions.setWrapText(true);
+            directions.setText("To pickup: \n" + toPickup.toString() + "\n\nPickup at " + deliveryAddresses.get(0) + "\n\n" + "To delivery:\n" + toDeliver.toString());
+            dialogPane.setHeader(directions);
+        } catch (NullPointerException e) {
+            dialogPane.setContent(new Label("No route can be found"));
         }
-
-        dialogPane.setContent(map);
-
-
-        Label directions = new Label();
-        directions.setWrapText(true);
-        directions.setText("To pickup: \n" + pickupAddresses + "\n\nPickup at " + deliveryAddresses.get(0) + "\n\n" + "To delivery:\n" + deliveryAddresses);
-        dialogPane.setHeader(directions);
-
 
         dialogPane.getButtonTypes().addAll(ButtonType.OK);
+    }
+
+    private void addArrows(Collection<String> addresses) {
+        String lastAddress = null;
+        for (String address : addresses) {
+            if (lastAddress != null) {
+                Tuple<Integer, Integer> startPos = MapController.getPosition(lastAddress);
+                Tuple<Integer, Integer> endPos = MapController.getPosition(address);
+                ImageView arrow;
+                if(startPos.x < endPos.x)
+                    arrow = MapController.getImage(false, RouteCondition.CLOSED, Direction.LAST_TO_FIRST);
+                else if(startPos.x > endPos.x)
+                    arrow = MapController.getImage(false, RouteCondition.CLOSED, Direction.FIRST_TO_LAST);
+                else if(startPos.y < endPos.y)
+                    arrow = MapController.getImage(true, RouteCondition.CLOSED, Direction.LAST_TO_FIRST);
+                else
+                    arrow = MapController.getImage(true, RouteCondition.CLOSED, Direction.FIRST_TO_LAST);
+
+                map.add(arrow, startPos.x + endPos.x, startPos.y + endPos.y);
+            }
+            lastAddress = address;
+        }
     }
 }
