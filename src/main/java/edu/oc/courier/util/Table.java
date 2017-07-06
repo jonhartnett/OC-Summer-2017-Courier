@@ -195,10 +195,8 @@ public class Table<T> {
             String sql = "CREATE TABLE IF NOT EXISTS "+tableName+" ("+fields+")";
             sqls.add(0, sql);
             List<PreparedStatement> statements = new ArrayList<>();
-            for(String str : sqls){
-                System.out.println(str);
+            for(String str : sqls)
                 statements.add(DB.connection().prepareStatement(str));
-            }
             return statements;
         }
         List<PreparedStatement> createDrop() throws SQLException{
@@ -212,10 +210,8 @@ public class Table<T> {
             sqls.add("DROP TABLE IF EXISTS "+tableName);
 
             List<PreparedStatement> statements = new ArrayList<>();
-            for(String str : sqls){
-                System.out.println(str);
+            for(String str : sqls)
                 statements.add(DB.connection().prepareStatement(str));
-            }
             return statements;
         }
         PreparedStatement createGet() throws SQLException{
@@ -231,7 +227,6 @@ public class Table<T> {
             String wheres = whereList.stream().collect(and);
 
             String sql = "SELECT "+fields+" FROM "+tables+" WHERE "+wheres;
-            System.out.println(sql);
             return DB.connection().prepareStatement(sql);
         }
         PreparedStatement createGetAll() throws SQLException{
@@ -248,7 +243,6 @@ public class Table<T> {
             String sql = "SELECT "+fields+" FROM "+tables;
             if(wheres != null && !wheres.isEmpty())
                 sql += " WHERE " + wheres;
-            System.out.println(sql);
             return DB.connection().prepareStatement(sql);
         }
         Tuple<String, Boolean> createGetCustom() throws SQLException{
@@ -266,7 +260,6 @@ public class Table<T> {
             boolean hasWheres = wheres != null && !wheres.isEmpty();
             if(hasWheres)
                 sql += " WHERE " + wheres;
-            System.out.println(sql);
             return new Tuple<>(sql, hasWheres);
         }
         PreparedStatement createInsert() throws SQLException{
@@ -277,7 +270,6 @@ public class Table<T> {
                     .map(meta -> "?")
                     .collect(Collectors.joining(", "));
             String sql = "INSERT INTO "+tableName+" ("+fields+") VALUES (" + variables + ")";
-            System.out.println(sql);
             return DB.connection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         }
         PreparedStatement createUpdate() throws SQLException{
@@ -285,12 +277,10 @@ public class Table<T> {
                     .map(meta -> meta.fieldName + "=?")
                     .collect(Collectors.joining(", "));
             String sql = "UPDATE "+tableName+" SET " + updates + " WHERE "+id.fieldName+"=?";
-            System.out.println(sql);
             return DB.connection().prepareStatement(sql);
         }
         PreparedStatement createDelete() throws SQLException{
             String sql = "DELETE FROM "+tableName+" WHERE "+id.fieldName+"=?";
-            System.out.println(sql);
             return DB.connection().prepareStatement(sql);
         }
         HashMap<FieldMeta, Accessor> createSubqueries() throws SQLException{
@@ -329,9 +319,6 @@ public class Table<T> {
 
                 String getterSql = "SELECT "+fields+" FROM "+tables+" WHERE "+wheres;
                 String deleterSql = "DELETE FROM "+meta.getJoinName(tableName)+" WHERE `parent`=?";
-                System.out.println(getterSql);
-                System.out.println(setterSql);
-                System.out.println(deleterSql);
                 Accessor access = new Accessor();
                 access.getter = DB.connection().prepareStatement(getterSql);
                 access.setter = DB.connection().prepareStatement(setterSql);
