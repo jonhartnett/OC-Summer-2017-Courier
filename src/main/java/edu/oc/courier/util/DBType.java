@@ -5,10 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
+import java.sql.*;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
@@ -67,8 +64,19 @@ public class DBType<T> {
         addType(byte[].class, "TINYBLOB", ResultSet::getBytes, PreparedStatement::setBytes);
         addType(BigDecimal.class, "DECIMAL(19,2)", ResultSet::getBigDecimal, PreparedStatement::setBigDecimal);
         addType(Instant.class, "DATETIME",
-            (result, i) -> (Instant)result.getObject(i),
-            PreparedStatement::setObject
+            (result, i) -> {
+                Timestamp time = result.getTimestamp(i);
+                if(time == null)
+                    return null;
+                else
+                    return time.toInstant();
+            },
+            (statement, i, value) -> {
+                if(value == null)
+                    statement.setNull(i, Types.TIMESTAMP);
+                else
+                    statement.setTimestamp(i, Timestamp.from(value));
+            }
         );
     }
 

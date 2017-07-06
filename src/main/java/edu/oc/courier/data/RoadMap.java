@@ -59,19 +59,22 @@ public class RoadMap {
     public Collection<Node> values() { return nodes.values(); }
 
     public void setLink(final String src, final String dest, final RouteCondition cost){
-        setLink(get(src), get(dest), cost);
+        final Node srcNode = get(src);
+        final Node destNode = get(dest);
+        srcNode.link(destNode, cost);
+        destNode.link(srcNode, cost);
     }
     public void setLink(final Node src, final Node dest, final RouteCondition cost){
-        src.link(dest, cost);
-        dest.link(src, cost);
+        setLink(src.getName(), dest.getName(), cost);
     }
     public void setOneWayLink(final String src, final String dest, final RouteCondition cost){
-        System.out.println(src + "->" + dest + " " + cost);
-        setOneWayLink(get(src), get(dest), cost);
+        final Node srcNode = get(src);
+        final Node destNode = get(dest);
+        srcNode.link(destNode, cost);
+        destNode.link(srcNode, null);
     }
     public void setOneWayLink(final Node src, final Node dest, final RouteCondition cost){
-        src.link(dest, cost);
-        dest.link(src, null);
+        setOneWayLink(src.getName(), dest.getName(), cost);
     }
     public void removeLink(final String key, final String key2){
         this.setLink(key, key2, null);
@@ -87,10 +90,10 @@ public class RoadMap {
         return getLink(node, node2) != null;
     }
     public RouteCondition getLink(final String key, final String key2){
-        return getLink(get(key), get(key2));
+        return get(key2).inverseLinks.getOrDefault(get(key), null);
     }
     public RouteCondition getLink(final Node node, final Node node2){
-        return node2.inverseLinks.getOrDefault(node, null);
+        return getLink(node.getName(), node2.getName());
     }
 
     public Collection<Triple<Node, Node, RouteCondition>> links(){
@@ -105,9 +108,9 @@ public class RoadMap {
     }
 
     public Route getRoute(final String start, final String end){
-        return getRoute(nodes.get(start), nodes.get(end));
+        return get(start).getRoute(get(end));
     }
     public Route getRoute(final Node start, final Node end){
-        return start.getRoute(end);
+        return getRoute(start.getName(), end.getName());
     }
 }

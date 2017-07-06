@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 @Savable
 public class Node{
     public static Table<Node> table = Table.from(Node.class);
+    private static final RoutingEntry zeroEntry = new RoutingEntry(null, 0);
 
     private static class RoutingEntry{
         Node next;
@@ -93,17 +94,23 @@ public class Node{
         }
     }
 
+    private double getCost(final Node prev){
+        final RouteCondition entry = inverseLinks.getOrDefault(prev, null);
+        if(entry == null)
+            return 0;
+        return entry.cost;
+    }
+
     private double constructRoute(final Node prev, final Node dest, final Stream.Builder<String> builder){
         builder.add(this.name);
         if(dest == this)
-            return inverseLinks.get(prev).cost;
+            return getCost(prev);
 
         final RoutingEntry entry = routingTable.get(dest);
         if(entry == null)
             throw new RouteException();
         final Node next = entry.next;
-        return inverseLinks.get(prev).cost
-            + next.constructRoute(this, dest, builder);
+        return getCost(prev) + next.constructRoute(this, dest, builder);
     }
 
     public void link(final Node next, final RouteCondition cost){
