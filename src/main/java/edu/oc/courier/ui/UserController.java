@@ -5,6 +5,7 @@ import edu.oc.courier.data.UserType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
@@ -20,6 +21,7 @@ public class UserController extends HBox implements Initializable {
     @FXML private ToggleGroup userType;
     @FXML private RadioButton orderTakerButton;
     @FXML private RadioButton adminButton;
+    @FXML private CheckBox active;
 
     private final User user;
     private final UsersController parent;
@@ -65,14 +67,9 @@ public class UserController extends HBox implements Initializable {
     }
 
     @FXML
-    private void removeUser() {
-        User.table.delete(user);
-        parent.removeUser(this);
-    }
-
-    @FXML
     private void saveUser() {
         user.setUsername(username.getText());
+        user.setActive(active.isSelected());
         User.table.set(user);
     }
 }

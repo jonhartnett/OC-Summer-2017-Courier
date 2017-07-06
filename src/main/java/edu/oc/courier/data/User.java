@@ -41,6 +41,8 @@ public final class User {
     private String salt;
     @Column
     private UserType type;
+    @Column
+    private boolean active;
 
     public static User getCurrentUser() {
         return currentUser;
@@ -149,6 +151,14 @@ public final class User {
         this.type = type;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -162,12 +172,13 @@ public final class User {
             Objects.equals(name, user.name) &&
             Arrays.equals(password, user.password) &&
             Objects.equals(salt, user.salt) &&
-            type == user.type;
+            type == user.type &&
+            active == user.active;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, id, password, salt, type);
+        return Objects.hash(name, id, password, salt, type, active);
     }
 
     @Override
@@ -178,6 +189,7 @@ public final class User {
             .add("password", password)
             .add("salt", salt)
             .add("type", type)
+            .add("active", active)
             .toString();
     }
 

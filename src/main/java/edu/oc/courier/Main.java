@@ -75,6 +75,7 @@ public final class Main extends Application {
     private void setAdmin() {
         final User admin = User.getByUsername("admin")
                 .orElseGet(() -> new User("Admin", "admin", "root", UserType.ADMIN));
+        admin.setActive(true);
         User.table.set(admin);
     }
 

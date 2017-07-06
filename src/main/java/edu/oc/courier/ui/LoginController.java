@@ -40,31 +40,36 @@ public class LoginController implements Initializable {
             final User user = userOpt.get();
             final UserType type = user.getType();
             if (user.isPasswordValid(password.getText())) {
-                container.getMenu().getMenus().forEach(menu -> menu.getItems().forEach(menuItem -> {
-                    switch (menuItem.getId().split(",")[0]) {
-                        case "orderTaker":
-                            if (type == UserType.ORDER_TAKER || type == UserType.ADMIN) {
-                                menuItem.setDisable(false);
+                if(user.isActive()) {
+                    container.getMenu().getMenus().forEach(menu -> menu.getItems().forEach(menuItem -> {
+                        switch (menuItem.getId().split(",")[0]) {
+                            case "orderTaker":
+                                if (type == UserType.ORDER_TAKER || type == UserType.ADMIN) {
+                                    menuItem.setDisable(false);
+                                    menu.setDisable(false);
+                                } else {
+                                    menuItem.setDisable(true);
+                                }
+                                break;
+                            case "admin":
+                                if (type == UserType.ADMIN) {
+                                    menu.setDisable(false);
+                                    menuItem.setDisable(false);
+                                } else {
+                                    menuItem.setDisable(true);
+                                }
+                                break;
+                            default:
                                 menu.setDisable(false);
-                            } else {
-                                menuItem.setDisable(true);
-                            }
-                            break;
-                        case "admin":
-                            if (type == UserType.ADMIN) {
-                                menu.setDisable(false);
                                 menuItem.setDisable(false);
-                            } else {
-                                menuItem.setDisable(true);
-                            }
-                            break;
-                        default:
-                            menu.setDisable(false);
-                            menuItem.setDisable(false);
-                    }
-                }));
-                User.setCurrentUser(user);
-                container.loadScreen("ticket");
+                        }
+                    }));
+                    User.setCurrentUser(user);
+                    container.loadScreen("ticket");
+                } else {
+                    reset();
+                    output.setText("This user is currently inactive. Contact your administrator.");
+                }
             } else {
                 reset();
                 output.setText("Invalid login. Please check the password.");
