@@ -5,7 +5,6 @@ import edu.oc.courier.util.*;
 
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.stream.Stream;
 
 @Savable
 public class Node{
@@ -84,11 +83,11 @@ public class Node{
 
     public Route getRoute(final Node dest){
         try{
-            final Stream.Builder<String> builder = Stream.builder();
-            final double cost = this.constructRoute(this, dest, builder);
+            final List<String> list = new ArrayList<>();
+            final double cost = this.constructRoute(this, dest, list);
             if(Double.isInfinite(cost))
                 return null;
-            return new Route(builder.build(), cost);
+            return new Route(list, cost);
         }catch(RouteException ex){
             return null;
         }
@@ -101,8 +100,8 @@ public class Node{
         return entry.cost;
     }
 
-    private double constructRoute(final Node prev, final Node dest, final Stream.Builder<String> builder){
-        builder.add(this.name);
+    private double constructRoute(final Node prev, final Node dest, final List<String> list){
+        list.add(this.name);
         if(dest == this)
             return getCost(prev);
 
@@ -110,7 +109,7 @@ public class Node{
         if(entry == null)
             throw new RouteException();
         final Node next = entry.next;
-        return getCost(prev) + next.constructRoute(this, dest, builder);
+        return getCost(prev) + next.constructRoute(this, dest, list);
     }
 
     public void link(final Node next, final RouteCondition cost){

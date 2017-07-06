@@ -11,7 +11,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static javafx.scene.paint.Color.GREEN;
 import static javafx.scene.paint.Color.RED;
@@ -31,7 +30,7 @@ public class DirectionDisplayDialog extends Dialog {
             map.add(new Label(address), position.x * 2, position.y * 2);
         }
         String lastAddress = null;
-        List<String> pickupAddresses = toPickup.path.collect(Collectors.toList());
+        List<String> pickupAddresses = toPickup.path;
         for (String address : pickupAddresses) {
             if (lastAddress != null) {
                 Label line = new Label("------");
@@ -43,7 +42,7 @@ public class DirectionDisplayDialog extends Dialog {
             lastAddress = address;
         }
         lastAddress = null;
-        List<String> deliveryAddresses = toDeliver.path.collect(Collectors.toList());
+        List<String> deliveryAddresses = toDeliver.path;
         for (String address : deliveryAddresses) {
             if (lastAddress != null) {
                 Label line = new Label("------");
